@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="images/site.webmanifest">
+<title>lorem ipsam Admin</title>
+<link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="node_modules/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+  <link rel="stylesheet" href="node_modules/flag-icon-css/css/flag-icon.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="shortcut icon" href="images/favicon.png" />
+
+</head>
+
+<body>
+  <div class=" container-scroller">
+    <!-- partial:partials/_navbar.php -->
+    <nav class="navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="bg-white text-center navbar-brand-wrapper">
+        <a class="navbar-brand brand-logo" href="index.php"><img src="images/logo_star_black.png" /></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="images/logo_star_mini.jpg" alt=""></a>
+      </div>
+      
+      <div class="navbar-menu-wrapper d-flex align-items-center">
+        
+        <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+   
+        <!-- <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
+          <li class="nav-item">
+            <a class="nav-link profile-pic" href="#"><img class="rounded-circle" src="../images/face.jpg" alt=""></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"><i class="fa fa-th"></i></a>
+          </li>
+        </ul> -->
+        <button class="navbar-toggler navbar-dark navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+              
+   
+
+    
+     
+      </div>
+    </nav>
+  <!-- partial -->
+  <div class="container-fluid">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <!-- partial:partials/_sidebar.php -->
+      <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
+        <div class="user-info">
+          <img src="images/face.jpg" alt="">
+          <p class="name">Name</p>
+          <p class="designation">Name</p>
+          
+        </div>
+        <ul class="nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="dashboard.html">
+              <img src="images/icons/1.png" alt="">
+              <span class="menu-title">Main</span>
+            </a>
+          </li>
+                    
+                    
+                 
+                    <li class="nav-item ">
+
+            <a class="nav-link" href="Student.html">
+              <img src="images/icons/5.png" alt="">
+              <span class="menu-title">Students</span>
+            </a>
+          </li>
+                   
+        
+          <li class="nav-item ">
+
+            <a class="nav-link" data-toggle="collapse" href="#settings" aria-expanded="false" aria-controls="sample-pages">
+              <img src="images/icons/10.png" alt="">
+              <span class="menu-title">Settings<i class="fa fa-sort-down"></i></span>
+            </a>
+            <div class="collapse" id="settings">
+              <ul class="nav flex-column sub-menu">
+            
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                  ChangePassword
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="CoachLogin.html">
+                  Logout
+                  </a>
+                </li>
+             
+              </ul>
+            </div>
+          </li>
+    
+        </ul>
+      </nav>
+   
+
+        <!-- partial -->
+        <div class="content-wrapper">
+          <h3 class="page-heading mb-4">Dashboard</h3>
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <i class="fa fa-users float-right icon-grey-big"></i>
+                  </div>
+
+                  <h4 class="card-title font-weight-normal text-success">600</h4>
+                  <h6 class="card-subtitle mb-4">All Students</h6>
+                  <div class="progress progress-slim">
+                    <div class="progress-bar bg-success-gadient" role="progressbar" style="width: 75%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>  
+          
+      
+          </div>
+          <div class="card-deck">
+            <div class="card col-lg-12 px-0 mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Brand Cards</h5>
+                <div class="table-responsive">
+                  <table class="table center-aligned-table">
+                    <thead>
+                      <tr class="text-primary">
+                        <th>CARDNAME</th>
+                        <th>ACTIVITY</th>
+                        <th>NUMBER OF Students</th>
+                        <th>OPTIONS</th>
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="">
+                        <td>External laundry card</td>
+                        <td>20034</td>
+                        <td>3173</td>
+                        <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                      </tr>
+                     
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            
+            <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
+              <div class="card card-statistics">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <div class="float-right">
+                      <h4 class="text-success">
+                        <i class="fa fa-smile-o highlight-icon" aria-hidden="true"></i>
+                      </h4>
+                    </div>
+                 
+
+                    <div class="float-left">
+                      <p class="card-text text-dark">Loyal students</p>
+                  
+                      <h4 class="bold-text">200</h4>
+                    </div>
+                  </div>
+                  <p class="text-muted">
+                  Loyal students
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
+              <div class="card card-statistics">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <div class="float-right">
+                      <h4 class="text-warning">
+                        <i class="fa fa-meh-o highlight-icon" aria-hidden="true"></i>
+                      </h4>
+                    </div>
+                 
+
+                    <div class="float-left">
+                      <p class="card-text text-dark">FREQUENT students</p>
+                      <h4 class="bold-text">600</h4>
+                    </div>
+                  </div>
+                  <p class="text-muted">
+                  Frequent students
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
+              <div class="card card-statistics">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <div class="float-right">
+                      <h4 class="text-danger">
+                        <i class="fa fa-frown-o highlight-icon" aria-hidden="true"></i>
+                      </h4>
+                    </div>
+                  
+
+                    <div class="float-left">
+                      <p class="card-text text-dark">DISCONNECTED students</p>
+                      <h4 class="bold-text">600</h4>
+                    </div>
+                  </div>
+                  <p class="text-muted">
+               Disconnected students
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- <div class="col-md-5 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Orders</h5>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="mb-4">
+                        <p class="card-text text-muted mb-2">Pending orders</p>
+                        <div class="progress progress-slim">
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </div>
+                      <div class="mb-4">
+                        <p class="card-text text-muted mb-2">Shipped orders</p>
+                        <div class="progress progress-slim">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </div>
+                      <div class="mb-4">
+                        <p class="card-text text-muted mb-2">Returned orders</p>
+                        <div class="progress progress-slim">
+                          <div class="progress-bar bg-warning" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </div>
+                      <div class="mb-4">
+                        <p class="card-text text-muted mb-2">Cancelled orders</p>
+                        <div class="progress progress-slim">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </div>
+                      <div class="mb-4">
+                        <p class="card-text text-muted mb-2">Cancelled orders</p>
+                        <div class="progress progress-slim">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <p class="text-muted mb-0">
+                        Note: Order details get updated every 10 minutes
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+        
+          </div>
+      
+        </div>
+        <!-- partial:partials/_footer.php -->
+        <footer class="footer">
+          <div class="container-fluid clearfix">
+            <span class="float-right">
+                <a href="">loremIpsam</a> &copy; 2024
+            </span>
+          </div>
+        </footer>
+        <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form'); // Update with your form selector
+    const loadingOverlay = document.querySelector('.loading-overlay');
+
+    form.addEventListener('submit', function () {
+      loadingOverlay.style.display = 'flex';
+    });
+
+    // Add this function where you handle the form submission response
+    function handleFormResponse() {
+      loadingOverlay.style.display = 'none';
+      // Additional logic or redirection after form submission response
+    }
+  });
+</script>
+
+        <!-- partial -->
+      </div>
+    </div>
+
+  </div>
+
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+  <script src="node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
+  <script src="js/off-canvas.js"></script>
+  <script src="js/hoverable-collapse.js"></script>
+  <script src="js/misc.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/maps.js"></script>
+</body>
+
+</html>
