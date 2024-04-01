@@ -1,0 +1,50 @@
+<%- include('../adminpartials/head', {title: "Admin || Teams"}) %>
+<div class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+<div class="content-wrapper">
+  <%- include('../flash') %>
+  <div class="container-scroller">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="content-wrapper full-page-wrapper auth-pages">
+          <div class="card col-lg-7 mx-auto">
+            <div class="card-body px-5 py-5">
+              <h3 class="card-title text-left mb-3">Create a team</h3>
+              <form action="/admin/teams" method="POST">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Team name
+                  </label>
+                  <input required type="text" class="form-control p_input" name="name">
+                </div>
+                <div class="row mb-4">
+                  <div class="col-6 mx-auto">
+                    <div class="panel">
+                      <div class="button_outer">
+                        <div class="btn_upload">
+                          <input type="file" id="upload_file" name="">
+                          Team Logo <i class="ms-1 fa fa-upload"></i>
+                        </div>
+                        <div class="processing_bar"></div>
+                        <div class="success_box"></div>
+                      </div>
+                    </div>
+                    <div class="error_msg"></div>
+                    <div class="uploaded_file_view" id="uploaded_view">
+                      <span class="file_remove">X</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary btn-block enter-btn">Create</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../adminpartials/footer') %>

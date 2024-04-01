@@ -1,7 +1,8 @@
-require('./models/adminSchema')
-require('./models/coachSchema')
-require('./models/studentSchema')
-const express = require('express')
+require('./models/adminSchema');
+require('./models/coachSchema');
+require('./models/studentSchema');
+require('./models/teamSchema');
+const express = require('express');
 const app = express();
 const ejsMate = require('ejs-mate');
 const flash = require('connect-flash');
@@ -16,7 +17,11 @@ const localStrategy = require('passport-local');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const studentRoutes = require('./routes/studentAuth')
+const coachRoutes = require('./routes/coachRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 const ExpressError = require('./utils/ExpressError');
+const wrapAsync = require('./utils/wrapAsync')
 
 
 const PORT = process.env.PORT || 3000;
@@ -88,6 +93,19 @@ passport.deserializeUser(async (data, done) => {
         done(err, null);
     }
 });
+
+
+// Route hanlder
+app.use(studentRoutes)
+app.use(coachRoutes)
+app.use(adminRoutes)
+
+// Logout route for every user
+app.get('/logout', wrapAsync(async (req, res) => {
+    req.logout(() => {
+        res.redirect('/')
+    });
+}));
 
 
 // initializing Mongoose

@@ -1,0 +1,174 @@
+<%- include('../adminpartials/head', {title: "Admin || Students"}) %>
+<!-- partial -->
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
+          </div>
+          <h4 class="card-title font-weight-normal text-success"><%= approved_students.length %></h4>
+          <h6 class="card-subtitle mb-4">Approved Students</h6>
+          <div class="progress progress-slim">
+            <div class="progress-bar bg-success-gadient" role="progressbar" style="width: <%= approved_progress%>%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
+          </div>
+          <h4 class="card-title font-weight-normal text-warning"><%= pending_students.length %></h4>
+          <h6 class="card-subtitle mb-4">Pending Students</h6>
+          <div class="progress progress-slim">
+            <div class="progress-bar bg-warning-gadient" role="progressbar" style="width: <%= pending_progress %>%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
+          </div>
+          <h4 class="card-title font-weight-normal text-danger"><%= disqualified_students.length %></h4>
+          <h6 class="card-subtitle mb-4">Disqualified Students</h6>
+          <div class="progress progress-slim">
+            <div class="progress-bar bg-danger-gadient" role="progressbar" style="width: <%= disqualified_progress %>%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-subtitle text-warning">Pending Students</h6>
+          <div class="table-responsive">
+            <table class="table center-aligned-table" id="transactionTable">
+              <thead>
+                <tr class="text-primary">
+                  <th>Name</th>
+                  <th>Coach</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Age</th>
+                  <th>Date of Birth</th>
+                  <th>Jersey #</th>
+                  <th>Option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let student of pending_students){ %>
+                <tr class="">
+                  <td><%= student.fullname %></td>
+                  <td><%= student.coach %></td>
+                  <td><%= student.username %></td>
+                  <td><%= student.phone %></td>
+                  <td><%= student.age %></td>
+                  <td><%= student.dob %></td>
+                  <td><%= student.jersey %></td>
+                  <td>
+                    <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
+                    <a href="/admin/student/disqualify/<%= student._id %>" class="btn btn-outline-danger btn-sm">Disqualify</a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-subtitle text-success">Approved Students</h6>
+          <div class="table-responsive">
+            <table class="table center-aligned-table" id="transactionTable">
+              <thead>
+                <tr class="text-primary">
+                  <th>Name</th>
+                  <th>Coach</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Age</th>
+                  <th>Date of Birth</th>
+                  <th>Jersey #</th>
+                  <th>Option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let student of approved_students){ %>
+                <tr class="">
+                  <td><%= student.fullname %></td>
+                  <td><%= student.coach %></td>
+                  <td><%= student.username %></td>
+                  <td><%= student.phone %></td>
+                  <td><%= student.age %></td>
+                  <td><%= student.dob %></td>
+                  <td><%= student.jersey %></td>
+                  <td>
+                    <a href="/admin/student/pending/<%= student._id %>" class="btn btn-outline-warning btn-sm">Pending</a>
+                    <a href="/admin/student/disqualify/<%= student._id %>" class="btn btn-outline-danger btn-sm">Disqualify</a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-subtitle text-danger">Disqualified Students</h6>
+          <div class="table-responsive">
+            <table class="table center-aligned-table" id="transactionTable">
+              <thead>
+                <tr class="text-primary">
+                  <th>Name</th>
+                  <th>Coach</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Age</th>
+                  <th>Date of Birth</th>
+                  <th>Jersey #</th>
+                  <th>Option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let student of disqualified_students){ %>
+                <tr class="">
+                  <td><%= student.fullname %></td>
+                  <td><%= student.coach %></td>
+                  <td><%= student.username %></td>
+                  <td><%= student.phone %></td>
+                  <td><%= student.age %></td>
+                  <td><%= student.dob %></td>
+                  <td><%= student.jersey %></td>
+                  <td>
+                    <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../adminpartials/footer') %>
