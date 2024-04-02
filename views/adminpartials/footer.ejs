@@ -30,6 +30,7 @@
 
 </div>
 
+
 <script src="/js/Javascript/jquery/dist/jquery.min.js"></script>
 <script src="/js/Javascript/popper.js/dist/umd/popper.min.js"></script>
 <script src="/js/Javascript/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -41,6 +42,46 @@
 <script src="/js/misc.js"></script>
 <script src="/js/chart.js"></script>
 <script src="/js/maps.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script>
+  $(document)
+    .ready(function() {
+      $('#transactionTable')
+        .DataTable({
+          "order": [
+            [0, "desc"]
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
+    });
+    $(document)
+    .ready(function() {
+      $('#transactionTable1')
+        .DataTable({
+          "order": [
+            [0, "desc"]
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
+    });
+    $(document)
+    .ready(function() {
+      $('#transactionTable2')
+        .DataTable({
+          "order": [
+            [0, "desc"]
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
+    });
+
+</script>
 </body>
 
 </html>
