@@ -55,10 +55,6 @@
   <div class=" container-scroller">
     <!-- partial:../partials/_navbar.php -->
     <nav class="navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-      <div class="bg-white text-center navbar-brand-wrapper">
-        <a class="navbar-brand brand-logo" href="index.php"><img src="/images/logo_star_black.png" /></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="/images/logo_star_mini.jpg" alt=""></a>
-      </div>
       <div class="navbar-menu-wrapper d-flex align-items-center">
         <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
           <span class="navbar-toggler-icon"></span>
@@ -113,7 +109,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="CoachLogin.html">
+                    <a class="nav-link" href="/logout">
                       Logout
                     </a>
                   </li>
@@ -129,10 +125,10 @@
               <div class="card">
                 <div class="card-body">
                   <div class="clearfix">
-                    <i class="fa fa-users float-right icon-grey-big"></i>
+                    <img class="float-right" style="width: 100px;" src="<%= team.image.path %>" alt="">
                   </div>
                   <h4 class="card-title font-weight-normal text-success">800</h4>
-                  <h6 class="card-subtitle mb-4">All Students</h6>
+                  <h6 class="card-subtitle mb-4"><%= team.name %></h6>
                   <div class="progress progress-slim">
                     <div class="progress-bar bg-success-gadient" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
@@ -151,22 +147,20 @@
                           <th>Name</th>
                           <th>Coach</th>
                           <th>Email</th>
-                          <th>Phone</th>
-                          <th>Age</th>
-                          <th>Date of Birth</th>
                           <th>Jersey #</th>
+                          <th>Role</th>
                         </tr>
                       </thead>
                       <tbody>
+                        <% for (let st of team.students){ %>
                         <tr class="">
-                          <td><%= student.fullname %></td>
-                          <td><%= student.coach %></td>
-                          <td><%= student.username %></td>
-                          <td><%= student.phone %></td>
-                          <td><%= student.age %></td>
-                          <td><%= student.dob %></td>
-                          <td><%= student.jersey %></td>
+                          <td><%= st.fullname %></td>
+                          <td><%= student.coach.fullname %></td>
+                          <td><%= st.username %></td>
+                          <td><%= st.jersey %></td>
+                          <td><%= st.role %></td>
                         </tr>
+                        <% } %>
                       </tbody>
                     </table>
                   </div>

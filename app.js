@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 require('./models/adminSchema');
 require('./models/coachSchema');
 require('./models/studentSchema');
@@ -20,6 +23,7 @@ const session = require('express-session');
 const studentRoutes = require('./routes/studentAuth')
 const coachRoutes = require('./routes/coachRoutes')
 const adminRoutes = require('./routes/adminRoutes')
+const homepageRoutes = require('./routes/homepageRoutes')
 const ExpressError = require('./utils/ExpressError');
 const wrapAsync = require('./utils/wrapAsync')
 
@@ -72,8 +76,8 @@ passport.use('coach', new localStrategy(Coach.authenticate()));
 passport.serializeUser((user, done) => {
     if (user instanceof Admin) {
         done(null, { type: 'admin', id: user.id });
-    } else if (user instanceof Teacher) {
-        done(null, { type: 'teacher', id: user.id });
+    } else if (user instanceof Coach) {
+        done(null, { type: 'coach', id: user.id });
     } else if (user instanceof Student) {
         done(null, { type: 'student', id: user.id });
     }
@@ -83,8 +87,8 @@ passport.deserializeUser(async (data, done) => {
         let user;
         if (data.type === 'admin') {
             user = await Admin.findById(data.id);
-        } else if (data.type === 'teacher') {
-            user = await Teacher.findById(data.id);
+        } else if (data.type === 'coach') {
+            user = await Coach.findById(data.id);
         } else if (data.type === 'student') {
             user = await Student.findById(data.id);
         }
@@ -99,6 +103,7 @@ passport.deserializeUser(async (data, done) => {
 app.use(studentRoutes)
 app.use(coachRoutes)
 app.use(adminRoutes)
+app.use(homepageRoutes)
 
 // Logout route for every user
 app.get('/logout', wrapAsync(async (req, res) => {

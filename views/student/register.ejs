@@ -26,8 +26,8 @@
         <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
           <div class="card col-lg-7 mx-auto">
             <div class="card-body px-5 py-5">
-              <h3 class="card-title text-left mb-3">Register as Student</h3>
-              <form action="/student/register" method="POST">
+              <h3 class="card-title text-left mb-3">Register as Student (<%= team.name %>)</h3>
+              <form action="/student/register/<%= team._id %>" method="POST">
                 <div class="row">
                   <div class="col-6">
                     <div class="row">
@@ -38,7 +38,7 @@
                           </label>
                           <select name="coach" class="form-control" id="coach" required>
                             <% for (let coach of coaches){ %>
-                            <option value="<%= coach.fullname %>"><%= coach.fullname %></option>
+                            <option value="<%= coach._id %>"><%= coach.fullname %></option>
                             <% } %>
                           </select>
                         </div>

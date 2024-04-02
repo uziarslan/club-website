@@ -2,7 +2,14 @@ const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const studentSchema = new mongoose.Schema({
-    coach: String,
+    coach: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coach'
+    },
+    team: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Team'
+    },
     role: String,
     association: String,
     username: String,

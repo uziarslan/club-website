@@ -52,6 +52,16 @@
                   </label>
                   <input type="tel" class="form-control" name="phone" id="phone" required>
                 </div>
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Select Team
+                  </label>
+                  <select name="coach" class="form-control" id="coach" required>
+                    <% for (let team of teams){ %>
+                    <option value="<%= team._id %>"><%= team.name %></option>
+                    <% } %>
+                  </select>
+                </div>
                 <div class="text-center">
                   <button type="submit" name="submit" class="btn btn-primary btn-block enter-btn">Signup</button>
                 </div>

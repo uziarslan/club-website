@@ -5,7 +5,13 @@ const teamSchema = new mongoose.Schema({
     image: {
         filename: String,
         path: String
-    }
+    },
+    students: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Student'
+        }
+    ]
 })
 
 module.exports = mongoose.model('Team', teamSchema)
