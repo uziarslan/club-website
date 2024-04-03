@@ -63,7 +63,11 @@
         <!-- partial:partials/_sidebar.php -->
         <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
           <div class="user-info">
-            <img src="/images/face.jpg" alt="">
+            <% if (student.image){ %>
+            <img src="<%= student.image.path %>" alt="Profile Image">
+            <% }else{ %>
+            <img src="/images/face.jpg" alt="Profile Image">
+            <% } %>
             <p class="name"><%= student.fullname %></p>
             <p class="designation"><%= student.role.toUpperCase() %></p>
           </div>

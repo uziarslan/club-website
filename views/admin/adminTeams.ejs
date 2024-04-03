@@ -41,18 +41,17 @@
                 </div>
               </form>
             </div>
-          
           </div>
           <div class="row p-5 bg-white mt-4">
+            <% for (let team of teams){ %>
             <div class="col-3">
               <div class="card">
-                <img class="card-img-top" src="/images/faces/face8.jpg" width="100%" height="auto" alt="Card image cap">
+                <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
                 <div class="card-body">
-                  <h5 class="card-title text-center mb-4">Team 1</h5>
+                  <h5 class="card-title text-center mb-4"><%= team.name %></h5>
                   <div class="row">
-
                     <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-primary" style="width: 90%;"><i class="fa fa-edit" style="font-size: 20px;"></i></a>
+                      <a href="/admin/team/<%= team._id %>/edit" class="btn btn-primary" style="width: 90%;"><i class="fa fa-edit" style="font-size: 20px;"></i></a>
                     </div>
                     <div style="width: 50%; text-align: center;">
                       <a href="#" class="btn btn-danger" style="width: 90%;"><i class="fa fa-trash" style="font-size: 20px;"></i></a>
@@ -61,65 +60,10 @@
                 </div>
               </div>
             </div>
-            <div class="col-3">
-              <div class="card">
-                <img class="card-img-top" src="/images/faces/face8.jpg" width="100%" height="auto" alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title text-center mb-4">Team 1</h5>
-                  <div class="row">
-
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-primary" style="width: 90%;"><i class="fa fa-edit" style="font-size: 20px;"></i></a>
-                    </div>
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-danger" style="width: 90%;"><i class="fa fa-trash" style="font-size: 20px;"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="card">
-                <img class="card-img-top" src="/images/faces/face8.jpg" width="100%" height="auto" alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title text-center mb-4">Team 1</h5>
-                  <div class="row">
-
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-primary" style="width: 90%;"><i class="fa fa-edit" style="font-size: 20px;"></i></a>
-                    </div>
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-danger" style="width: 90%;"><i class="fa fa-trash" style="font-size: 20px;"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="card">
-                <img class="card-img-top" src="/images/faces/face8.jpg" width="100%" height="auto" alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title text-center mb-4">Team 1</h5>
-                  <div class="row">
-
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-primary" style="width: 90%;"><i class="fa fa-edit" style="font-size: 20px;"></i></a>
-                    </div>
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-danger" style="width: 90%;"><i class="fa fa-trash" style="font-size: 20px;"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-       
+            <% } %>
           </div>
-        
         </div>
       </div>
-
-
     </div>
   </div>
 </div>

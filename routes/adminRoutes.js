@@ -4,14 +4,17 @@ const passport = require('passport')
 const Admin = mongoose.model('Admin');
 const Student = mongoose.model('Student');
 const Coach = mongoose.model("Coach");
-const Team = mongoose.model('Team')
+const Team = mongoose.model('Team');
+const PDFDocument = require('pdfkit');
 const wrapAsync = require('../utils/wrapAsync');
 const { isAdmin } = require('../middlewares');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
 const upload = multer({ storage });
+const fetch = require('node-fetch')
 const { uploader } = require('cloudinary').v2
 const router = express();
+
 
 
 // Managing admin
@@ -65,22 +68,28 @@ router.post('/admin/login', (req, res, next) => {
 });
 
 router.get('/admin/dashboard', isAdmin, wrapAsync(async (req, res) => {
+    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
     const { user } = req;
     const all_students = (await Student.find({})).length;
-    const all_coaches = (await Coach.find({})).length;
+    const teams = await Team.find({});
+    const coaches = await Coach.find({ status: 'approved' });
+    all_coaches = (await Coach.find({})).length;
     res.render('./admin/adminDashboard', {
         admin: user,
         all_students,
-        all_coaches
+        all_coaches,
+        coaches,
+        teams,
+        dop
     });
 }));
 
 // Managing students
 router.get('/admin/students', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
-    const pending_students = await Student.find({ status: 'pending' });
-    const approved_students = await Student.find({ status: 'approved' });
-    const disqualified_students = await Student.find({ status: 'disqualified' });
+    const pending_students = await Student.find({ status: 'pending' }).populate('coach');
+    const approved_students = await Student.find({ status: 'approved' }).populate('coach');
+    const disqualified_students = await Student.find({ status: 'disqualified' }).populate('coach');
     const all_students = (await Student.find({})).length;
 
     approved_progress = (approved_students.length / all_students) * 100;
@@ -161,7 +170,8 @@ router.get('/admin/coach/disqualify/:id', isAdmin, wrapAsync(async (req, res) =>
 // Managing teams
 router.get('/admin/teams', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
-    res.render('./admin/adminTeams', { admin: user });
+    const teams = await Team.find({});
+    res.render('./admin/adminTeams', { admin: user, teams });
 }));
 
 router.post('/admin/teams', isAdmin, upload.single('image'), wrapAsync(async (req, res) => {
@@ -179,8 +189,65 @@ router.post('/admin/teams', isAdmin, upload.single('image'), wrapAsync(async (re
     res.redirect('/admin/teams');
 }));
 
+router.get('/admin/team/:teamId/edit', isAdmin, wrapAsync(async (req, res) => {
+    const { user } = req;
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId);
+    res.render('./admin/adminEditTeam', { admin: user, team });
+}));
 
 
+// Generating a PDF
+router.post('/generate/document', async (req, res) => {
+    const { team, division, coach } = req.body;
+    const t = await Team.findById(team).lean();
+    const c = await Coach.findById(coach).lean();
+    const filteredStudents = await Student.find({
+        team: team,
+        dop: division,
+        coach: coach
+    }).populate('team').populate('coach').lean();
+
+    if (!filteredStudents.length) {
+        req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
+        return res.redirect('/admin/dashboard');
+    }
+
+    const doc = new PDFDocument();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.pdf"`);
+
+    doc.pipe(res);
+
+    const response = await fetch(t.image.path);
+    const logoBuffer = await response.buffer();
+    doc.image(logoBuffer, 50, 40, { width: 50 })
+        .fontSize(20)
+        .text(`${t.name} - ${c.fullname}`, 110, 50);
+
+    let currentYPosition = 100;
+
+    for (const student of filteredStudents) {
+        const studentResponse = await fetch(student.image.path);
+        const imageBuffer = await studentResponse.buffer();
+
+        if (currentYPosition > doc.page.height - 100) {
+            doc.addPage();
+            currentYPosition = 50;
+        }
+
+        doc.image(imageBuffer, 50, currentYPosition, { width: 100 });
+        doc.fontSize(10)
+            .text(`Name: ${student.fullname}`, 160, currentYPosition)
+            .text(`DOB: ${student.dob}`, 160, currentYPosition + 20)
+            .text(`Jersey #: ${student.jersey}`, 160, currentYPosition + 40)
+            .text(`Role: ${student.role}`, 160, currentYPosition + 60);
+
+        currentYPosition += 100;
+    }
+
+    doc.end();
+});
 
 
 

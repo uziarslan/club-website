@@ -68,7 +68,7 @@
                 <% for (let student of pending_students){ %>
                 <tr class="">
                   <td><%= student.fullname %></td>
-                  <td><%= student.coach %></td>
+                  <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
                   <td><%= student.phone %></td>
                   <td><%= student.age %></td>
@@ -110,7 +110,7 @@
                 <% for (let student of approved_students){ %>
                 <tr class="">
                   <td><%= student.fullname %></td>
-                  <td><%= student.coach %></td>
+                  <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
                   <td><%= student.phone %></td>
                   <td><%= student.age %></td>
@@ -152,7 +152,7 @@
                 <% for (let student of disqualified_students){ %>
                 <tr class="">
                   <td><%= student.fullname %></td>
-                  <td><%= student.coach %></td>
+                  <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
                   <td><%= student.phone %></td>
                   <td><%= student.age %></td>

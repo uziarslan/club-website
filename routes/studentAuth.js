@@ -5,19 +5,25 @@ const Coach = mongoose.model('Coach')
 const Team = mongoose.model('Team')
 const passport = require('passport')
 const wrapAsync = require('../utils/wrapAsync');
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
+const { uploader } = require('cloudinary').v2
 const router = express();
 
 
 // Defining routes
 router.get('/student/register/:teamId', wrapAsync(async (req, res) => {
+    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
+
     const { teamId } = req.params;
     const coaches = await Coach.find({ status: 'approved' });
     const team = await Team.findById(teamId);
 
-    res.render('./student/register', { coaches, team });
+    res.render('./student/register', { coaches, team, dop });
 }));
 
-router.post('/student/register/:teamId', wrapAsync(async (req, res) => {
+router.post('/student/register/:teamId', upload.single('image'), wrapAsync(async (req, res) => {
     const { username, password } = req.body;
     const { teamId } = req.params;
     const foundStudent = await Student.find({ username });
@@ -27,7 +33,16 @@ router.post('/student/register/:teamId', wrapAsync(async (req, res) => {
         return res.redirect(`/student/register/${teamId}`)
     }
 
-    const student = new Student({ ...req.body, team: teamId, coach: req.body.coach });
+    const { filename, path } = req.file;
+
+    const student = new Student({
+        ...req.body,
+        team: teamId,
+        coach: req.body.coach,
+    });
+
+    student.image.filename = filename;
+    student.image.path = path;
 
     await Team.findByIdAndUpdate(teamId, {
         $addToSet: { students: student._id }

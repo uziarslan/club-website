@@ -1,168 +1,173 @@
 <%- include("../adminpartials/head", {title: "Admin || Dashboard" }) %>
-  <!-- partial -->
+<!-- partial -->
 
-  <div class="content-wrapper">
-    <h3 class="page-heading mb-4">Admin Panel</h3>
-    <div class="row">
-      <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="clearfix">
-              <i class="fa fa-users float-right icon-grey-big"></i>
-            </div>
-            <h4 class="card-title font-weight-normal text-success">
-              <%= all_students %>
-            </h4>
-            <h6 class="card-subtitle mb-4">Students</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="clearfix">
-              <i class="fa fa-users float-right icon-grey-big"></i>
-            </div>
-            <h4 class="card-title font-weight-normal text-success">
-              <%= all_coaches%>
-            </h4>
-            <h6 class="card-subtitle mb-4">Coaches</h6>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title mb-4">Search</h5>
-            <form action="" method="POST">
-              <div class="row">
-                <div class="col-2">
-                  <select name="team"  class="form-control">
-                    <option disabled selected>Team</option>
-                    <option value="1">Multan</option>
-                  </select>
-                </div>
-                <div class="col-2">
-                  <select name="division"  class="form-control">
-                    <option disabled selected>Division</option>
-
-                    <option value="1">Multan</option>
-                  </select>
-                </div>
-                <div class="col-2">
-                  <select name="coach"  class="form-control">
-                    <option disabled selected>Coach</option>
-                    <option value="1">Mujtaba Azhar</option>
-                  </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary mr-2">Filter</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- If Result Fetch Then Display it  Start-->
-    <div class="card-deck">
-      <div class="card col-lg-12 px-0 mb-4">
+<div class="content-wrapper">
+  <h3 class="page-heading mb-4">Admin Panel</h3>
+  <%- include('../flash') %>
+  <div class="row">
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Results</h5>
-          <div class="table-responsive">
-            <table class="table center-aligned-table" id="transactionTable">
-              <thead>
-                <tr class="text-primary">
-                  <th>Team</th>
-                  <th>Division</th>
-                  <th>Coach</th>
-                  <th>OPTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="">
-                  <td>Multan Sultan</td>
-                  <td>Multan </td>
-                  <td>Mujtaba Azhar</td>
-                  <td><a href="#" class="btn btn-outline-primary btn-sm">Download PDF <i class="fa fa-download"></i></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
           </div>
+          <h4 class="card-title font-weight-normal text-success">
+            <%= all_students %>
+          </h4>
+          <h6 class="card-subtitle mb-4">Students</h6>
         </div>
       </div>
     </div>
-
-    <!-- If Result Fetch Then Display it END -->
-
-    <div class="row">
-      <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
-        <div class="card card-statistics">
-          <div class="card-body">
-            <div class="clearfix">
-              <div class="float-right">
-                <h4 class="text-success">
-                  <i class="fa fa-smile-o highlight-icon" aria-hidden="true"></i>
-                </h4>
-              </div>
-              <div class="float-left">
-                <p class="card-text text-dark">Loyal Students</p>
-                <h4 class="bold-text">200</h4>
-              </div>
-            </div>
-            <p class="text-muted">
-              Loyal Students
-            </p>
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
           </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
-        <div class="card card-statistics">
-          <div class="card-body">
-            <div class="clearfix">
-              <div class="float-right">
-                <h4 class="text-warning">
-                  <i class="fa fa-meh-o highlight-icon" aria-hidden="true"></i>
-                </h4>
-              </div>
-              <div class="float-left">
-                <p class="card-text text-dark">FREQUENT Students</p>
-                <h4 class="bold-text">600</h4>
-              </div>
-            </div>
-            <p class="text-muted">
-              Frequent Students
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
-        <div class="card card-statistics">
-          <div class="card-body">
-            <div class="clearfix">
-              <div class="float-right">
-                <h4 class="text-danger">
-                  <i class="fa fa-frown-o highlight-icon" aria-hidden="true"></i>
-                </h4>
-              </div>
-              <div class="float-left">
-                <p class="card-text text-dark">DISCONNECTED Students</p>
-                <h4 class="bold-text">600</h4>
-              </div>
-            </div>
-            <p class="text-muted">
-              Disconnected Students
-            </p>
-          </div>
+          <h4 class="card-title font-weight-normal text-success">
+            <%= all_coaches%>
+          </h4>
+          <h6 class="card-subtitle mb-4">Coaches</h6>
         </div>
       </div>
     </div>
-    <div class="row">
-      <!-- <div class="col-md-5 mb-4">
+  </div>
+  <div class="row mb-4">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Search</h5>
+          <form action="/generate/document" method="POST">
+            <div class="row">
+              <div class="col-2">
+                <select name="team" class="form-control">
+                  <option disabled selected>Team</option>
+                  <% for (let team of teams){ %>
+                  <option value="<%= team._id %>"><%= team.name %></option>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-2">
+                <select name="division" class="form-control">
+                  <option disabled selected>Division</option>
+                  <% for (let d of dop){ %>
+                  <option value="<%= d %>"><%= d %></option>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-2">
+                <select name="coach" class="form-control">
+                  <option disabled selected>Coach</option>
+                  <% for (let coach of coaches){ %>
+                  <option value="<%= coach._id %>"><%= coach.fullname %></option>
+                  <% } %>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary mr-2">Filter</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- If Result Fetch Then Display it  Start-->
+  <div class="card-deck">
+    <div class="card col-lg-12 px-0 mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Results</h5>
+        <div class="table-responsive">
+          <table class="table center-aligned-table" id="transactionTable">
+            <thead>
+              <tr class="text-primary">
+                <th>Team</th>
+                <th>Division</th>
+                <th>Coach</th>
+                <th>OPTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="">
+                <td>Multan Sultan</td>
+                <td>Multan </td>
+                <td>Mujtaba Azhar</td>
+                <td><a href="#" class="btn btn-outline-primary btn-sm">Download PDF <i class="fa fa-download"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- If Result Fetch Then Display it END -->
+
+  <div class="row">
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card card-statistics">
+        <div class="card-body">
+          <div class="clearfix">
+            <div class="float-right">
+              <h4 class="text-success">
+                <i class="fa fa-smile-o highlight-icon" aria-hidden="true"></i>
+              </h4>
+            </div>
+            <div class="float-left">
+              <p class="card-text text-dark">Loyal Students</p>
+              <h4 class="bold-text">200</h4>
+            </div>
+          </div>
+          <p class="text-muted">
+            Loyal Students
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card card-statistics">
+        <div class="card-body">
+          <div class="clearfix">
+            <div class="float-right">
+              <h4 class="text-warning">
+                <i class="fa fa-meh-o highlight-icon" aria-hidden="true"></i>
+              </h4>
+            </div>
+            <div class="float-left">
+              <p class="card-text text-dark">FREQUENT Students</p>
+              <h4 class="bold-text">600</h4>
+            </div>
+          </div>
+          <p class="text-muted">
+            Frequent Students
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card card-statistics">
+        <div class="card-body">
+          <div class="clearfix">
+            <div class="float-right">
+              <h4 class="text-danger">
+                <i class="fa fa-frown-o highlight-icon" aria-hidden="true"></i>
+              </h4>
+            </div>
+            <div class="float-left">
+              <p class="card-text text-dark">DISCONNECTED Students</p>
+              <h4 class="bold-text">600</h4>
+            </div>
+          </div>
+          <p class="text-muted">
+            Disconnected Students
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- <div class="col-md-5 mb-4">
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Orders</h5>
@@ -209,8 +214,8 @@
               </div>
             </div> -->
 
-    </div>
-
   </div>
 
-  <%- include('../adminpartials/footer') %>
+</div>
+
+<%- include('../adminpartials/footer') %>

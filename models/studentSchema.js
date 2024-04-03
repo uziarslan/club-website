@@ -25,6 +25,10 @@ const studentSchema = new mongoose.Schema({
         type: String,
         enum: ['approved', 'pending', 'disqualified'],
         default: 'pending'
+    },
+    image: {
+        filename: String,
+        path: String
     }
 });
 
