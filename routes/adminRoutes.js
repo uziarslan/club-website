@@ -196,7 +196,6 @@ router.get('/admin/team/:teamId/edit', isAdmin, wrapAsync(async (req, res) => {
     res.render('./admin/adminEditTeam', { admin: user, team });
 }));
 
-
 // Generating a PDF
 router.post('/generate/document', async (req, res) => {
     const { team, division, coach } = req.body;

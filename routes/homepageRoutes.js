@@ -14,6 +14,13 @@ router.get('/', wrapAsync(async (req, res) => {
     res.render('./homepage/homepage', { teams });
 }));
 
+router.get('/player/show', wrapAsync(async (req, res) => {
+    const students = await Student.find({});
+    res.render('./homepage/players', { students });
+}));
 
-
+router.get('/coaches/show', wrapAsync(async (req, res) => {
+    const coachs = await Coach.find({});
+    res.render('./homepage/coaches', { coachs });
+}));
 module.exports = router;
