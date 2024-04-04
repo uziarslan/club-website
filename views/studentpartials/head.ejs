@@ -2,20 +2,26 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-  <link rel="manifest" href="images/site.webmanifest">
-  <title><%= title %></title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <title><%= student.fullname %></title>
   <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
   <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
-
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="shortcut icon" href="/images/favicon.png" />
+
+</head>
+
+<body>
+  <!-- Add this at the end of your body tag -->
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
 
   <style>
     .dataTables_filter label {
@@ -29,10 +35,9 @@
     }
 
   </style>
-</head>
 
-<body>
   <div class=" container-scroller">
+    <!-- partial:../partials/_navbar.php -->
     <nav class="navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="navbar-menu-wrapper d-flex align-items-center">
         <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
@@ -47,33 +52,25 @@
       <div class="row row-offcanvas row-offcanvas-right">
         <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
           <div class="user-info">
-            <img src="/images/face.jpg" alt="">
-            <p class="name"><%= admin.fullname %></p>
-            <p class="designation"><%= admin.role.toUpperCase() %></p>
+            <% if (student.image){ %>
+            <img src="<%= student.image.path %>" alt="Profile Image">
+            <% }else{ %>
+            <img src="/images/face.jpg" alt="Profile Image">
+            <% } %>
+            <p class="name"><%= student.fullname %></p>
+            <p class="designation"><%= student.role.toUpperCase() %></p>
           </div>
           <ul class="nav">
-            <li class="nav-item active">
-              <a class="nav-link" href="/admin/dashboard">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">
                 <img src="/images/icons/1.png" alt="">
                 <span class="menu-title">Main</span>
               </a>
             </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="/admin/students">
+            <li class="nav-item active">
+              <a class="nav-link" href="Student.html">
                 <img src="/images/icons/5.png" alt="">
-                <span class="menu-title">Students</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/coaches">
-                <img src="/images/icons/005-forms.png" alt="">
-                <span class="menu-title">Coaches</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/teams">
-                <img src="/images/icons/006-form.png" alt="">
-                <span class="menu-title">Teams</span>
+                <span class="menu-title">Student</span>
               </a>
             </li>
             <li class="nav-item ">
@@ -83,6 +80,7 @@
               </a>
               <div class="collapse" id="settings">
                 <ul class="nav flex-column sub-menu">
+
                   <li class="nav-item">
                     <a class="nav-link" href="#">
                       ChangePassword

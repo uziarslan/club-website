@@ -1,252 +1,170 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-  <link rel="manifest" href="/images/site.webmanifest">
-  <title>Signup</title>
-  <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="shortcut icon" href="/images/favicon.png" />
-</head>
-
-<body>
-  <div class="loading-overlay">
-    <div class="loading-spinner"></div>
-  </div>
-  <div class="container-scroller">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
-          <div class="card col-lg-7 mx-auto">
-            <div class="card-body px-5 py-5">
-              <h3 class="card-title text-left mb-3">Register as Student (<%= team.name %>)</h3>
-              <form action="/student/register/<%= team._id %>" method="POST" enctype="multipart/form-data">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="row">
-                      <div class="col-6">
-                        <div class="form-group">
-                          <label class="form-text text-muted">
-                            Select Coach
-                          </label>
-                          <select name="coach" class="form-control" id="coach" required>
-                            <% for (let coach of coaches){ %>
-                            <option value="<%= coach._id %>"><%= coach.fullname %></option>
-                            <% } %>
-                          </select>
-                        </div>
+<%- include('../adminpartials/loginhead', {title: "Student || Register"}) %>
+<div class="container-scroller">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+        <div class="card col-lg-7 mx-auto">
+          <div class="card-body px-5 py-5">
+            <%- include('../flash') %>
+            <h3 class="card-title text-left mb-3">Register as Student (<%= team.name %>)</h3>
+            <form action="/student/register/<%= team._id %>" method="POST" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          Select Coach
+                        </label>
+                        <select name="coach" class="form-control" id="coach" required>
+                          <% if (team.coaches.length){ %>
+                          <% for (let coach of team.coaches){ %>
+                          <option value="<%= coach._id %>"><%= coach.fullname %></option>
+                          <% } %>
+                          <% }else{ %>
+                          <option>No Coach Yet</option>
+                          <% } %>
+                        </select>
                       </div>
-                      <div class="col-6">
-                        <div class="form-group">
-                          <label class="form-text text-muted">
-                            Select Option
-                          </label>
-                          <select name="role" class="form-control" id="coach" required>
-                            <option value="football">Football</option>
-                            <option value="cheer">Cheer</option>
-                          </select>
-                        </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          Select Option
+                        </label>
+                        <select name="role" class="form-control" id="coach" required>
+                          <option value="football">Football</option>
+                          <option value="cheer">Cheer</option>
+                        </select>
                       </div>
                     </div>
                   </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        ASSOCIATION NAME
-                      </label>
-                      <input type="text" class="form-control p_input" name="association">
-                    </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      ASSOCIATION NAME
+                    </label>
+                    <input type="text" class="form-control p_input" name="association">
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        Email
-                      </label>
-                      <input type="text" class="form-control p_input" name="username">
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        Password
-                      </label>
-                      <input type="password" class="form-control p_input" name="password">
-                    </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Email
+                    </label>
+                    <input type="text" class="form-control p_input" name="username">
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        Division of play
-                      </label>
-                      <select name="dop" class="form-control" id="coach" required>
-                        <% for (let d of dop){ %>
-                        <option value="<%= d %>"><%= d %></option>
-                        <% } %>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        Participant’s Full Name
-                      </label>
-                      <input type="text" class="form-control p_input" name="fullname">
-                    </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Password
+                    </label>
+                    <input type="password" class="form-control p_input" name="password">
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label id="Jersey" class="form-text text-muted">
-                        Jersey #
-                      </label>
-                      <input type="number" class="form-control" id="Jersey" name="jersey" required>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label id="age" class="form-text text-muted">
-                        Age (as of 7/31)
-                      </label>
-                      <input type="number" class="form-control" id="age" name="age" required>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label id="dob" class="form-text text-muted">
-                        Date of Birth (MM/DD/YYYY)
-                      </label>
-                      <input type="date" class="form-control" id="dob" name="dob" required>
-                    </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Division of play
+                    </label>
+                    <select name="dop" class="form-control" id="coach" required>
+                      <% for (let d of dop){ %>
+                      <option value="<%= d %>"><%= d %></option>
+                      <% } %>
+                    </select>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        Parent/Guardian Name(s)
-                      </label>
-                      <input type="text" class="form-control p_input" name="parent">
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label class="form-text text-muted">
-                        Phone Number
-                      </label>
-                      <input type="tel" class="form-control p_input" name="phone">
-                    </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Participant’s Full Name
+                    </label>
+                    <input type="text" class="form-control p_input" name="fullname">
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="form-text text-muted">
-                    Complete address (including City, State, and Zip Code)
-                  </label>
-                  <input type="text" class="form-control p_input" name="address">
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label id="Jersey" class="form-text text-muted">
+                      Jersey #
+                    </label>
+                    <input type="number" class="form-control" id="Jersey" name="jersey" required>
+                  </div>
                 </div>
-                <div class="row mb-4">
-                  <div class="col-6 mx-auto">
-                    <div class="panel">
-                      <div class="button_outer">
-                        <div class="btn_upload">
-                          <input required accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image">
-                          Upload Image <i class="ms-1 fa fa-upload"></i>
-                        </div>
-                        <div class="processing_bar"></div>
-                        <div class="success_box"></div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label id="age" class="form-text text-muted">
+                      Age (as of 7/31)
+                    </label>
+                    <input type="number" class="form-control" id="age" name="age" required>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label id="dob" class="form-text text-muted">
+                      Date of Birth (MM/DD/YYYY)
+                    </label>
+                    <input type="date" class="form-control" id="dob" name="dob" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Parent/Guardian Name(s)
+                    </label>
+                    <input type="text" class="form-control p_input" name="parent">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Phone Number
+                    </label>
+                    <input type="tel" class="form-control p_input" name="phone">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-text text-muted">
+                  Complete address (including City, State, and Zip Code)
+                </label>
+                <input type="text" class="form-control p_input" name="address">
+              </div>
+              <div class="row mb-4">
+                <div class="col-6 mx-auto">
+                  <div class="panel">
+                    <div class="button_outer">
+                      <div class="btn_upload">
+                        <input required accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image">
+                        Upload Image <i class="ms-1 fa fa-upload"></i>
                       </div>
-                    </div>
-                    <div class="error_msg"></div>
-                    <div class="uploaded_file_view" id="uploaded_view">
-                      <span class="file_remove">X</span>
+                      <div class="processing_bar"></div>
+                      <div class="success_box"></div>
                     </div>
                   </div>
+                  <div class="error_msg"></div>
+                  <div class="uploaded_file_view" id="uploaded_view">
+                    <span class="file_remove">X</span>
+                  </div>
                 </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary btn-block enter-btn">Register</button>
-                </div>
-              </form>
-            </div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-block enter-btn">Register</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/misc.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.querySelector('form'); // Update with your form selector
-      const loadingOverlay = document.querySelector('.loading-overlay');
-
-      form.addEventListener('submit', function() {
-        loadingOverlay.style.display = 'flex';
-      });
-
-      // Add this function where you handle the form submission response
-      function handleFormResponse() {
-        loadingOverlay.style.display = 'none';
-        // Additional logic or redirection after form submission response
-      }
-    });
-
-  </script>
-  <script>
-    var btnUpload = $("#upload_file")
-      , btnOuter = $(".button_outer");
-    btnUpload.on("change", function(e) {
-      var ext = btnUpload.val()
-        .split('.')
-        .pop()
-        .toLowerCase();
-      if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
-        $(".error_msg")
-          .text("Not an Image...");
-      } else {
-        $(".error_msg")
-          .text("");
-        btnOuter.addClass("file_uploading");
-        setTimeout(function() {
-          btnOuter.addClass("file_uploaded");
-        }, 3000);
-        var uploadedFile = URL.createObjectURL(e.target.files[0]);
-        setTimeout(function() {
-          $("#uploaded_view")
-            .addClass("showdisplayblock");
-
-          $("#uploaded_view")
-            .append('<img src="' + uploadedFile + '" />')
-            .addClass("show");
-        }, 3500);
-      }
-    });
-    $(".file_remove")
-      .on("click", function(e) {
-        $("#uploaded_view")
-          .removeClass("showdisplayblock");
-        $("#uploaded_view")
-          .removeClass("show");
-        $("#uploaded_view")
-          .find("img")
-          .remove();
-        btnOuter.removeClass("file_uploading");
-        btnOuter.removeClass("file_uploaded");
-      });
-
-  </script>
-</body>
-
-</html>
+</div>
+<%- include('../studentpartials/footer') %>

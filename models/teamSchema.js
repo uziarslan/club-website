@@ -11,6 +11,12 @@ const teamSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Student'
         }
+    ],
+    coaches: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Coach'
+        }
     ]
 })
 

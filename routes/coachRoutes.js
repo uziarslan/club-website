@@ -1,20 +1,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Coach = mongoose.model('Coach');
-const Teams = mongoose.model('Team');
+const Team = mongoose.model('Team');
 const passport = require('passport')
 const wrapAsync = require('../utils/wrapAsync');
+const { isCoach } = require('../middlewares');
 const router = express();
 
 
 // Defining routes
 router.get('/coach/register', wrapAsync(async (req, res) => {
-    const teams = await Teams.find({});
+    const teams = await Team.find({});
     res.render('./coach/coachSignup', { teams });
 }));
 
 router.post('/coach/register', wrapAsync(async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, team } = req.body;
     const foundCoach = await Coach.find({ username });
 
     if (foundCoach.length) {
@@ -22,7 +23,12 @@ router.post('/coach/register', wrapAsync(async (req, res) => {
         return res.redirect("/coach/register")
     }
 
-    const coach = new Coach({ ...req.body });
+    const coach = new Coach({ ...req.body, team: team });
+
+    await Team.findByIdAndUpdate(team, {
+        $addToSet: { coaches: coach._id }
+    }, { new: true });
+
     await Coach.register(coach, password, (err, newCoach) => {
         if (err) {
             next(err)
@@ -58,10 +64,52 @@ router.post('/coach/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/coach/:id', wrapAsync(async (req, res) => {
+router.get('/coach/:id', isCoach, wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const coach = await Coach.findById(id);
-    res.render('./coach/coachDash', { coach });
+    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
+    const coach = await Coach.findById(id).populate('students').populate('team');
+
+    const footballers = coach.students.filter(student => student.role === 'football');
+    const cheerleaders = coach.students.filter(student => student.role === "cheer");
+    const approved_students = coach.students.filter(student => student.status === "approved");
+    const pending_students = coach.students.filter(student => student.status === "pending");
+    const disqualified_students = coach.students.filter(student => student.status === "disqualified");
+
+    res.render('./coach/coachDash', {
+        coach,
+        footballers,
+        cheerleaders,
+        dop,
+        approved_students,
+        pending_students,
+        disqualified_students,
+    });
+}));
+
+router.get('/coach/:id/:dopNum', isCoach, wrapAsync(async (req, res) => {
+    const { id, dopNum } = req.params;
+    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
+    const coach = await Coach.findById(id).populate('team').populate({
+        path: 'students',
+        match: { dop: dopNum }
+    });;
+
+    const footballers = coach.students.filter(student => student.role === 'football');
+    const cheerleaders = coach.students.filter(student => student.role === "cheer");
+    const approved_students = coach.students.filter(student => student.status === "approved");
+    const pending_students = coach.students.filter(student => student.status === "pending");
+    const disqualified_students = coach.students.filter(student => student.status === "disqualified");
+
+    res.render('./coach/devision', {
+        coach,
+        dop,
+        cheerleaders,
+        footballers,
+        dopNum,
+        approved_students,
+        pending_students,
+        disqualified_students,
+    });
 }));
 
 module.exports = router;

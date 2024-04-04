@@ -30,3 +30,17 @@ module.exports.isAdmin = (req, res, next) => {
     }
     res.redirect('/');
 }
+
+module.exports.isCoach = (req, res, next) => {
+    if (req.user instanceof Coach) {
+        return next();
+    }
+    res.redirect('/');
+}
+
+module.exports.isStudent = (req, res, next) => {
+    if (req.user instanceof Student) {
+        return next();
+    }
+    res.redirect('/');
+}

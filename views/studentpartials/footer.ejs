@@ -1,0 +1,88 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form'); // Update with your form selector
+    const loadingOverlay = document.querySelector('.loading-overlay');
+
+    form.addEventListener('submit', function() {
+      loadingOverlay.style.display = 'flex';
+    });
+
+    // Add this function where you handle the form submission response
+    function handleFormResponse() {
+      loadingOverlay.style.display = 'none';
+      // Additional logic or redirection after form submission response
+    }
+  });
+
+</script>
+<script src="/js/Javascript/jquery/dist/jquery.min.js"></script>
+<script src="/js/Javascript/jquery/dist/jquery.js"></script>
+<script src="/js/Javascript/popper.js/dist/umd/popper.min.js"></script>
+<script src="/js/Javascript/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/js/Javascript/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/hoverable-collapse.js"></script>
+<script src="/js/misc.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script>
+  $(document)
+    .ready(function() {
+      $('#transactionTable')
+        .DataTable({
+          "order": [
+            [0, "desc"]
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
+    });
+
+</script>
+<script>
+  var btnUpload = $("#upload_file")
+    , btnOuter = $(".button_outer");
+  btnUpload.on("change", function(e) {
+    var ext = btnUpload.val()
+      .split('.')
+      .pop()
+      .toLowerCase();
+    if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+      $(".error_msg")
+        .text("Not an Image...");
+    } else {
+      $(".error_msg")
+        .text("");
+      btnOuter.addClass("file_uploading");
+      setTimeout(function() {
+        btnOuter.addClass("file_uploaded");
+      }, 3000);
+      var uploadedFile = URL.createObjectURL(e.target.files[0]);
+      setTimeout(function() {
+        $("#uploaded_view")
+          .addClass("showdisplayblock");
+
+        $("#uploaded_view")
+          .append('<img src="' + uploadedFile + '" />')
+          .addClass("show");
+      }, 3500);
+    }
+  });
+  $(".file_remove")
+    .on("click", function(e) {
+      $("#uploaded_view")
+        .removeClass("showdisplayblock");
+      $("#uploaded_view")
+        .removeClass("show");
+      $("#uploaded_view")
+        .find("img")
+        .remove();
+      btnOuter.removeClass("file_uploading");
+      btnOuter.removeClass("file_uploaded");
+    });
+
+</script>
+
+</body>
+
+</html>

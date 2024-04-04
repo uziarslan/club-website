@@ -7,6 +7,7 @@ const passport = require('passport')
 const wrapAsync = require('../utils/wrapAsync');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
+const { isStudent } = require('../middlewares');
 const upload = multer({ storage });
 const { uploader } = require('cloudinary').v2
 const router = express();
@@ -17,20 +18,30 @@ router.get('/student/register/:teamId', wrapAsync(async (req, res) => {
     const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
 
     const { teamId } = req.params;
-    const coaches = await Coach.find({ status: 'approved' });
-    const team = await Team.findById(teamId);
-
-    res.render('./student/register', { coaches, team, dop });
+    const team = await Team.findById(teamId).populate('coaches');
+    res.render('./student/register', { team, dop });
 }));
 
 router.post('/student/register/:teamId', upload.single('image'), wrapAsync(async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, dop, jersey } = req.body;
     const { teamId } = req.params;
     const foundStudent = await Student.find({ username });
+    const foundJersey = await Student.find({
+        team: teamId,
+        dop,
+        jersey
+    });
+
+    if (foundJersey.length) {
+        req.flash('error', 'Looks like that jersey number is already on the team. Please choose a different one.');
+        await uploader.destroy(req.file.filename);
+        return res.redirect(`/student/register/${teamId}`);
+    }
 
     if (foundStudent.length) {
-        req.flash('error', "The student is already registered.")
-        return res.redirect(`/student/register/${teamId}`)
+        req.flash('error', "It looks like a student with this email is already registered.");
+        await uploader.destroy(req.file.filename)
+        return res.redirect(`/student/register/${teamId}`);
     }
 
     const { filename, path } = req.file;
@@ -41,10 +52,15 @@ router.post('/student/register/:teamId', upload.single('image'), wrapAsync(async
         coach: req.body.coach,
     });
 
+
     student.image.filename = filename;
     student.image.path = path;
 
     await Team.findByIdAndUpdate(teamId, {
+        $addToSet: { students: student._id }
+    }, { new: true });
+
+    await Coach.findByIdAndUpdate(req.body.coach, {
         $addToSet: { students: student._id }
     }, { new: true });
 
@@ -83,12 +99,11 @@ router.post('/student/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/student/:id/:teamId', wrapAsync(async (req, res) => {
+router.get('/student/:id/:teamId', isStudent, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const { teamId } = req.params;
     const team = await Team.findById(teamId).populate('students');
     const student = await Student.findById(id).populate('coach');
-    // res.send(student)
     res.render("./student/student", { student, team })
 }))
 

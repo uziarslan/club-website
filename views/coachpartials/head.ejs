@@ -2,33 +2,18 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
   <link rel="manifest" href="images/site.webmanifest">
-  <title><%= title %></title>
+  <title><%= coach.fullname %></title>
   <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
   <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
-
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="shortcut icon" href="/images/favicon.png" />
-
-  <style>
-    .dataTables_filter label {
-      float: right;
-    }
-
-    .dataTables_filter label input {
-      padding: 0px 10px;
-      min-height: 25px;
-      margin-left: 5px;
-    }
-
-  </style>
 </head>
 
 <body>
@@ -47,35 +32,25 @@
       <div class="row row-offcanvas row-offcanvas-right">
         <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
           <div class="user-info">
-            <img src="/images/face.jpg" alt="">
-            <p class="name"><%= admin.fullname %></p>
-            <p class="designation"><%= admin.role.toUpperCase() %></p>
+            <img src="<%= coach.team.image.path %>" alt="">
+            <p class="name"><%= coach.fullname %></p>
+            <p class="designation">COACH</p>
           </div>
           <ul class="nav">
             <li class="nav-item active">
-              <a class="nav-link" href="/admin/dashboard">
+              <a class="nav-link" href="/coach/<%= coach._id %>">
                 <img src="/images/icons/1.png" alt="">
                 <span class="menu-title">Main</span>
               </a>
             </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="/admin/students">
-                <img src="/images/icons/5.png" alt="">
-                <span class="menu-title">Students</span>
-              </a>
-            </li>
+            <% for (let d of dop){ %>
             <li class="nav-item">
-              <a class="nav-link" href="/admin/coaches">
-                <img src="/images/icons/005-forms.png" alt="">
-                <span class="menu-title">Coaches</span>
+              <a class="nav-link" href="/coach/<%= coach._id %>/<%= d %>">
+                <img src="/images/icons/1.png" alt="">
+                <span class="menu-title"><%= d %></span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/teams">
-                <img src="/images/icons/006-form.png" alt="">
-                <span class="menu-title">Teams</span>
-              </a>
-            </li>
+            <% } %>
             <li class="nav-item ">
               <a class="nav-link" data-toggle="collapse" href="#settings" aria-expanded="false" aria-controls="sample-pages">
                 <img src="/images/icons/10.png" alt="">

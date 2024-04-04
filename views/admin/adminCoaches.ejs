@@ -1,7 +1,19 @@
 <%- include('../adminpartials/head', {title: "Admin || Coaches"}) %>
-<!-- partial -->
 <div class="content-wrapper">
   <div class="row">
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
+          </div>
+          <h4 class="card-title font-weight-normal text-success">
+            <%= all_coaches%>
+          </h4>
+          <h6 class="card-subtitle mb-4">Coaches</h6>
+        </div>
+      </div>
+    </div>
     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
       <div class="card">
         <div class="card-body">
@@ -55,6 +67,8 @@
               <thead>
                 <tr class="text-primary">
                   <th>Name</th>
+                  <th>Team</th>
+                  <th>Email</th>
                   <th>Phone</th>
                   <th>Option</th>
                 </tr>
@@ -63,6 +77,8 @@
                 <% for (let coach of pending_coaches){ %>
                 <tr class="">
                   <td><%= coach.fullname %></td>
+                  <td><%= coach.team.name %></td>
+                  <td><%= coach.username %></td>
                   <td><%= coach.phone %></td>
                   <td>
                     <a href="/admin/coach/approve/<%= coach._id %>" class="btn btn-outline-success btn-sm">Approve</a>
@@ -87,6 +103,8 @@
               <thead>
                 <tr class="text-primary">
                   <th>Name</th>
+                  <th>Team</th>
+                  <th>Email</th>
                   <th>Phone</th>
                   <th>Option</th>
                 </tr>
@@ -95,6 +113,8 @@
                 <% for (let coach of approved_coaches){ %>
                 <tr class="">
                   <td><%= coach.fullname %></td>
+                  <td><%= coach.team.name %></td>
+                  <td><%= coach.username %></td>
                   <td><%= coach.phone %></td>
                   <td>
                     <a href="/admin/coach/pending/<%= coach._id %>" class="btn btn-outline-warning btn-sm">Pending</a>
@@ -119,6 +139,8 @@
               <thead>
                 <tr class="text-primary">
                   <th>Name</th>
+                  <th>Team</th>
+                  <th>Email</th>
                   <th>Phone</th>
                   <th>Option</th>
                 </tr>
@@ -127,6 +149,8 @@
                 <% for (let coach of disqualified_coaches){ %>
                 <tr class="">
                   <td><%= coach.fullname %></td>
+                  <td><%= coach.team.name %></td>
+                  <td><%= coach.username %></td>
                   <td><%= coach.phone %></td>
                   <td>
                     <a href="/admin/coach/approve/<%= coach._id %>" class="btn btn-outline-success btn-sm">Approve</a>

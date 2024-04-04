@@ -9,8 +9,18 @@ const coachSchema = new mongoose.Schema({
         type: String,
         enum: ["approved", "pending", "deleted"],
         default: "pending"
+    },
+    students: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Student'
+        }
+    ],
+    team: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Team'
     }
-})
+});
 
 coachSchema.plugin(passportLocalMongoose)
 
