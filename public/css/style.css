@@ -14228,8 +14228,13 @@ input {
     min-height: 25px;
     margin-left: 5px;
 }
-.width_24{
-  width: 24%;
+
+a:focus, input:focus {
+  border-color: black !important;
+  outline: none;
 }
-
-
+.borderblack{
+  border-radius: 20px !important;
+    border: 2px solid black !important;
+    padding: 10px !important;
+}

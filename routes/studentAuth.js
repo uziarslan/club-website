@@ -209,20 +209,9 @@ router.put('/student/register/:teamId/:studentId', upload.single('image'), wrapA
     res.redirect(`/invoice/${studentId}`);
 }));
 
-router.get('/payment', wrapAsync(async (req, res) => {
-    res.render('./student/payment');
-}));
 
-// Endpoint to create a payment intent
-router.post('/create-payment-intent', wrapAsync(async (req, res) => {
-    console.log("Creating Payment Intent");
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: 1000,
-        currency: 'usd',
-    });
-    console.log("Payment Intent Created:", paymentIntent.id);
-    res.redirect("/student");
-}));
+
+
 
 
 

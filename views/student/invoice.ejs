@@ -74,7 +74,10 @@
             </tbody>
           </table>
           <div style="gap: 10px;" class="d-flex justify-content-center">
-            <a href="#" class="btn btn-success">Continue and Pay ($10)</a>
+            <form action="/create-checkout-session" method="POST">
+
+              <button  type="submit"  class="btn btn-success">Continue and Pay ($10)</button>
+            </form>
             <a href="/s/<%= student._id %>/edit" class="btn btn-warning">Edit Info</a>
           </div>
         </div>

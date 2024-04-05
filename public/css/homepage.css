@@ -7514,7 +7514,6 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 .lg-css3.lg-fade .lg-item.lg-current {
   opacity: 1
 }
-
 .lg-css3.lg-fade .lg-item.lg-current,
 .lg-css3.lg-fade .lg-item.lg-next-slide,
 .lg-css3.lg-fade .lg-item.lg-prev-slide {
@@ -7580,3 +7579,4 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
   -o-transition: left 1s cubic-bezier(0, 0, .25, 1) 0s, opacity .1s ease 0s;
   transition: left 1s cubic-bezier(0, 0, .25, 1) 0s, opacity .1s ease 0s
 }
+

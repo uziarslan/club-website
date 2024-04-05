@@ -1,4 +1,27 @@
 <%- include('../adminpartials/loginhead', {title: "Student || Register"}) %>
+<script>
+  function captureImage() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('capturedCanvas');
+    const context = canvas.getContext('2d');
+    
+    // Access the user's camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+        video.srcObject = stream;
+      })
+      .catch(function(error) {
+        console.error('Error accessing the camera: ', error);
+      });
+
+    // Capture the image from the video stream
+    document.getElementById('captureButton').addEventListener('click', function() {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Stop the video stream
+      video.srcObject.getTracks().forEach(track => track.stop());
+    });
+  }
+</script>
 <div class="container-scroller">
   <div class="container-fluid">
     <div class="row">
@@ -156,6 +179,8 @@
                     <span class="file_remove">X</span>
                   </div>
                 </div>
+              
+           
               </div>
               <div class="text-center">
                 <button type="submit" class="btn btn-primary btn-block enter-btn">Register</button>

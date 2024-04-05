@@ -40,5 +40,25 @@
     <% } %>
   </div>
 </div>
+<div id="content" class="site-content">
+  <div class="inside">
+    <h1 class="widget-title">Coaches</h1>
+    <% for (let coach of coaches){ %>
+      <div class="victory-home-widget width_24">
+        <aside id="victory_players-2" class="widget victory-home-widget victory_players_widget equal">
+       
+          <div class="victory-player-module-image">
+            <img src="/images/person.jpg" sizes="(max-width: 184px) 100vw, 184px">
+            <h4><a href="#"><%= coach.fullname %></a></h4>
+            
+        
+          </div>
+      
+        </aside>
+      </div>
 
+   
+    <% } %>
+  </div>
+</div>
 <%- include('../homepagepartials/footer') %>

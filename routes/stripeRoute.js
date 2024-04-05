@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const wrapAsync = require('../utils/wrapAsync');
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+
+router.get('/payment', wrapAsync(async (req, res) => {
+  res.render('./student/payment');
+}));
 
 router.post('/create-checkout-session' , async (req, res) => {
     
@@ -28,6 +34,7 @@ router.post('/create-checkout-session' , async (req, res) => {
 
 router.get('/success', (req, res) => {
     res.send('success');
+
     })
 
 router.get('/cancel', (req, res) => {
