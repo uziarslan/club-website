@@ -79,7 +79,7 @@ router.post('/student/register/:teamId', upload.single('image'), wrapAsync(async
             next(err)
         }
         req.logIn(newStudent, () => {
-            res.redirect(`/student/${newStudent._id}/${teamId}`);
+            res.redirect(`/invoice/${newStudent._id}`);
         });
     });
 }));
