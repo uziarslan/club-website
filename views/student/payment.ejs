@@ -5,55 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stripe Payment</title>
-  <script src="https://js.stripe.com/v3/"></script>
+
 </head>
 
 <body>
-  <form id="payment-form">
+  <form action="/create-checkout-session" method="post">
     <div id="card-element">
-      <!-- Stripe's Card Element will go here -->
+    
     </div>
-    <button id="submit">Pay</button>
+    <button type="submit">Pay</button>
   </form>
 
-  <script>
-    var stripe = Stripe('pk_test_51Ozk7kAsfvnrI1gveSPsy4WMtxnoe60X5w8U6cf7rpbEfzl8ecREwSSx9xhwqcvauwVVhm0IkTbJmEbStF6j35gO00VDxH78fW');
-    var elements = stripe.elements();
-    var card = elements.create('card');
-    card.mount('#card-element');
 
-    document.getElementById('payment-form')
-      .addEventListener('submit', function(e) {
-        e.preventDefault();
-        fetch('/create-payment-intent', {
-            method: 'POST'
-            , headers: {
-              'Content-Type': 'application/json'
-            , }
-          , })
-          .then(res => res.json())
-          .then(data => {
-            return stripe.confirmCardPayment(data.clientSecret, {
-              payment_method: {
-                card: card
-                , billing_details: {
-                  name: 'Jenny Rosen'
-                }
-              , }
-            });
-          })
-          .then(result => {
-            if (result.error) {
-              console.log(result.error.message);
-            } else {
-              if (result.paymentIntent.status === 'succeeded') {
-                console.log('Payment succeeded!');
-              }
-            }
-          });
-      });
-
-  </script>
 </body>
 
 </html>

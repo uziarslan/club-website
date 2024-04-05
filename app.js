@@ -24,6 +24,7 @@ const studentRoutes = require('./routes/studentAuth')
 const coachRoutes = require('./routes/coachRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const homepageRoutes = require('./routes/homepageRoutes')
+const stripeRoute = require('./routes/stripeRoute')
 const ExpressError = require('./utils/ExpressError');
 const wrapAsync = require('./utils/wrapAsync')
 
@@ -104,7 +105,7 @@ app.use(studentRoutes)
 app.use(coachRoutes)
 app.use(adminRoutes)
 app.use(homepageRoutes)
-
+app.use(stripeRoute)
 // Logout route for every user
 app.get('/logout', wrapAsync(async (req, res) => {
     req.logout(() => {
