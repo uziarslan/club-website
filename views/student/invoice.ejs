@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="manifest" href="images/site.webmanifest">
+  <title></title>
+  <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+  <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
+
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="shortcut icon" href="/images/favicon.png" />
+
+  <style>
+    .dataTables_filter label {
+      float: right;
+    }
+
+    .dataTables_filter label input {
+      padding: 0px 10px;
+      min-height: 25px;
+      margin-left: 5px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h3 class="page-heading mb-4">Invoice</h3>
+  <%- include('../flash') %>
+  <div class="card-deck">
+    <div class="card col-lg-12 px-0 mb-4">
+      <div class="card-body">
+        <h5 class="card-title">User Info</h5>
+        <div class="table-responsive">
+          <table class="table center-aligned-table" id="transactionTable">
+            <thead>
+              <tr class="text-primary">
+                <th>Name</th>
+                <th>Team</th>
+                <th>Role</th>
+                <th>Associaction</th>
+                <th>Email</th>
+                <th>Division</th>
+                <th>Jersey</th>
+                <th>Date of Birth</th>
+                <th>Parent</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Profile</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="">
+                <td><%= student.fullname %></td>
+                <td><%= student.team.name %></td>
+                <td><%= student.role %></td>
+                <td><%= student.association %></td>
+                <td><%= student.username %></td>
+                <td><%= student.dop %></td>
+                <td><%= student.jersey %></td>
+                <td><%= student.dob %></td>
+                <td><%= student.parent %></td>
+                <td><%= student.phone %></td>
+                <td><%= student.address %></td>
+                <td><img style="width: 100px;" src="<%= student.image.path %>" alt="Student Profile"></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="gap: 10px;" class="d-flex justify-content-center">
+            <a href="#" class="btn btn-success">Continue and Pay ($10)</a>
+            <a href="/s/<%= student._id %>/edit" class="btn btn-warning">Edit Info</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/Javascript/jquery/dist/jquery.min.js"></script>
+  <script src="/js/Javascript/popper.js/dist/umd/popper.min.js"></script>
+  <script src="/js/Javascript/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/js/Javascript/chart.js/dist/Chart.min.js"></script>
+  <script src="/js/Javascript/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/hoverable-collapse.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/chart.js"></script>
+  <script src="/js/maps.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</body>
+
+</html>

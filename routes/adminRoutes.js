@@ -196,6 +196,45 @@ router.get('/admin/team/:teamId/edit', isAdmin, wrapAsync(async (req, res) => {
     res.render('./admin/adminEditTeam', { admin: user, team });
 }));
 
+router.patch('/admin/team/:teamId', isAdmin, upload.single('image'), wrapAsync(async (req, res) => {
+    const { teamId } = req.params;
+    const { name } = req.body;
+    const foundTeam = await Team.find({ name: name });
+
+    if (foundTeam.length) {
+        req.flash('error', "There's already a team with the same name!");
+        return res.redirect(`/admin/team/${teamId}/edit`)
+    }
+
+    if (req.file) {
+        const { filename, path } = req.file;
+        const team = await Team.findByIdAndUpdate(teamId, {
+            name: name
+        });
+        await uploader.destroy(team.image.filename);
+        team.image.filename = filename;
+        team.image.path = path;
+        req.flash('success', 'Team changes has been applied!');
+        return res.redirect('/admin/teams');
+    }
+
+    await Team.findByIdAndUpdate(teamId, {
+        name: name
+    });
+
+    req.flash('success', 'Title of the team has been updated!');
+    res.redirect('/admin/teams');
+}));
+
+router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
+    const { teamId } = req.params;
+    const team = await Team.findByIdAndDelete(teamId);
+    await uploader.destroy(team.image.filename);
+    req.flash('success', `Team has been removed from the database!`);
+    res.redirect(`/admin/teams`);
+}))
+
+
 // Generating a PDF
 router.post('/generate/document', async (req, res) => {
     const { team, division, coach } = req.body;

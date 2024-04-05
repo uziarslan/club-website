@@ -11,7 +11,7 @@
           <div class="card col-lg-7 mx-auto">
             <div class="card-body px-5 py-5">
               <h3 class="card-title text-left mb-3">Edit <%= team.name %></h3>
-              <form action="/admin/teams" method="POST" enctype="multipart/form-data">
+              <form action="/admin/team/<%= team._id %>?_method=PATCH" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                   <label class="form-text text-muted">
                     Team name
@@ -24,7 +24,7 @@
                       <div class="button_outer">
                         <div class="btn_upload">
                           <input accept=".jpg, .jpeg, .png" type="file" id="upload_file" name="image">
-                          Team Logo <i class="ms-1 fa fa-upload"></i>
+                          Change Logo <i class="ms-1 fa fa-upload"></i>
                         </div>
                         <div class="processing_bar"></div>
                         <div class="success_box"></div>
@@ -40,6 +40,16 @@
                   <button type="submit" class="btn btn-primary btn-block enter-btn">Edit</button>
                 </div>
               </form>
+            </div>
+          </div>
+          <div class="row p-5 mt-4 d-flex justify-content-center">
+            <div class="col-lg-3 col-md-4 col-sm-12">
+              <div class="card">
+                <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title text-center mb-4">Current Logo</h5>
+                </div>
+              </div>
             </div>
           </div>
         </div>

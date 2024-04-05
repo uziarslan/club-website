@@ -1,8 +1,5 @@
 <%- include('../homepagepartials/head') %>
-<title>Homepage</title>
-<%- include('../homepagepartials/body')%>
-<%- include('../homepagepartials/navbar', {title: "Teams"})%>
-
+<%- include('../homepagepartials/homepagenavbar', {title: "Home"})%>
 <div class="victory-hero-header" style="background-image: url(https://demo.wpclubmanager.com/victory/wp-content/uploads/sites/2/2013/03/frontpage-3.jpg);text-align:left">
   <div class="inside">
     <h1 class="victory-hero-title">Welcome to Cricket Theme FC</h1>
@@ -16,7 +13,6 @@
     </div>
   </div>
 </div>
-
 <div id="content" class="site-content">
   <div class="inside">
     <div class="victory-home-widgets">
@@ -29,7 +25,7 @@
               <div class="victory-table-wrap">
                 <img src="<%= team.image.path %>" style="height: 100px; width: auto;" />
               </div>
-              <a href="/student/register/<%= team._id %>" class="wpcm-view-link">
+              <a href="<%= team._id %>/player/show" class="wpcm-view-link">
                 Learn More </a>
             </div>
           </div>
@@ -40,4 +36,4 @@
   </div>
 </div>
 
-  <%- include('../homepagepartials/footer') %>
+<%- include('../homepagepartials/footer') %>

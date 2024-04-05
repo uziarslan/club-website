@@ -1,0 +1,74 @@
+<div id="page" class="hfeed site">
+  <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+  <div class="top-menu">
+    <div class="inside">
+      <div class="top-menu-wrap">
+        <div class="date-time-display">
+          Monday, April 1 </div>
+        <div class="weather-display">
+          <i class="weather-icon climacons climacon-clouds"></i>
+          <div class="weather-place">London, UK</div>
+          <div class="weather-temperature">8.9<span class="weather-unit">&deg;C</span></div>
+        </div>
+        <div id="top-nav" class="menu-top-container">
+          <ul id="menu-top" class="menu">
+            <li id="menu-item-1580" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1580"><a href="#">News</a></li>
+            <li id="menu-item-1585" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1585"><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <a href="#" class="dropdown-toggle"><i class="fa fa-search"></i></a>
+        <div class="header-search">
+          <form method="get" class="search-form" action="#">
+            <div role="search">
+              <input class="input-search" type="text" value="" name="s" autocomplete="off" placeholder="Enter search term" />
+            </div>
+          </form>
+        </div>
+        <span id="login" class="victory-login">
+          <a class="simplemodal-login" href="/student/login">Login</a> </span>
+      </div>
+    </div>
+  </div>
+  <header id="masthead" class="site-header" role="banner">
+    <div class="inside">
+      <div class="site-branding  has-logo">
+        <a href="/">
+          <img class="site-logo" src="<%= team.image.path %>" alt="Welcome to Victory Theme FC" />
+        </a>
+        <div class="site-title">
+          <h1 class="site-name" itemprop="headline">
+            <a href="/" title="Victory Theme" rel="home"><%= team.name %></a>
+          </h1>
+          <h2 class="site-description">Just another WordPress site</h2>
+        </div>
+      </div>
+      <div class="site-banner">
+      </div>
+    </div>
+  </header>
+  <nav id="main-navigation" class="main-navigation" role="navigation">
+    <div class="inside">
+      <div class="menu-toggle">
+        <span><i class="fa fa-reorder"></i>Menu</span>
+        <span class="menu-close"><i class="fa fa-times"></i>Close Menu</span>
+      </div>
+      <div class="site-navigation">
+        <div id="menu" class="menu-main-container">
+          <ul id="menu-main" class="menu">
+            <li id="menu-item-1579" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1579 <%= title == 'Players' ? 'current-menu-item' : '' %>"><a href="#">Players</a></li>
+            <li id="menu-item-1277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1277 <%= title == 'Coaches' ? 'current-menu-item' : '' %>"><a href="/coaches/show">Coaches</a></li>
+            <li id="menu-item-1482" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1482 <%= title == 'Store' ? 'current-menu-item' : '' %>"><a href="#">Store</a></li>
+            <li id="menu-item-1275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1275 <%= title == 'Contact' ? 'current-menu-item' : '' %>"><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id="social-nav" class="menu-social-container">
+        <ul id="menu-social" class="menu">
+          <li id="menu-item-1576" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1576"><a href="#">Twitter</a></li>
+          <li id="menu-item-1577" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1577"><a href="#">Facebook</a></li>
+          <li id="menu-item-1597" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1597"><a href="#">YouTube</a></li>
+          <li id="menu-item-1578" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1578"><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>

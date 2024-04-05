@@ -53,9 +53,9 @@
                     <div style="width: 50%; text-align: center;">
                       <a href="/admin/team/<%= team._id %>/edit" class="btn btn-primary" style="width: 90%;"><i class="fa fa-edit" style="font-size: 20px;"></i></a>
                     </div>
-                    <div style="width: 50%; text-align: center;">
-                      <a href="#" class="btn btn-danger" style="width: 90%;"><i class="fa fa-trash" style="font-size: 20px;"></i></a>
-                    </div>
+                    <form action="/admin/team/<%= team._id %>/delete?_method=DELETE" method="post" style="width: 50%; text-align: center;">
+                      <button type="submit" class="btn btn-danger" style="width: 90%;"><i class="fa fa-trash" style="font-size: 20px;"></i></button>
+                    </form>
                   </div>
                 </div>
               </div>
