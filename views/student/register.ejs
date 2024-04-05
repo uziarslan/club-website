@@ -1,195 +1,245 @@
-<%- include('../adminpartials/loginhead', {title: "Student || Register"}) %>
-<script>
-  function captureImage() {
-    const video = document.getElementById('cameraVideo');
-    const canvas = document.getElementById('capturedCanvas');
-    const context = canvas.getContext('2d');
-    
-    // Access the user's camera
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-        video.srcObject = stream;
-      })
-      .catch(function(error) {
-        console.error('Error accessing the camera: ', error);
-      });
+<%- include('../adminpartials/loginhead', {title: "Student || Register" }) %>
+  <style>
+    .dnone {
+      display: none;
+    }
 
-    // Capture the image from the video stream
-    document.getElementById('captureButton').addEventListener('click', function() {
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      // Stop the video stream
-      video.srcObject.getTracks().forEach(track => track.stop());
-    });
-  }
-</script>
-<div class="container-scroller">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
-        <div class="card col-lg-7 mx-auto">
-          <div class="card-body px-5 py-5">
-            <%- include('../flash') %>
-            <h3 class="card-title text-left mb-3">Register as Student (<%= team.name %>)</h3>
-            <form action="/student/register/<%= team._id %>" method="POST" enctype="multipart/form-data">
-              <div class="row">
-                <div class="col-6">
+    .fset {
+      padding: 0px !important;
+      font-size: 16px !important;
+      font-weight: 500;
+    }
+  </style>
+  <div class="container-scroller">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+          <div class="card col-lg-7 mx-auto">
+            <div class="card-body px-5 py-5">
+              <%- include('../flash') %>
+                <h3 class="card-title text-left mb-3">Register as Student (<%= team.name %>)</h3>
+                <form action="/student/register/<%= team._id %>" method="POST" enctype="multipart/form-data">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label class="form-text text-muted">
+                              Select Coach
+                            </label>
+                            <select name="coach" class="form-control" id="coach" required>
+                              <% if (team.coaches.length){ %>
+                                <% for (let coach of team.coaches){ %>
+                                  <option value="<%= coach._id %>">
+                                    <%= coach.fullname %>
+                                  </option>
+                                  <% } %>
+                                    <% }else{ %>
+                                      <option value="none">No Coach Yet</option>
+                                      <% } %>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label class="form-text text-muted">
+                              Select Option
+                            </label>
+                            <select name="role" class="form-control" id="coach" required>
+                              <option value="football">Football</option>
+                              <option value="cheer">Cheer</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          ASSOCIATION NAME
+                        </label>
+                        <input type="text" class="form-control p_input" name="association">
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-text text-muted">
-                          Select Coach
+                          Email
                         </label>
-                        <select name="coach" class="form-control" id="coach" required>
-                          <% if (team.coaches.length){ %>
-                          <% for (let coach of team.coaches){ %>
-                          <option value="<%= coach._id %>"><%= coach.fullname %></option>
-                          <% } %>
-                          <% }else{ %>
-                          <option value="none">No Coach Yet</option>
-                          <% } %>
+                        <input type="text" class="form-control p_input" name="username">
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          Password
+                        </label>
+                        <input type="password" class="form-control p_input" name="password">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          Division of play
+                        </label>
+                        <select name="dop" class="form-control" id="coach" required>
+                          <% for (let d of dop){ %>
+                            <option value="<%= d %>">
+                              <%= d %>
+                            </option>
+                            <% } %>
                         </select>
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-text text-muted">
-                          Select Option
+                          Participant’s Full Name
                         </label>
-                        <select name="role" class="form-control" id="coach" required>
-                          <option value="football">Football</option>
-                          <option value="cheer">Cheer</option>
-                        </select>
+                        <input type="text" class="form-control p_input" name="fullname">
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      ASSOCIATION NAME
-                    </label>
-                    <input type="text" class="form-control p_input" name="association">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Email
-                    </label>
-                    <input type="text" class="form-control p_input" name="username">
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Password
-                    </label>
-                    <input type="password" class="form-control p_input" name="password">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Division of play
-                    </label>
-                    <select name="dop" class="form-control" id="coach" required>
-                      <% for (let d of dop){ %>
-                      <option value="<%= d %>"><%= d %></option>
-                      <% } %>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Participant’s Full Name
-                    </label>
-                    <input type="text" class="form-control p_input" name="fullname">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="Jersey" class="form-text text-muted">
-                      Jersey #
-                    </label>
-                    <input type="number" class="form-control" id="Jersey" name="jersey" required>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="age" class="form-text text-muted">
-                      Age (as of 7/31)
-                    </label>
-                    <input type="number" class="form-control" id="age" name="age" required>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="dob" class="form-text text-muted">
-                      Date of Birth (MM/DD/YYYY)
-                    </label>
-                    <input type="date" class="form-control" id="dob" name="dob" required>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Parent/Guardian Name(s)
-                    </label>
-                    <input type="text" class="form-control p_input" name="parent">
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Phone Number
-                    </label>
-                    <input type="tel" class="form-control p_input" name="phone">
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-text text-muted">
-                  Complete address (including City, State, and Zip Code)
-                </label>
-                <input type="text" class="form-control p_input" name="address">
-              </div>
-              <div class="row mb-4">
-                <div class="col-6 mx-auto">
-                  <div class="panel">
-                    <div class="button_outer">
-                      <div class="btn_upload">
-                        <input required accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image">
-                        Upload Image <i class="ms-1 fa fa-upload"></i>
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label id="Jersey" class="form-text text-muted">
+                          Jersey #
+                        </label>
+                        <input type="number" class="form-control" id="Jersey" name="jersey" required>
                       </div>
-                      <div class="processing_bar"></div>
-                      <div class="success_box"></div>
+                    </div>
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label id="age" class="form-text text-muted">
+                          Age (as of 7/31)
+                        </label>
+                        <input type="number" class="form-control" id="age" name="age" required>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label id="dob" class="form-text text-muted">
+                          Date of Birth (MM/DD/YYYY)
+                        </label>
+                        <input type="date" class="form-control" id="dob" name="dob" required>
+                      </div>
                     </div>
                   </div>
-                  <div class="error_msg"></div>
-                  <div class="uploaded_file_view" id="uploaded_view">
-                    <span class="file_remove">X</span>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          Parent/Guardian Name(s)
+                        </label>
+                        <input type="text" class="form-control p_input" name="parent">
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label class="form-text text-muted">
+                          Phone Number
+                        </label>
+                        <input type="tel" class="form-control p_input" name="phone">
+                      </div>
+                    </div>
                   </div>
-                </div>
-              
-           
-              </div>
-              <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-block enter-btn">Register</button>
-              </div>
-            </form>
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Complete address (including City, State, and Zip Code)
+                    </label>
+                    <input type="text" class="form-control p_input" name="address">
+                  </div>
+                  <div class="row mb-4">
+                    <div class="col-6 mx-auto">
+                      <div class="panel">
+                        <!-- Upload Image Button -->
+                        <div class="button_outer">
+                          <div class="btn_upload">
+                            <input required accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image">
+                            Upload Image <i class="ms-1 fa fa-upload"></i>
+                          </div>
+                          <div class="processing_bar"></div>
+                          <div class="success_box"></div>
+                        </div>
+                      </div>
+                      <div class="error_msg"></div>
+                      <div class="uploaded_file_view" id="uploaded_view">
+                        <span class="file_remove">X</span>
+                      </div>
+                    </div>
+                    <div class="col-6 ">
+                      <div class="d-flex flex-column">
+                        <input type="hidden" value="" name="image" id="capturedImage">
+                        <button type="button" id="start-camera" class=" button_outer btn_upload fset"> Capture Image <i
+                            class="ms-1 fa fa-upload"></i></button>
+                        <video id="video" class="dnone mb-3 w-100" height="240" autoplay></video>
+                        <button type="button" id="click-photo" class="btn btn-primary dnone text-center">Click
+                          Photo</button>
+                        <canvas id="canvas" class="dnone" width="320" height="240"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-block enter-btn">Register</button>
+                  </div>
+                </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<%- include('../studentpartials/footer') %>
+  <script>
+    let camera_button = document.querySelector("#start-camera");
+    let video = document.querySelector("#video");
+    let click_button = document.querySelector("#click-photo");
+    let canvas = document.querySelector("#canvas");
+    let stream; // To store the stream reference
+
+    camera_button.addEventListener('click', async function () {
+      click_button.style.display = "block";
+      video.style.display = "block";
+      camera_button.style.display = "none";
+
+      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      video.srcObject = stream;
+    });
+
+    click_button.addEventListener('click', function () {
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(function (blob) {
+        // Create a File object from the Blob
+        let file = new File([blob], 'test.jpg', { type: 'image/jpeg' });
+
+        // Set the File object as the value of the hidden input field
+        document.querySelector("#capturedImage").value = file;
+      }, 'image/jpeg');
+
+      camera_button.style.display = "none";
+      video.style.display = "none";
+      click_button.style.display = "none";
+
+      canvas.style.display = "block";
+
+      // Stop the camera
+      stopCamera();
+    });
+
+    function stopCamera() {
+      // Check if stream is defined and stop it
+      if (stream) {
+        let tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    }
+  </script>
+
+
+
+  <%- include('../studentpartials/footer') %>
