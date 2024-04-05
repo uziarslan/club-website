@@ -52,25 +52,28 @@
             <p class="designation"><%= admin.role.toUpperCase() %></p>
           </div>
           <ul class="nav">
-            <li class="nav-item active">
+            <li class="nav-item <%= title == 'Admin || Dashboard' ? 'active' : '' %>">
               <a class="nav-link" href="/admin/dashboard">
                 <img src="/images/icons/1.png" alt="">
                 <span class="menu-title">Main</span>
               </a>
             </li>
-            <li class="nav-item ">
+            <li class="nav-item <%= title == 'Admin || Students' ? 'active' : '' %>">
+
               <a class="nav-link" href="/admin/students">
                 <img src="/images/icons/5.png" alt="">
                 <span class="menu-title">Students</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item <%= title == 'Admin || Coaches' ? 'active' : '' %>">
+
               <a class="nav-link" href="/admin/coaches">
                 <img src="/images/icons/005-forms.png" alt="">
                 <span class="menu-title">Coaches</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item <%= title == 'Admin || Teams' ? 'active' : '' %>">
+
               <a class="nav-link" href="/admin/teams">
                 <img src="/images/icons/006-form.png" alt="">
                 <span class="menu-title">Teams</span>

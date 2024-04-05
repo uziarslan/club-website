@@ -5,105 +5,279 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-  <link rel="manifest" href="images/site.webmanifest">
-  <title></title>
-  <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
-  <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
-
   <link rel="stylesheet" href="/css/style.css" />
-  <link rel="shortcut icon" href="/images/favicon.png" />
+
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
   <style>
-    .dataTables_filter label {
-      float: right;
-    }
+body{
+    margin-top:20px;
+    color: #484b51;
+}
+.text-secondary-d1 {
+    color: #728299!important;
+}
+.page-header {
+    margin: 0 0 1rem;
+    padding-bottom: 1rem;
+    padding-top: .5rem;
+    border-bottom: 1px dotted #e2e2e2;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.page-title {
+    padding: 0;
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 300;
+}
+.brc-default-l1 {
+    border-color: #dce9f0!important;
+}
 
-    .dataTables_filter label input {
-      padding: 0px 10px;
-      min-height: 25px;
-      margin-left: 5px;
-    }
+.ml-n1, .mx-n1 {
+    margin-left: -.25rem!important;
+}
+.mr-n1, .mx-n1 {
+    margin-right: -.25rem!important;
+}
+.mb-4, .my-4 {
+    margin-bottom: 1.5rem!important;
+}
+
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,.1);
+}
+
+.text-grey-m2 {
+    color: #888a8d!important;
+}
+
+.text-success-m2 {
+    color: #86bd68!important;
+}
+
+.font-bolder, .text-600 {
+    font-weight: 600!important;
+}
+
+.text-110 {
+    font-size: 110%!important;
+}
+.text-blue {
+    color: #478fcc!important;
+}
+.pb-25, .py-25 {
+    padding-bottom: .75rem!important;
+}
+
+.pt-25, .py-25 {
+    padding-top: .75rem!important;
+}
+.bgc-default-tp1 {
+    background-color: rgba(121,169,197,.92)!important;
+}
+.bgc-default-l4, .bgc-h-default-l4:hover {
+    background-color: #f3f8fa!important;
+}
+.page-header .page-tools {
+    -ms-flex-item-align: end;
+    align-self: flex-end;
+}
+
+.btn-light {
+    color: #757984;
+    background-color: #f5f6f9;
+    border-color: #dddfe4;
+}
+.w-2 {
+    width: 1rem;
+}
+
+.text-120 {
+    font-size: 120%!important;
+}
+.text-primary-m1 {
+    color: #4087d4!important;
+}
+
+.text-danger-m1 {
+    color: #dd4949!important;
+}
+.text-blue-m2 {
+    color: #68a3d5!important;
+}
+.text-150 {
+    font-size: 150%!important;
+}
+.text-60 {
+    font-size: 60%!important;
+}
+.text-grey-m1 {
+    color: #7b7d81!important;
+}
+.align-bottom {
+    vertical-align: bottom!important;
+}
+
+
+
+
+
+
+
+
 
   </style>
 </head>
 
 <body>
-  <h3 class="page-heading mb-4">Invoice</h3>
   <%- include('../flash') %>
-  <div class="card-deck">
-    <div class="card col-lg-12 px-0 mb-4">
-      <div class="card-body">
-        <h5 class="card-title">User Info</h5>
-        <div class="table-responsive">
-          <table class="table center-aligned-table" id="transactionTable">
-            <thead>
-              <tr class="text-primary">
-                <th>Name</th>
-                <th>Team</th>
-                <th>Role</th>
-                <th>Associaction</th>
-                <th>Email</th>
-                <th>Division</th>
-                <th>Jersey</th>
-                <th>Date of Birth</th>
-                <th>Parent</th>
-                <th>Contact</th>
-                <th>Address</th>
-                <th>Profile</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="">
-                <td><%= student.fullname %></td>
-                <td><%= student.team.name %></td>
-                <td><%= student.role %></td>
-                <td><%= student.association %></td>
-                <td><%= student.username %></td>
-                <td><%= student.dop %></td>
-                <td><%= student.jersey %></td>
-                <td><%= student.dob %></td>
-                <td><%= student.parent %></td>
-                <td><%= student.phone %></td>
-                <td><%= student.address %></td>
-                <td><img style="width: 100px;" src="<%= student.image.path %>" alt="Student Profile"></td>
-              </tr>
-            </tbody>
-          </table>
-          <div style="gap: 10px;" class="d-flex justify-content-center">
-            <form action="/create-checkout-session" method="POST">
 
-              <button  type="submit"  class="btn btn-success">Continue and Pay ($10)</button>
-            </form>
-            <a href="/s/<%= student._id %>/edit" class="btn btn-warning">Edit Info</a>
-          </div>
-        </div>
-      </div>
+  <div class="page-content container">
+    <div class="page-header text-blue-d2">
+        <h1 class="page-title text-secondary-d1">
+            Invoice
+            <small class="page-info">
+                <i class="fa fa-angle-double-right text-80"></i>
+                ID: #111-222
+            </small>
+        </h1>
     </div>
-  </div>
+
+    <div class="container px-0">
+        <div class="row mt-4">
+            <div class="col-12 col-lg-12">
+             
+                <!-- .row -->
+
+                <hr class="row brc-default-l1 mx-n1 mb-4" />
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div>
+                            <span class="text-sm text-grey-m2 align-middle">Name: </span>
+                            <span class="text-600 text-110 text-blue align-middle"><%= student.fullname %></span>
+                        </div>
+                        <div class="text-grey-m2">
+                            <div class="my-1">
+                              Address
+                            </div>
+                            <div class="my-1">
+                              <%= student.address %>
+                            </div>
+                            <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600"><%= student.phone %></b></div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+
+                    <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                        <hr class="d-sm-none" />
+                        <div class="text-grey-m2">
+                            <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                Invoice
+                            </div>
+
+                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Email:</span> <%= student.username %></div>
+
+                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Date of Birth:</span> <%= student.dob %></div>
+
+                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-warning badge-pill px-25">Unpaid</span></div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="mt-4">
+                    <div class="row text-600 text-white bgc-default-tp1 py-25">
+                        <div class=" col-4">Team</div>
+                        <div class="col-2 ">Role</div>
+                        <div class=" col-2 ">Associaction</div>
+                        <div class=" col-1">Division</div>
+                        <div class="col-1">Jersey</div>
+                    </div>
+
+                    <div class="text-95 text-secondary-d3">
+                        <div class="row mb-2 mb-sm-0 py-25">
+                            <div class=" col-4"><%= student.team.name %></div>
+                            <div class="col-2"><%= student.role %></div>
+                            <div class=" col-2"><%= student.association %></div>
+                            <div class=" col-1 text-95"><%= student.dop %></div>
+                            <div class="col-1 text-secondary-d2"><%= student.jersey %></div>
+                        </div>
+
+                    
+
+                    
+
+                
+                    </div>
+
+                    <div class="row border-b-2 brc-default-l2"></div>
+
+              
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-sm-7 text-grey-d2 text-95 mt-2 mt-lg-0">
+                            <!-- Extra note such as company or payment information... -->
+                        </div>
+
+                        <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
+                            <div class="row my-2">
+                                <div class="col-7 text-right">
+                                    SubTotal
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-120 text-secondary-d1">$2,250</span>
+                                </div>
+                            </div>
+
+                            <div class="row my-2">
+                                <div class="col-7 text-right">
+                                    Tax (10%)
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-110 text-secondary-d1">$225</span>
+                                </div>
+                            </div>
+
+                            <div class="row my-2 align-items-center bgc-primary-l3 p-2">
+                                <div class="col-7 text-right">
+                                    Total Amount
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-150 text-success-d3 opacity-2">$2,475</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div>
+                      
+                      <form action="/create-checkout-session" method="POST">
+                        
+                        <a href="/s/<%= student._id %>/edit" class="btn btn-warning">Edit Info</a>
+                        <button  type="submit"  class="btn btn-info btn-bold px-4 float-right mt-3 mt-lg-0">Pay Now</button>
+                    
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
-
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/Javascript/jquery/dist/jquery.min.js"></script>
-  <script src="/js/Javascript/popper.js/dist/umd/popper.min.js"></script>
-  <script src="/js/Javascript/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="/js/Javascript/chart.js/dist/Chart.min.js"></script>
-  <script src="/js/Javascript/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
-  <script src="/js/off-canvas.js"></script>
-  <script src="/js/hoverable-collapse.js"></script>
-  <script src="/js/misc.js"></script>
-  <script src="/js/chart.js"></script>
-  <script src="/js/maps.js"></script>
-  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </body>
 
 </html>
