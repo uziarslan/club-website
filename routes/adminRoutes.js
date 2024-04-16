@@ -11,7 +11,8 @@ const { isAdmin } = require('../middlewares');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
 const upload = multer({ storage });
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
+const ExcelJS = require('exceljs');
 const { uploader } = require('cloudinary').v2
 const router = express();
 
@@ -236,7 +237,7 @@ router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
 
 
 // Generating a PDF
-router.post('/generate/document', async (req, res) => {
+router.post('/generate/document', isAdmin, wrapAsync(async (req, res) => {
     const { team, division, coach } = req.body;
     const t = await Team.findById(team).lean();
     const c = await Coach.findById(coach).lean();
@@ -285,7 +286,96 @@ router.post('/generate/document', async (req, res) => {
     }
 
     doc.end();
-});
+}));
+
+
+async function fetchImageAsBuffer(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+    return response.buffer();
+}
+
+
+// Generating Excel File
+router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
+    const { team, division, coach } = req.body;
+    const t = await Team.findById(team).lean();
+    const c = await Coach.findById(coach).lean();
+
+    const filteredStudents = await Student.find({
+        team: team,
+        dop: division,
+        coach: coach
+    }).lean();
+
+    if (!filteredStudents.length) {
+        req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
+        return res.redirect('/admin/dashboard');
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Students');
+
+    const approxColumnWidth = 14; // This is an approximation; you might need to adjust this
+    const approxRowHeight = 75; // Height in points; adjust based on your images
+
+    worksheet.getColumn('A').width = approxColumnWidth; // Adjust the column for images
+    worksheet.getRow(1).height = approxRowHeight;
+
+    if (t.image && t.image.path) {
+        const logoBuffer = await fetchImageAsBuffer(t.image.path);
+        const logoId = workbook.addImage({
+            buffer: logoBuffer,
+            extension: 'jpeg', // Adjust based on your image's actual format
+        });
+        worksheet.addImage(logoId, {
+            tl: { col: 0, row: 0 }, // Top-left corner of the image at the beginning of row 1, column A
+            ext: { width: 100, height: 50 } // Example size, adjust as needed
+        });
+    }
+
+    worksheet.columns = [
+        { header: 'Name', key: 'fullname', width: 30 },
+        { header: 'DOB', key: 'dob', width: 10 },
+        { header: 'Jersey #', key: 'jersey', width: 10 },
+        { header: 'Role', key: 'role', width: 15 },
+        { header: 'Image', key: 'role', width: 15 },
+        // Add a column for images if you're inserting them next to each entry
+    ];
+
+    for (const student of filteredStudents) {
+        const rowValues = {
+            fullname: student.fullname,
+            dob: student.dob,
+            jersey: student.jersey,
+            role: student.role,
+        };
+
+        if (student.image && student.image.path) {
+            const imageBuffer = await fetchImageAsBuffer(student.image.path);
+            const studentImageId = workbook.addImage({
+                buffer: imageBuffer,
+                extension: 'jpeg', // Adjust based on your image's actual format
+            });
+
+            const rowIndex = worksheet.addRow(rowValues).number;
+            // Adjust cell reference for image as needed
+            worksheet.addImage(studentImageId, {
+                tl: { col: 4.5, row: rowIndex - 1 },
+                ext: { width: 50, height: 50 }
+            });
+        } else {
+            worksheet.addRow(rowValues);
+        }
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.xlsx"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+
+}));
 
 
 
