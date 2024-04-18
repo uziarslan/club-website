@@ -8,7 +8,7 @@ const router = express();
 
 
 router.get('/', wrapAsync(async (req, res) => {
-    const teams = await Team.find({});
+    const teams = await Team.find({}).populate('coaches');
     res.render('./homepage/homepage', { teams });
 }));
 

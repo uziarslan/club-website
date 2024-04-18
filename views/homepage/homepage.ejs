@@ -1,39 +1,52 @@
 <%- include('../homepagepartials/head') %>
 <%- include('../homepagepartials/homepagenavbar', {title: "Home"})%>
-<div class="victory-hero-header" style="background-image: url(/images/cover.jpg);text-align:left">
-  <div class="inside">
-    <h1 class="victory-hero-title">BIG APPLE YOUTH FOOTBALL</h1>
-    <div class="victory-hero-subtitle">
-      <h2 class="victory-hero-subtitle">Empowering the Next Generation of Champions</h2>
-    </div>
-    <div class="victory-hero-buttons">
-      <a class="btn button-one" href="#" title="Join our team">
-        Join our team </a>
-      <a class="btn button-two" href="#" title="Support us">Support us</a>
+<!-- Body goes in here -->
+<div class="heroSectionContainer">
+  <div class="heroSection">
+    <img class="heroSectionImage" src="/images/hero-img.png" />
+    <div>
+      <h1 class="welcomeHeading">Welcome to tri state football club</h1>
+      <p class="welcomeSubheading">The website of your local football club</p>
     </div>
   </div>
-</div>
-<div id="content" class="site-content">
-  <div class="inside">
-    <div class="victory-home-widgets">
-      <% for (let team of teams){ %>
-      <div class="victory-home-widget">
-        <aside id="wpcm_standings_widget-5" class="widget victory-home-widget wpcm-widget widget-standings equal">
-          <h1 class="widget-title"><%= team.name %> - Coach</h1>
-          <div class="wpcm-shortcode-wrapper">
-            <div class="wpcm-standings-shortcode wpcm-standings">
-              <div class="victory-table-wrap">
-                <img src="<%= team.image.path %>" style="height: 100px; width: auto;" />
-              </div>
-              <a href="<%= team._id %>/player/show" class="wpcm-view-link">
-                Learn More </a>
-            </div>
-          </div>
-        </aside>
+  <div class="backgroundBanner">
+    <div class="textAndButtons">
+      <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p>
+      <div class="buttons">
+        <div class="joinourteamButtonWrapper">
+          <a href="#" class="joinOurTeamButton">Join our team</a>
+        </div>
+        <div class="supportusButtonWrapper">
+          <a href="#" class="supportUsButton">Support us</a>
+        </div>
       </div>
-      <% } %>
     </div>
   </div>
 </div>
-
+<div class="ourTeamsSeactionContainer">
+  <div class="headingWrapper">
+    <h2 class="ourteamsHeading">Our teams</h2>
+    <p class="ourteamSubheading">Loreum ipsum text</p>
+  </div>
+  <div class="teamsWrapper">
+    <% for (team of teams){ %>
+    <div class="teamCardContainer">
+      <div class="teamCard">
+        <div class="cardHead">
+          <img src="<%= team.image.path %>" class="teamLogo" />
+        </div>
+        <div class="teamBody">
+          <h3 class="teamName"><%= team.name %></h3>
+          <% for (coach of team.coaches){ %>
+          <p class="coachName"><%= coach.fullname %></p>
+          <% } %>
+        </div>
+      </div>
+      <a href="#" class="arrowbutton">
+        <i class='bx bx-right-arrow-alt'></i>
+      </a>
+    </div>
+    <% } %>
+  </div>
+</div>
 <%- include('../homepagepartials/footer') %>
