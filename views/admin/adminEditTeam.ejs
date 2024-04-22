@@ -18,13 +18,35 @@
                   </label>
                   <input value="<%= team.name %>" required type="text" class="form-control p_input" name="name">
                 </div>
+                <div class="form-group">
+                  <div class="panel mx-auto">
+                    <div class="button_outer">
+                      <div class="btn_upload">
+                        <input accept="audio/mpeg, audio/mp3" type="file" name="audio">
+                        Audio <i class="ms-1 fa fa-upload"></i>
+                      </div>
+                      <div class="processing_bar"></div>
+                      <div class="success_box"></div>
+                    </div>
+                  </div>
+                </div>
                 <div class="row mb-4">
                   <div class="col-6 mx-auto">
                     <div class="panel">
                       <div class="button_outer">
                         <div class="btn_upload">
                           <input accept=".jpg, .jpeg, .png" type="file" id="upload_file" name="image">
-                          Change Logo <i class="ms-1 fa fa-upload"></i>
+                          Team Logo <i class="ms-1 fa fa-upload"></i>
+                        </div>
+                        <div class="processing_bar"></div>
+                        <div class="success_box"></div>
+                      </div>
+                    </div>
+                    <div class="panel">
+                      <div class="button_outer">
+                        <div class="btn_upload">
+                          <input accept=".jpg, .jpeg, .png" type="file" id="upload_background" name="teamImage">
+                          Team Background <i class="ms-1 fa fa-upload"></i>
                         </div>
                         <div class="processing_bar"></div>
                         <div class="success_box"></div>
@@ -45,10 +67,31 @@
           <div class="row p-5 mt-4 d-flex justify-content-center">
             <div class="col-lg-3 col-md-4 col-sm-12">
               <div class="card borderblack">
+                <% if (team.audio.path){ %>
+                <audio controls>
+                  <source src="<%= team.audio.path %>" type="<%= team.audio.contentType %>">
+                </audio>
+                <% }else{ %>
+                <p class="text-center my-0">No audio uploded</p>
+                <% } %>
+                <h5 class="btn-primary p-2 text-center mt-3">Current Audio</h5>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+              <div class="card borderblack">
                 <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
-                
-                  <h5 class="btn-primary p-2 text-center mt-3">Current Logo</h5>
-                </div>
+                <h5 class="btn-primary p-2 text-center mt-3">Current Logo</h5>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+              <div class="card borderblack">
+                <% if(team.teamImage.path){ %>
+                <img class="card-img-top" src="<%= team.teamImage.path %>" width="100%" height="auto" alt="Card image cap">
+                <% }else{ %>
+                <p class="text-center my-0">No Image uploaded</p>
+                <% } %>
+                <h5 class="btn-primary p-2 text-center mt-3">Current Background</h5>
+              </div>
             </div>
           </div>
         </div>

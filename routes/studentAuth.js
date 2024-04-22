@@ -26,7 +26,12 @@ router.get('/student/register/:teamId', wrapAsync(async (req, res) => {
     res.render('./student/register', { team, dop });
 }));
 
-router.post('/student/register/:teamId', upload.single('image'), wrapAsync(async (req, res) => {
+router.post('/student/register/:teamId', upload.fields(
+    [
+        { name: "image", maxCount: 1 },
+        { name: "captureImage", maxCount: 1 }
+    ]
+), wrapAsync(async (req, res) => {
     const { username, password, dop, jersey, coach } = req.body;
     const { teamId } = req.params;
     const foundStudent = await Student.find({ username });
@@ -54,17 +59,24 @@ router.post('/student/register/:teamId', upload.single('image'), wrapAsync(async
         return res.redirect(`/student/register/${teamId}`);
     }
 
-    const { filename, path } = req.file;
-
     const student = new Student({
         ...req.body,
         team: teamId,
         coach: req.body.coach,
     });
 
+    if (req.files["image"]) {
+        const { filename, path } = req.files["image"][0];
+        student.image.filename = filename;
+        student.image.path = path;
+    }
 
-    student.image.filename = filename;
-    student.image.path = path;
+    if (req.files["captureImage"]) {
+        const { filename, path } = req.files["captureImage"][0];
+        student.image.filename = filename;
+        student.image.path = path;
+    }
+
 
     await Team.findByIdAndUpdate(teamId, {
         $addToSet: { students: student._id }

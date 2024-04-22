@@ -1,9 +1,32 @@
 body {
-  background-color: #1E1E1E;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  overflow-x: hidden;
+  height: calc(100%);
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  background-color: #1e1e1ede;
+  top: -15px;
+  left: -15px;
+  right: -15px;
+  bottom: -15px;
+  z-index: 1;
+}
+
+.body {
+  position: relative;
+  z-index: 10000;
 }
 
 .navbarContainer {
-  color: white
+  color: white;
+  position: relative;
+  z-index: 10000;
 }
 
 .navbar {
@@ -93,6 +116,12 @@ body {
   color: white;
 }
 
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 128px;
+}
 
 .heroSectionContainer {
   color: white;
@@ -111,6 +140,7 @@ body {
   width: 571px;
   height: 711px;
   z-index: 1001;
+  object-fit: cover;
 }
 
 .welcomeHeading {
@@ -203,8 +233,9 @@ body {
   margin: 0 auto;
   max-width: 1630px;
   color: white;
-  margin-top: 128px;
-  /* add padding in the media query when the width is less then 1630 */
+  display: flex;
+  flex-direction: column;
+  gap: 70px;
 }
 
 .headingWrapper {
@@ -228,6 +259,7 @@ body {
 .teamsWrapper {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   gap: 43px;
   max-width: 1630px;
   flex-wrap: wrap;
@@ -294,6 +326,127 @@ body {
   color: #000;
   font-size: 56px;
 }
+
+
+.categoriesAndDopSection {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 23px;
+}
+
+#category {
+  background-color: #1E1E1E;
+  border: 1px solid #FDFDFD;
+  padding: 16px 40px;
+  border-radius: 25px;
+  color: #FDFDFD;
+}
+
+#category:focus {
+  outline: none;
+}
+
+#division {
+  background-color: #1E1E1E;
+  border: 1px solid #FDFDFD;
+  padding: 16px 40px;
+  border-radius: 25px;
+  color: #FDFDFD;
+}
+
+#division:focus {
+  outline: none;
+}
+
+.studentCard {
+  padding: 21px 21px 29px 21px;
+  border-radius: 20px;
+  width: 375px;
+  height: 314px;
+  background-color: #717070;
+}
+
+.studentCardHead {
+  width: 333px;
+  height: 185px;
+  margin: 0 auto;
+}
+
+.studentImage {
+  width: 333px;
+  height: 185px;
+  object-fit: contain;
+}
+
+.studentCardBody {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.studentDetails {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.jersey {
+  font-family: "Roboto";
+  font-size: 74px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.nameAndRole {}
+
+.name {
+  font-family: "Roboto";
+  font-size: 24px;
+  font-weight: 500;
+  color: #C9C9C9;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.role {
+  font-family: "Roboto";
+  font-size: 20px;
+  font-weight: 500;
+  color: #C9C9C9;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.dobSection {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.age {
+  font-family: "Roboto";
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+  color: #C9C9C9;
+}
+
+.dob {
+  font-family: "Roboto";
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+  color: #C9C9C9;
+}
+
+.noDataText {
+  color: white;
+  text-align: center;
+}
+
 
 @media (max-width:1860px) {
   .textAndButtons {

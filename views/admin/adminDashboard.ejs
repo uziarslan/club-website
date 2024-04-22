@@ -25,14 +25,6 @@
                   <% } %>
                 </select>
               </div>
-              <div class="col-2">
-                <select name="coach" class="form-control">
-                  <option disabled selected>Coach</option>
-                  <% for (let coach of coaches){ %>
-                  <option value="<%= coach._id %>"><%= coach.fullname %></option>
-                  <% } %>
-                </select>
-              </div>
               <button type="submit" class="btn btn-outline-primary btn-sm">Download PDF <i class="fa fa-download"></i></button>
             </div>
           </form>

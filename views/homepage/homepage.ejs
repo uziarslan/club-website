@@ -1,52 +1,54 @@
-<%- include('../homepagepartials/head') %>
+<%- include('../homepagepartials/head', {homepage: true}) %>
 <%- include('../homepagepartials/homepagenavbar', {title: "Home"})%>
 <!-- Body goes in here -->
-<div class="heroSectionContainer">
-  <div class="heroSection">
-    <img class="heroSectionImage" src="/images/hero-img.png" />
-    <div>
-      <h1 class="welcomeHeading">Welcome to tri state football club</h1>
-      <p class="welcomeSubheading">The website of your local football club</p>
+<div class="body">
+  <div class="heroSectionContainer">
+    <div class="heroSection">
+      <img class="heroSectionImage" src="/images/hero-img.png" />
+      <div>
+        <h1 class="welcomeHeading">Welcome to tri state football club</h1>
+        <p class="welcomeSubheading">The website of your local football club</p>
+      </div>
     </div>
-  </div>
-  <div class="backgroundBanner">
-    <div class="textAndButtons">
-      <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p>
-      <div class="buttons">
-        <div class="joinourteamButtonWrapper">
-          <a href="#" class="joinOurTeamButton">Join our team</a>
-        </div>
-        <div class="supportusButtonWrapper">
-          <a href="#" class="supportUsButton">Support us</a>
+    <div class="backgroundBanner">
+      <div class="textAndButtons">
+        <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p>
+        <div class="buttons">
+          <div class="joinourteamButtonWrapper">
+            <a href="#" class="joinOurTeamButton">Join our team</a>
+          </div>
+          <div class="supportusButtonWrapper">
+            <a href="#" class="supportUsButton">Support us</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<div class="ourTeamsSeactionContainer">
-  <div class="headingWrapper">
-    <h2 class="ourteamsHeading">Our teams</h2>
-    <p class="ourteamSubheading">Loreum ipsum text</p>
-  </div>
-  <div class="teamsWrapper">
-    <% for (team of teams){ %>
-    <div class="teamCardContainer">
-      <div class="teamCard">
-        <div class="cardHead">
-          <img src="<%= team.image.path %>" class="teamLogo" />
-        </div>
-        <div class="teamBody">
-          <h3 class="teamName"><%= team.name %></h3>
-          <% for (coach of team.coaches){ %>
-          <p class="coachName"><%= coach.fullname %></p>
-          <% } %>
-        </div>
-      </div>
-      <a href="#" class="arrowbutton">
-        <i class='bx bx-right-arrow-alt'></i>
-      </a>
+  <div class="ourTeamsSeactionContainer">
+    <div class="headingWrapper">
+      <h2 class="ourteamsHeading">Our teams</h2>
+      <p class="ourteamSubheading">Loreum ipsum text</p>
     </div>
-    <% } %>
+    <div class="teamsWrapper">
+      <% for (team of teams){ %>
+      <div class="teamCardContainer">
+        <div class="teamCard">
+          <div class="cardHead">
+            <img src="<%= team.image.path %>" class="teamLogo" />
+          </div>
+          <div class="teamBody">
+            <h3 class="teamName"><%= team.name %></h3>
+            <% for (coach of team.coaches){ %>
+            <p class="coachName"><%= coach.fullname %></p>
+            <% } %>
+          </div>
+        </div>
+        <a href="<%= team._id %>/player/show" class="arrowbutton">
+          <i class='bx bx-right-arrow-alt'></i>
+        </a>
+      </div>
+      <% } %>
+    </div>
   </div>
 </div>
 <%- include('../homepagepartials/footer') %>

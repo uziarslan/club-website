@@ -17,7 +17,16 @@ const teamSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Coach'
         }
-    ]
+    ],
+    audio: {
+        filename: String,
+        path: String,
+        contentType: String
+    },
+    teamImage: {
+        filename: String,
+        path: String
+    }
 })
 
 module.exports = mongoose.model('Team', teamSchema)

@@ -34,7 +34,7 @@ router.post('/coach/register', wrapAsync(async (req, res) => {
             next(err)
         }
         req.logIn(newCoach, () => {
-            res.send(`Coach is registered to the database successfully.`)
+            return res.redirect(`/coach/${newCoach._id}`)
         });
     });
 }));

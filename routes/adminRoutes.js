@@ -14,6 +14,7 @@ const upload = multer({ storage });
 const fetch = require('node-fetch');
 const ExcelJS = require('exceljs');
 const { uploader } = require('cloudinary').v2
+const imageSize = require('image-size')
 const router = express();
 
 
@@ -175,17 +176,31 @@ router.get('/admin/teams', isAdmin, wrapAsync(async (req, res) => {
     res.render('./admin/adminTeams', { admin: user, teams });
 }));
 
-router.post('/admin/teams', isAdmin, upload.single('image'), wrapAsync(async (req, res) => {
+router.post('/admin/teams', isAdmin, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'audio', maxCount: 1 }, { name: 'teamImage', maxCount: 1 }]), wrapAsync(async (req, res) => {
     const foundTeam = await Team.find({ name: req.body.name });
     if (foundTeam.length) {
         req.flash('error', 'Team is already registered.');
         return res.redirect('/admin/teams');
     }
-    const { filename, path } = req.file;
+
     const team = new Team({ ...req.body });
-    team.image.filename = filename;
-    team.image.path = path;
-    team.save()
+
+    if (req.files['image']) {
+        const { filename, path } = req.files['image'][0];
+        team.image = { filename, path };
+    }
+
+    if (req.files['teamImage']) {
+        const { filename, path } = req.files['teamImage'][0];
+        team.teamImage = { filename, path };
+    }
+
+    if (req.files['audio']) {
+        const { filename, path, mimetype } = req.files['audio'][0];
+        team.audio = { filename, path, contentType: mimetype };
+    }
+
+    await team.save();
     req.flash('success', 'Team has been published');
     res.redirect('/admin/teams');
 }));
@@ -197,33 +212,52 @@ router.get('/admin/team/:teamId/edit', isAdmin, wrapAsync(async (req, res) => {
     res.render('./admin/adminEditTeam', { admin: user, team });
 }));
 
-router.patch('/admin/team/:teamId', isAdmin, upload.single('image'), wrapAsync(async (req, res) => {
+router.patch('/admin/team/:teamId', isAdmin, upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'teamImage', maxCount: 1 },
+    { name: 'audio', maxCount: 1 }
+]), wrapAsync(async (req, res) => {
     const { teamId } = req.params;
     const { name } = req.body;
-    const foundTeam = await Team.find({ name: name });
 
-    if (foundTeam.length) {
-        req.flash('error', "There's already a team with the same name!");
-        return res.redirect(`/admin/team/${teamId}/edit`)
+    let updateData = { name: name };
+
+    if (req.files['image']) {
+        const { filename, path } = req.files['image'][0];
+        updateData['image'] = { filename, path };
     }
 
-    if (req.file) {
-        const { filename, path } = req.file;
-        const team = await Team.findByIdAndUpdate(teamId, {
-            name: name
-        });
-        await uploader.destroy(team.image.filename);
-        team.image.filename = filename;
-        team.image.path = path;
-        req.flash('success', 'Team changes has been applied!');
-        return res.redirect('/admin/teams');
+    if (req.files['teamImage']) {
+        const { filename, path } = req.files['teamImage'][0];
+        updateData['teamImage'] = { filename, path };
     }
 
-    await Team.findByIdAndUpdate(teamId, {
-        name: name
-    });
+    if (req.files['audio']) {
+        const { filename, path, mimetype } = req.files['audio'][0];
+        updateData['audio'] = { filename, path, contentType: mimetype };
+    }
 
-    req.flash('success', 'Title of the team has been updated!');
+
+    const team = await Team.findById(teamId);
+
+    // Ensure filenames are present before attempting to delete
+    if (team.image && updateData.image && team.image.filename) {
+        console.log("Deleting old image with public_id:", team.image.filename);
+        await cloudinary.uploader.destroy(team.image.filename.split('.')[0]);
+    }
+    if (team.teamImage && updateData.teamImage && team.teamImage.filename) {
+        console.log("Deleting old team image with public_id:", team.teamImage.filename);
+        await cloudinary.uploader.destroy(team.teamImage.filename.split('.')[0]);
+    }
+    if (team.audio && updateData.audio && team.audio.filename) {
+        console.log("Deleting old audio with public_id:", team.audio.filename);
+        await cloudinary.uploader.destroy(team.audio.filename.split('.')[0]);
+    }
+
+
+    await Team.findByIdAndUpdate(teamId, updateData, { new: true });
+
+    req.flash('success', 'Team changes have been applied!');
     res.redirect('/admin/teams');
 }));
 
@@ -231,6 +265,8 @@ router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
     const { teamId } = req.params;
     const team = await Team.findByIdAndDelete(teamId);
     await uploader.destroy(team.image.filename);
+    await uploader.destroy(team.audio.filename);
+    await uploader.destroy(team.teamImage.filename);
     req.flash('success', `Team has been removed from the database!`);
     res.redirect(`/admin/teams`);
 }))
@@ -244,7 +280,6 @@ router.post('/generate/document', isAdmin, wrapAsync(async (req, res) => {
     const filteredStudents = await Student.find({
         team: team,
         dop: division,
-        coach: coach
     }).populate('team').populate('coach').lean();
 
     if (!filteredStudents.length) {
@@ -297,16 +332,122 @@ async function fetchImageAsBuffer(url) {
 
 
 // Generating Excel File
-router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
-    const { team, division, coach } = req.body;
-    const t = await Team.findById(team).lean();
-    const c = await Coach.findById(coach).lean();
+// router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
+//     const { team, division } = req.body;
+//     const t = await Team.findById(team).lean();
 
-    const filteredStudents = await Student.find({
-        team: team,
-        dop: division,
-        coach: coach
-    }).lean();
+//     const filteredStudents = await Student.find({
+//         team: team,
+//         dop: division,
+//     }).lean();
+
+//     if (!filteredStudents.length) {
+//         req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
+//         return res.redirect('/admin/dashboard');
+//     }
+
+//     const workbook = new ExcelJS.Workbook();
+//     const worksheet = workbook.addWorksheet('Students');
+
+//     const approxColumnWidth = 14; // This is an approximation; you might need to adjust this
+//     const approxRowHeight = 75; // Height in points; adjust based on your images
+
+//     worksheet.getColumn('A').width = approxColumnWidth; // Adjust the column for images
+//     worksheet.getRow(1).height = approxRowHeight;
+
+//     if (t.image && t.image.path) {
+//         const logoBuffer = await fetchImageAsBuffer(t.image.path);
+//         const logoId = workbook.addImage({
+//             buffer: logoBuffer,
+//             extension: 'jpeg', // Adjust based on your image's actual format
+//         });
+//         worksheet.addImage(logoId, {
+//             tl: { col: 0, row: 0 }, // Top-left corner of the image at the beginning of row 1, column A
+//             ext: { width: 100, height: 50 } // Example size, adjust as needed
+//         });
+//     }
+
+//     worksheet.columns = [
+//         { header: 'Name', key: 'fullname', width: 30 },
+//         { header: 'DOB', key: 'dob', width: 10 },
+//         { header: 'Jersey #', key: 'jersey', width: 10 },
+//         { header: 'Role', key: 'role', width: 15 },
+//         { header: 'Image', key: 'role', width: 15 },
+//         // Add a column for images if you're inserting them next to each entry
+//     ];
+
+//     for (const student of filteredStudents) {
+//         const rowValues = {
+//             fullname: student.fullname,
+//             dob: student.dob,
+//             jersey: student.jersey,
+//             role: student.role,
+//         };
+
+//         if (student.image && student.image.path) {
+//             const imageBuffer = await fetchImageAsBuffer(student.image.path);
+//             const studentImageId = workbook.addImage({
+//                 buffer: imageBuffer,
+//                 extension: 'jpeg', // Adjust based on your image's actual format
+//             });
+
+//             const rowIndex = worksheet.addRow(rowValues).number;
+//             // Adjust cell reference for image as needed
+//             worksheet.addImage(studentImageId, {
+//                 tl: { col: 4.5, row: rowIndex - 1 },
+//                 ext: { width: 50, height: 50 }
+//             });
+//         } else {
+//             worksheet.addRow(rowValues);
+//         }
+//     }
+
+//     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//     res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.xlsx"`);
+
+//     await workbook.xlsx.write(res);
+//     res.end();
+
+// }));
+
+async function fetchImageAsBuffer(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+    const buffer = await response.buffer();
+    const dimensions = imageSize(buffer);
+    return { buffer, dimensions };
+}
+
+async function addImageToWorksheet(workbook, worksheet, url, cell) {
+    const { buffer, dimensions } = await fetchImageAsBuffer(url);
+    const imageId = workbook.addImage({
+        buffer: buffer,
+        extension: 'jpeg', // Adjust based on your image's actual format
+    });
+
+    // Define fixed height and calculate scaled width
+    const fixedHeight = 72; // 1 inch height
+    const scaledWidth = (fixedHeight / dimensions.height) * dimensions.width;
+    const colWidth = scaledWidth / 7; // Approximate conversion from pixels to Excel width units
+
+    // Add image floating over the cell, not inside
+    worksheet.addImage(imageId, {
+        tl: { col: cell.col, row: cell.row },
+        ext: { width: scaledWidth, height: fixedHeight }
+    });
+
+    // Set row height and column width
+    worksheet.getRow(cell.row + 1).height = fixedHeight; // set the height of the row below the image
+    worksheet.getColumn(cell.col + 1).width = colWidth; // set the width based on the scaled image width
+}
+
+
+
+router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
+    const { team, division } = req.body;
+    const t = await Team.findById(team).lean();
+
+    const filteredStudents = await Student.find({ team: team, dop: division }).lean();
 
     if (!filteredStudents.length) {
         req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
@@ -316,57 +457,25 @@ router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Students');
 
-    const approxColumnWidth = 14; // This is an approximation; you might need to adjust this
-    const approxRowHeight = 75; // Height in points; adjust based on your images
-
-    worksheet.getColumn('A').width = approxColumnWidth; // Adjust the column for images
-    worksheet.getRow(1).height = approxRowHeight;
-
     if (t.image && t.image.path) {
-        const logoBuffer = await fetchImageAsBuffer(t.image.path);
-        const logoId = workbook.addImage({
-            buffer: logoBuffer,
-            extension: 'jpeg', // Adjust based on your image's actual format
-        });
-        worksheet.addImage(logoId, {
-            tl: { col: 0, row: 0 }, // Top-left corner of the image at the beginning of row 1, column A
-            ext: { width: 100, height: 50 } // Example size, adjust as needed
-        });
+        await addImageToWorksheet(workbook, worksheet, t.image.path, { col: 0, row: 0 });
     }
 
-    worksheet.columns = [
-        { header: 'Name', key: 'fullname', width: 30 },
-        { header: 'DOB', key: 'dob', width: 10 },
-        { header: 'Jersey #', key: 'jersey', width: 10 },
-        { header: 'Role', key: 'role', width: 15 },
-        { header: 'Image', key: 'role', width: 15 },
-        // Add a column for images if you're inserting them next to each entry
-    ];
-
-    for (const student of filteredStudents) {
-        const rowValues = {
-            fullname: student.fullname,
-            dob: student.dob,
-            jersey: student.jersey,
-            role: student.role,
-        };
+    for (let idx = 0; idx < filteredStudents.length; idx++) {
+        const student = filteredStudents[idx];
+        const baseRow = 2 + idx * 4;
 
         if (student.image && student.image.path) {
-            const imageBuffer = await fetchImageAsBuffer(student.image.path);
-            const studentImageId = workbook.addImage({
-                buffer: imageBuffer,
-                extension: 'jpeg', // Adjust based on your image's actual format
-            });
-
-            const rowIndex = worksheet.addRow(rowValues).number;
-            // Adjust cell reference for image as needed
-            worksheet.addImage(studentImageId, {
-                tl: { col: 4.5, row: rowIndex - 1 },
-                ext: { width: 50, height: 50 }
-            });
-        } else {
-            worksheet.addRow(rowValues);
+            await addImageToWorksheet(workbook, worksheet, student.image.path, { col: 0, row: baseRow });
         }
+
+        worksheet.getCell(`A${baseRow + 1}`).value = 'Jersey';
+        worksheet.getCell(`B${baseRow + 1}`).value = 'Name';
+        worksheet.getCell(`C${baseRow + 1}`).value = 'D.O.B';
+
+        worksheet.getCell(`A${baseRow + 2}`).value = student.jersey;
+        worksheet.getCell(`B${baseRow + 2}`).value = student.fullname;
+        worksheet.getCell(`C${baseRow + 2}`).value = student.dob;
     }
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -374,8 +483,8 @@ router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
 
     await workbook.xlsx.write(res);
     res.end();
-
 }));
+
 
 
 

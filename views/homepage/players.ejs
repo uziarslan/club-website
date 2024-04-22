@@ -1,64 +1,82 @@
-<%- include('../homepagepartials/head') %>
-<%- include('../homepagepartials/teampagenavbar', {title: "Players"})%>
-<div class="victory-hero-header" style="background-image: url(/images/cover2.webp);text-align:left">
-  <div class="inside">
-    <h1 class="victory-hero-title">Welcome to <%= team.name %> club</h1>
-    <div class="victory-hero-subtitle">
-      <h2 class="victory-hero-subtitle">Empowering the Next Generation of Champions</h2>
-    </div>
-    <div class="victory-hero-buttons">
-      <a class="btn button-one" href="/student/register/<%= team._id %>" title="Join our team">
-        Join our team </a>
-      <a class="btn button-two" href="#" title="Support us">Contact us</a>
-    </div>
-  </div>
-</div>
-<div id="content" class="site-content">
-  <div class="inside">
-    <% for (let d of dop){%>
-    <h1 class="widget-title"><%= d %></h1>
-    <% for (let student of students){ %>
-    <% if (d === student.dop){ %>
-    <div class="victory-home-widget width_24">
-      <aside id="victory_players-2" class="widget victory-home-widget victory_players_widget equal">
-        <h1 class="widget-title"><%= student.role %></h1>
-        <div class="victory-player-module-image">
-          <img src=" <%=student.image.path %>" sizes="(max-width: 184px) 100vw, 184px">
-          <h4><a href="#"><%=student.fullname %></a></h4>
-          <span class="victory-player-module-stat">
-            <%=student.jersey %>
-          </span>
-        </div>
-        <span class="reports-meta">
-          <%= student.dob %>,
-          <span class="meta-cats">Age <%= student.age %></span>
-        </span>
-      </aside>
-    </div>
-    <% } %>
-    <% } %>
-    <% } %>
-  </div>
-</div>
-<div id="Coaches" class="site-content">
-  <div class="inside">
-    <h1 class="widget-title">Coaches</h1>
-    <% for (let coach of coaches){ %>
-      <div class="victory-home-widget width_24">
-        <aside id="victory_players-2" class="widget victory-home-widget victory_players_widget equal">
-       
-          <div class="victory-player-module-image">
-            <img src="/images/person.jpg" sizes="(max-width: 184px) 100vw, 184px">
-            <h4><a href="#"><%= coach.fullname %></a></h4>
-            
-        
-          </div>
-      
-        </aside>
+<%- include('../homepagepartials/head', {homepage: false}) %>
+<%- include('../homepagepartials/homepagenavbar', {title: "Players"})%>
+<!-- Body goes in here -->
+<% if (team.audio){ %>
+<audio id="backgroundAudio" loop muted controls style="display: none;">
+  <source src="<%= team.audio.path %>" type="<%= team.audio.contentType %>">
+</audio>
+<% } %>
+<div class="body">
+  <div class="heroSectionContainer">
+    <div class="heroSection">
+      <img class="heroSectionImage" src="<%= team.teamImage.path %>" />
+      <div>
+        <h1 class="welcomeHeading">Welcome to <%= team.name %></h1>
+        <p class="welcomeSubheading">Empowering the next generation of championships</p>
       </div>
-
-   
-    <% } %>
+    </div>
+    <div class="backgroundBanner">
+      <div class="textAndButtons">
+        <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p>
+        <div class="buttons">
+          <div class="joinourteamButtonWrapper">
+            <a href="/student/register/<%= team._id %>" class="joinOurTeamButton">Register as a student</a>
+          </div>
+          <div class="supportusButtonWrapper">
+            <a href="/coach/register" class="supportUsButton">Register as a coach</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ourTeamsSeactionContainer">
+    <div class="categoriesAndDopSection">
+      <select name="division" id="division">
+        <% for (let d of [...dop].reverse()){ %>
+        <option selected><%= d %></option>
+        <% } %>
+      </select>
+      <select name="category" id="category">
+        <option selected>Football</option>
+        <option>Cheer</option>
+        <option>Coach</option>
+      </select>
+    </div>
+    <div class="teamsWrapper">
+      <!-- student goes in here -->
+      <% if (students.length){ %>
+      <% for (let student of students){ %>
+      <div class="studentCard">
+        <div class="studentCardHead">
+          <img class="studentImage" src="<%= student.image.path %>" alt="Student Image" />
+        </div>
+        <div class="studentCardBody">
+          <div class="studentDetails">
+            <p class="jersey"><%= student.jersey %></p>
+            <div class="nameAndRole">
+              <p class="name"><%= student.fullname %></p>
+              <p class="role"><%= student.role %></p>
+            </div>
+          </div>
+          <div class="dobSection">
+            <p class="age">Age <%= student.age %></p>
+            <p class="dob"><%= student.dob %></p>
+          </div>
+        </div>
+      </div>
+      <% } %>
+      <% }else{ %>
+      <p class="noDataText">No Student Registered yet.</p>
+      <% } %>
+    </div>
   </div>
 </div>
+<script>
+  document.addEventListener("click", () => {
+    var audio = document.getElementById('backgroundAudio');
+    audio.muted = false;
+    audio.play()
+  })
+
+</script>
 <%- include('../homepagepartials/footer') %>

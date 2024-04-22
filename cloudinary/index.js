@@ -9,13 +9,27 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary,
-    params: {
-        folder: 'Club Website',
-        allowedFormats: ['jpeg', 'png', 'jpg']
+    params: (req, file) => {
+        let folder, resource_type, format;
+        if (file.fieldname === 'image' || file.fieldname === 'teamImage' || file.fieldname === "captureImage") {
+            folder = 'Club Website/Images';
+            resource_type = 'image';
+            format = 'jpg';
+        } else if (file.fieldname === 'audio') {
+            folder = 'Club Website/Audio';
+            resource_type = 'raw';
+            format = 'mp3';
+        }
+        return {
+            folder: folder,
+            resource_type: resource_type,
+            format: format
+        };
     }
 });
 
+
 module.exports = {
     cloudinary,
-    storage
+    storage,
 }
