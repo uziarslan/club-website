@@ -71,7 +71,7 @@ body::before {
 .navButtonsContainer {
   display: flex;
   flex-direction: row;
-  gap: 50px;
+  gap: 20px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -83,6 +83,7 @@ body::before {
   font-family: "Roboto";
   font-size: 20px;
   font-weight: 500;
+  padding: 5px 15px;
 }
 
 .loginSection {
@@ -536,3 +537,13 @@ body::before {
     padding: 16px 30px 16px 30px;
   }
 }
+
+.active{
+  border-radius: 30px;
+  border: 1px solid #ffffff;
+}
+.navButtons a{
+  text-decoration: none;
+  color: white;
+}
+
