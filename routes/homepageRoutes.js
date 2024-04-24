@@ -8,7 +8,10 @@ const router = express();
 
 
 router.get('/', wrapAsync(async (req, res) => {
-    const teams = await Team.find({}).populate('coaches');
+    const teams = await Team.find({}).populate({
+        path: 'coaches',
+        match: { status: "approved" }
+    });
     res.render('./homepage/homepage', { teams });
 }));
 
@@ -28,8 +31,4 @@ router.get('/:teamId/player/show', wrapAsync(async (req, res) => {
 }));
 
 
-router.get('/coaches/show', wrapAsync(async (req, res) => {
-    const coachs = await Coach.find({});
-    res.render('./homepage/coaches', { coachs });
-}));
 module.exports = router;

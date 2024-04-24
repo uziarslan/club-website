@@ -14,7 +14,8 @@ const upload = multer({ storage });
 const fetch = require('node-fetch');
 const ExcelJS = require('exceljs');
 const { uploader } = require('cloudinary').v2
-const imageSize = require('image-size')
+const imageSize = require('image-size');
+const sharp = require('sharp');
 const router = express();
 
 
@@ -410,36 +411,45 @@ async function fetchImageAsBuffer(url) {
 
 // }));
 
-async function fetchImageAsBuffer(url) {
-    const response = await fetch(url);
+async function fetchImageAsBuffer(url, desiredWidth, desiredHeight) {
+    let response = await fetch(url);
     if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-    const buffer = await response.buffer();
-    const dimensions = imageSize(buffer);
-    return { buffer, dimensions };
+    let buffer = await response.buffer();
+    let dimensions = imageSize(buffer);
+
+    if (dimensions.width !== desiredWidth || dimensions.height !== desiredHeight) {
+        buffer = await sharp(buffer).resize(desiredWidth, desiredHeight).toBuffer()
+    }
+    return { buffer, dimensions: { width: desiredWidth, height: desiredHeight } };
 }
 
 async function addImageToWorksheet(workbook, worksheet, url, cell) {
-    const { buffer, dimensions } = await fetchImageAsBuffer(url);
+    const passportWidth = 120; // Your desired image width in pixels
+    const passportHeight = 150; // Your desired image height in pixels
+
+    const { buffer, dimensions } = await fetchImageAsBuffer(url, passportWidth, passportHeight);
+
+    // 1. Get Image ID
     const imageId = workbook.addImage({
         buffer: buffer,
         extension: 'jpeg', // Adjust based on your image's actual format
     });
 
-    // Define fixed height and calculate scaled width
-    const fixedHeight = 72; // 1 inch height
-    const scaledWidth = (fixedHeight / dimensions.height) * dimensions.width;
-    const colWidth = scaledWidth / 7; // Approximate conversion from pixels to Excel width units
+    // 2. Adjust row for images
+    const imageRow = cell.row + 1; // Assuming you want the image directly below  
 
-    // Add image floating over the cell, not inside
+    // 3. Insert image into the cell
     worksheet.addImage(imageId, {
-        tl: { col: cell.col, row: cell.row },
-        ext: { width: scaledWidth, height: fixedHeight }
+        tl: { col: cell.col, row: imageRow - 1 }, // Top-left corner
+        ext: { width: passportWidth, height: passportHeight }, // Image dimensions
+        editAs: 'oneCell' // Key Change: Treat image and cell as one entity
     });
 
-    // Set row height and column width
-    worksheet.getRow(cell.row + 1).height = fixedHeight; // set the height of the row below the image
-    worksheet.getColumn(cell.col + 1).width = colWidth; // set the width based on the scaled image width
+    // 4. Automatic Row Height Adjustment
+    worksheet.getRow(imageRow).height = passportHeight / 1.3;
+    worksheet.getColumn(cell.col + 1).width = passportWidth / 7;
 }
+
 
 
 
@@ -457,25 +467,29 @@ router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Students');
 
-    if (t.image && t.image.path) {
-        await addImageToWorksheet(workbook, worksheet, t.image.path, { col: 0, row: 0 });
-    }
+    // if (t.image && t.image.path) {
+    //     await addImageToWorksheet(workbook, worksheet, t.image.path, { col: 0, row: 0 });
+    // }
 
     for (let idx = 0; idx < filteredStudents.length; idx++) {
         const student = filteredStudents[idx];
-        const baseRow = 2 + idx * 4;
+        const imageRow = idx * 5;
+        const headerRow = imageRow + 1;
+        const dataRow = headerRow + 1;
+
+
 
         if (student.image && student.image.path) {
-            await addImageToWorksheet(workbook, worksheet, student.image.path, { col: 0, row: baseRow });
+            await addImageToWorksheet(workbook, worksheet, student.image.path, { col: 0, row: imageRow });
         }
 
-        worksheet.getCell(`A${baseRow + 1}`).value = 'Jersey';
-        worksheet.getCell(`B${baseRow + 1}`).value = 'Name';
-        worksheet.getCell(`C${baseRow + 1}`).value = 'D.O.B';
+        worksheet.getCell(`A${headerRow + 1}`).value = 'Jersey';
+        worksheet.getCell(`B${headerRow + 1}`).value = 'Name';
+        worksheet.getCell(`C${headerRow + 1}`).value = 'D.O.B';
 
-        worksheet.getCell(`A${baseRow + 2}`).value = student.jersey;
-        worksheet.getCell(`B${baseRow + 2}`).value = student.fullname;
-        worksheet.getCell(`C${baseRow + 2}`).value = student.dob;
+        worksheet.getCell(`A${dataRow + 2}`).value = student.jersey;
+        worksheet.getCell(`B${dataRow + 2}`).value = student.fullname;
+        worksheet.getCell(`C${dataRow + 2}`).value = student.dob;
     }
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
