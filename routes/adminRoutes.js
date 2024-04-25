@@ -243,16 +243,13 @@ router.patch('/admin/team/:teamId', isAdmin, upload.fields([
 
     // Ensure filenames are present before attempting to delete
     if (team.image && updateData.image && team.image.filename) {
-        console.log("Deleting old image with public_id:", team.image.filename);
-        await cloudinary.uploader.destroy(team.image.filename.split('.')[0]);
+        await uploader.destroy(team.image.filename.split('.')[0]);
     }
     if (team.teamImage && updateData.teamImage && team.teamImage.filename) {
-        console.log("Deleting old team image with public_id:", team.teamImage.filename);
-        await cloudinary.uploader.destroy(team.teamImage.filename.split('.')[0]);
+        await uploader.destroy(team.teamImage.filename.split('.')[0]);
     }
     if (team.audio && updateData.audio && team.audio.filename) {
-        console.log("Deleting old audio with public_id:", team.audio.filename);
-        await cloudinary.uploader.destroy(team.audio.filename.split('.')[0]);
+        await uploader.destroy(team.audio.filename.split('.')[0]);
     }
 
 

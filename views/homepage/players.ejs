@@ -31,43 +31,15 @@
   </div>
   <div class="ourTeamsSeactionContainer">
     <div class="categoriesAndDopSection">
-      <select name="division" id="division">
-        <% for (let d of [...dop].reverse()){ %>
-        <option selected><%= d %></option>
-        <% } %>
-      </select>
+      <select name="division" id="division"></select>
       <select name="category" id="category">
-        <option selected>Football</option>
-        <option>Cheer</option>
-        <option>Coach</option>
+        <option selected value="football">Football</option>
+        <option value="cheer">Cheer</option>
+        <option value="coach">Coach</option>
       </select>
     </div>
-    <div class="teamsWrapper">
+    <div class="teamsWrapper" id="teamsWrapper">
       <!-- student goes in here -->
-      <% if (students.length){ %>
-      <% for (let student of students){ %>
-      <div class="studentCard">
-        <div class="studentCardHead">
-          <img class="studentImage" src="<%= student.image.path %>" alt="Student Image" />
-        </div>
-        <div class="studentCardBody">
-          <div class="studentDetails">
-            <p class="jersey"><%= student.jersey %></p>
-            <div class="nameAndRole">
-              <p class="name"><%= student.fullname %></p>
-              <p class="role"><%= student.role %></p>
-            </div>
-          </div>
-          <div class="dobSection">
-            <p class="age">Age <%= student.age %></p>
-            <p class="dob"><%= student.dob %></p>
-          </div>
-        </div>
-      </div>
-      <% } %>
-      <% }else{ %>
-      <p class="noDataText">No Student Registered yet.</p>
-      <% } %>
     </div>
   </div>
 </div>
@@ -79,4 +51,236 @@
   })
 
 </script>
+<!-- <script>
+  const filters = <%-JSON.stringify(filters)%>;
+  const divisionSelect = document.getElementById('division');
+  filters.forEach(filter => {
+    const option = document.createElement('option');
+    option.value = filter.division;
+    option.textContent = filter.division;
+    divisionSelect.appendChild(option);
+  });
+
+  divisionSelect.addEventListener('change', renderStudents);
+  document.getElementById('category')
+    .addEventListener('change', renderStudents);
+
+  function renderStudents() {
+    const division = divisionSelect.value;
+    const category = document.getElementById('category')
+      .value;
+    const selectedCategory = category === 'football' ? 'footballers' : 'cheerleaders';
+
+    const data = filters.find(f => f.division === division)[selectedCategory];
+    const teamsWrapper = document.getElementById('teamsWrapper');
+    teamsWrapper.innerHTML = ''; // Clear existing students
+
+    if (data.length) {
+      data.forEach(student => {
+        const studentCard = `
+<div class="studentCard">
+  <div class="studentCardHead">
+    <img class="studentImage" src="${student.image.path}" alt="Student Image">
+  </div>
+  <div class="studentCardBody">
+    <div class="studentDetails">
+      <p class="jersey">${student.jersey}</p>
+      <div class="nameAndRole">
+        <p class="name">${student.fullname}</p>
+        <p class="role">${student.role}</p>
+      </div>
+    </div>
+    <div class="dobSection">
+      <p class="age">Age ${student.age}</p>
+      <p class="dob">${student.dob}</p>
+    </div>
+  </div>
+</div>`;
+        teamsWrapper.innerHTML += studentCard; // Append new student card
+      });
+    } else {
+      teamsWrapper.innerHTML = '<p class="noDataText">No Students Registered yet.</p>';
+    }
+  }
+
+  function renderCoaches() {
+
+  }
+
+  // Initial render
+  renderStudents();
+
+</script> -->
+
+<!-- <script>
+  const filters = <%- JSON.stringify(filters) %>;
+  const divisionSelect = document.getElementById('division');
+  filters.forEach(filter => {
+    const option = document.createElement('option');
+    option.value = filter.division;
+    option.textContent = filter.division;
+    divisionSelect.appendChild(option);
+  });
+
+  const categorySelect = document.getElementById('category');
+  const teamsWrapper = document.getElementById('teamsWrapper');
+  const coachCards = document.querySelectorAll('.coachCard'); // Assuming multiple coach cards
+
+  categorySelect.addEventListener('change', handleCategoryChange);
+  divisionSelect.addEventListener('change', renderStudents);
+
+  function handleCategoryChange() {
+    const category = categorySelect.value;
+    if (category === 'coach') {
+      renderCoaches();
+    } else {
+      renderStudents();
+    }
+  }
+
+  function renderStudents() {
+    const division = divisionSelect.value;
+    const category = categorySelect.value;
+    const selectedCategory = category === 'football' ? 'footballers' : 'cheerleaders';
+
+    const data = filters.find(f => f.division === division)[selectedCategory];
+    teamsWrapper.innerHTML = ''; // Clear existing cards
+
+    if (category !== 'coach' && data && data.length) {
+      data.forEach(student => {
+        const studentCard = `
+<div class="studentCard">
+  <div class="studentCardHead">
+    <img class="studentImage" src="${student.image.path}" alt="Student Image">
+  </div>
+  <div class="studentCardBody">
+    <div class="studentDetails">
+      <p class="jersey">${student.jersey}</p>
+      <div class="nameAndRole">
+        <p class="name">${student.fullname}</p>
+        <p class="role">${student.role}</p>
+      </div>
+    </div>
+    <div class="dobSection">
+      <p class="age">Age ${student.age}</p>
+      <p class="dob">${student.dob}</p>
+    </div>
+  </div>
+</div>`;
+        teamsWrapper.innerHTML += studentCard;
+      });
+    } else {
+      teamsWrapper.innerHTML = '<p class="noDataText">No Students Registered yet.</p>';
+    }
+
+    // Toggle visibility
+    coachCards.forEach(card => card.style.display = 'none'); // Hide coach cards
+  }
+
+  function renderCoaches() {
+    // Toggle visibility
+    teamsWrapper.innerHTML = ''; // Clear students
+    coachCards.forEach(card => card.style.display = 'block'); // Show coach cards
+  }
+
+  // Initial render based on default selection
+  handleCategoryChange();
+
+</script> -->
+
+<script>
+  const filters = <%- JSON.stringify(filters) %>;
+  const coaches = <%- JSON.stringify(coaches) %>;
+  const divisionSelect = document.getElementById('division');
+  const categorySelect = document.getElementById('category');
+  const teamsWrapper = document.getElementById('teamsWrapper');
+
+  // Populate divisions
+  filters.forEach(filter => {
+    const option = document.createElement('option');
+    option.value = filter.division;
+    option.textContent = filter.division;
+    divisionSelect.appendChild(option);
+  });
+
+  categorySelect.addEventListener('change', handleCategoryChange);
+  divisionSelect.addEventListener('change', renderStudents);
+
+  function handleCategoryChange() {
+    const category = categorySelect.value;
+    if (category === 'coach') {
+      renderCoaches();
+    } else {
+      renderStudents();
+    }
+  }
+
+  function renderStudents() {
+    const division = divisionSelect.value;
+    const category = categorySelect.value;
+    const selectedCategory = category === 'football' ? 'footballers' : 'cheerleaders';
+
+    const data = filters.find(f => f.division === division)[selectedCategory];
+    teamsWrapper.innerHTML = ''; // Clear existing content
+
+    if (category !== 'coach' && data && data.length) {
+      data.forEach(student => {
+        const studentCard = `
+<div class="studentCard">
+    <div class="studentCardHead">
+        <img class="studentImage" src="${student.image.path}" alt="Student Image">
+    </div>
+    <div class="studentCardBody">
+        <div class="studentDetails">
+            <p class="jersey">${student.jersey}</p>
+            <div class="nameAndRole">
+                <p class="name">${student.fullname}</p>
+                <p class="role">${student.role}</p>
+            </div>
+        </div>
+        <div class="dobSection">
+            <p class="age">Age ${student.age}</p>
+            <p class="dob">${student.dob}</p>
+        </div>
+    </div>
+</div>`;
+        teamsWrapper.innerHTML += studentCard;
+      });
+    } else {
+      teamsWrapper.innerHTML = '<p class="noDataText">No Students Registered yet.</p>';
+    }
+  }
+
+  function renderCoaches() {
+    teamsWrapper.innerHTML = ''; // Clear existing content
+    if (coaches && coaches.length) {
+      coaches.forEach(coach => {
+        const coachCard = `
+  <div class="coachCard">
+      <div class="studentCardHead">
+          <img class="studentImage" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Coach Image">
+      </div>
+      <div class="studentCardBody">
+          <div class="studentDetails">
+              <p class="name">Coach</p>
+          </div>
+          <div class="dobSection">
+              <p class="age">${coach.fullname}</p>
+          </div>
+      </div>
+  </div>`;
+        teamsWrapper.innerHTML += coachCard;
+      });
+    } else {
+      teamsWrapper.innerHTML = '<p class="noDataText">No Coach Registered yet.</p>';
+    }
+  }
+
+  // Initial render based on default category selection
+  handleCategoryChange();
+
+</script>
+
+
+
 <%- include('../homepagepartials/footer') %>

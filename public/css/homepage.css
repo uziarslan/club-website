@@ -237,6 +237,7 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 70px;
+  width: 100%;
 }
 
 .headingWrapper {
@@ -365,6 +366,15 @@ body::before {
   width: 375px;
   height: 314px;
   background-color: #717070;
+}
+
+.coachCard {
+  padding: 21px 21px 29px 21px;
+  border-radius: 20px;
+  width: 375px;
+  height: 250px;
+  background-color: #717070;
+  /* display: none; */
 }
 
 .studentCardHead {
@@ -536,14 +546,28 @@ body::before {
   .supportusButtonWrapper {
     padding: 16px 30px 16px 30px;
   }
+
+  .ourTeamsSeactionContainer {
+    align-items: center;
+  }
 }
 
-.active{
+@media (max-width: 600px) {
+  .studentCard {
+    width: 100%;
+  }
+
+  .heroSectionImage {
+    width: 350px;
+  }
+}
+
+.active {
   border-radius: 30px;
   border: 1px solid #ffffff;
 }
-.navButtons a{
+
+.navButtons a {
   text-decoration: none;
   color: white;
 }
-
