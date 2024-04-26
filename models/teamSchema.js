@@ -26,6 +26,9 @@ const teamSchema = new mongoose.Schema({
     teamImage: {
         filename: String,
         path: String
+    },
+    qrCode: {
+        type: String
     }
 })
 

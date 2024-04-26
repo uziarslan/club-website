@@ -13,6 +13,11 @@
       <li class="navButtons"><a href="/">Teams</a></li>
       <li class="navButtons"><a href="/">Staff</a></li>
       <li class="navButtons"><a href="/">Table</a></li>
+      <% if(title === "Players"){ %>
+      <button type="button" class="qrCodeBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Qr Code
+      </button>
+      <% } %>
     </ul>
     <div class="loginSection">
       <i class='bx bx-search-alt'></i>

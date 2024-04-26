@@ -117,6 +117,16 @@ body::before {
   color: white;
 }
 
+.qrCodeBtn {
+  background: transparent;
+  color: white;
+  border: none;
+  font-family: "Roboto";
+  font-size: 20px;
+  font-weight: 500;
+  padding: 5px 15px;
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -279,7 +289,7 @@ body::before {
   padding: 23px 105px 72px 105px;
   background: #717070;
   border-radius: 20px;
-  height: 303px;
+  height: 350px;
 }
 
 .cardHead {
@@ -309,6 +319,7 @@ body::before {
   font-family: "Roboto";
   font-size: 20px;
   font-weight: 400;
+  margin: 0;
 }
 
 .arrowbutton {
@@ -364,7 +375,6 @@ body::before {
   padding: 21px 21px 29px 21px;
   border-radius: 20px;
   width: 375px;
-  height: 314px;
   background-color: #717070;
 }
 

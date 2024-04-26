@@ -16,6 +16,7 @@ const ExcelJS = require('exceljs');
 const { uploader } = require('cloudinary').v2
 const imageSize = require('image-size');
 const sharp = require('sharp');
+const qrcode = require('qrcode');
 const router = express();
 
 
@@ -201,7 +202,11 @@ router.post('/admin/teams', isAdmin, upload.fields([{ name: 'image', maxCount: 1
         team.audio = { filename, path, contentType: mimetype };
     }
 
-    await team.save();
+    qrcode.toDataURL(`http://localhost:3000/${team._id}/player/show`, async function (err, url) {
+        team.qrCode = url
+        await team.save();
+    });
+
     req.flash('success', 'Team has been published');
     res.redirect('/admin/teams');
 }));
@@ -262,9 +267,15 @@ router.patch('/admin/team/:teamId', isAdmin, upload.fields([
 router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
     const { teamId } = req.params;
     const team = await Team.findByIdAndDelete(teamId);
-    await uploader.destroy(team.image.filename);
-    await uploader.destroy(team.audio.filename);
-    await uploader.destroy(team.teamImage.filename);
+    if (team.image.filename) {
+        await uploader.destroy(team.image.filename);
+    }
+    if (team.audio.filename) {
+        await uploader.destroy(team.audio.filename);
+    }
+    if (team.teamImage.filename) {
+        await uploader.destroy(team.teamImage.filename);
+    }
     req.flash('success', `Team has been removed from the database!`);
     res.redirect(`/admin/teams`);
 }))

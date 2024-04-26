@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Student = mongoose.model('Student');
 const Coach = mongoose.model("Coach");
-const Team = mongoose.model('Team')
+const Team = mongoose.model('Team');
+const qrcode = require('qrcode');
 const wrapAsync = require('../utils/wrapAsync');
 const router = express();
 
@@ -40,6 +41,19 @@ router.get('/:teamId/player/show', wrapAsync(async (req, res) => {
         filters
     });
 }));
+
+// Change the domain name before going live
+
+// router.get('/seed', wrapAsync(async (req, res) => {
+//     const teams = await Team.find({});
+//     for (let team of teams) {
+//         qrcode.toDataURL(`http://localhost:3000/${team._id}/player/show`, async function (err, url) {
+//             team.qrCode = url
+//             await team.save()
+//         });
+//     }
+//     res.send("Qr Code added to the Teams");
+// }));
 
 
 module.exports = router;

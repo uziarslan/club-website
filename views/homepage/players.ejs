@@ -43,6 +43,27 @@
     </div>
   </div>
 </div>
+
+<!-- Qr Code Modal -->
+<div style="z-index: 20000;" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Scan Qr Code</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center align-items-center">
+        <img style="width: 250px; height: 250px;" src="<%= team.qrCode %>" />
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- Script Files -->
 <script>
   document.addEventListener("click", () => {
     var audio = document.getElementById('backgroundAudio');
@@ -51,143 +72,6 @@
   })
 
 </script>
-<!-- <script>
-  const filters = <%-JSON.stringify(filters)%>;
-  const divisionSelect = document.getElementById('division');
-  filters.forEach(filter => {
-    const option = document.createElement('option');
-    option.value = filter.division;
-    option.textContent = filter.division;
-    divisionSelect.appendChild(option);
-  });
-
-  divisionSelect.addEventListener('change', renderStudents);
-  document.getElementById('category')
-    .addEventListener('change', renderStudents);
-
-  function renderStudents() {
-    const division = divisionSelect.value;
-    const category = document.getElementById('category')
-      .value;
-    const selectedCategory = category === 'football' ? 'footballers' : 'cheerleaders';
-
-    const data = filters.find(f => f.division === division)[selectedCategory];
-    const teamsWrapper = document.getElementById('teamsWrapper');
-    teamsWrapper.innerHTML = ''; // Clear existing students
-
-    if (data.length) {
-      data.forEach(student => {
-        const studentCard = `
-<div class="studentCard">
-  <div class="studentCardHead">
-    <img class="studentImage" src="${student.image.path}" alt="Student Image">
-  </div>
-  <div class="studentCardBody">
-    <div class="studentDetails">
-      <p class="jersey">${student.jersey}</p>
-      <div class="nameAndRole">
-        <p class="name">${student.fullname}</p>
-        <p class="role">${student.role}</p>
-      </div>
-    </div>
-    <div class="dobSection">
-      <p class="age">Age ${student.age}</p>
-      <p class="dob">${student.dob}</p>
-    </div>
-  </div>
-</div>`;
-        teamsWrapper.innerHTML += studentCard; // Append new student card
-      });
-    } else {
-      teamsWrapper.innerHTML = '<p class="noDataText">No Students Registered yet.</p>';
-    }
-  }
-
-  function renderCoaches() {
-
-  }
-
-  // Initial render
-  renderStudents();
-
-</script> -->
-
-<!-- <script>
-  const filters = <%- JSON.stringify(filters) %>;
-  const divisionSelect = document.getElementById('division');
-  filters.forEach(filter => {
-    const option = document.createElement('option');
-    option.value = filter.division;
-    option.textContent = filter.division;
-    divisionSelect.appendChild(option);
-  });
-
-  const categorySelect = document.getElementById('category');
-  const teamsWrapper = document.getElementById('teamsWrapper');
-  const coachCards = document.querySelectorAll('.coachCard'); // Assuming multiple coach cards
-
-  categorySelect.addEventListener('change', handleCategoryChange);
-  divisionSelect.addEventListener('change', renderStudents);
-
-  function handleCategoryChange() {
-    const category = categorySelect.value;
-    if (category === 'coach') {
-      renderCoaches();
-    } else {
-      renderStudents();
-    }
-  }
-
-  function renderStudents() {
-    const division = divisionSelect.value;
-    const category = categorySelect.value;
-    const selectedCategory = category === 'football' ? 'footballers' : 'cheerleaders';
-
-    const data = filters.find(f => f.division === division)[selectedCategory];
-    teamsWrapper.innerHTML = ''; // Clear existing cards
-
-    if (category !== 'coach' && data && data.length) {
-      data.forEach(student => {
-        const studentCard = `
-<div class="studentCard">
-  <div class="studentCardHead">
-    <img class="studentImage" src="${student.image.path}" alt="Student Image">
-  </div>
-  <div class="studentCardBody">
-    <div class="studentDetails">
-      <p class="jersey">${student.jersey}</p>
-      <div class="nameAndRole">
-        <p class="name">${student.fullname}</p>
-        <p class="role">${student.role}</p>
-      </div>
-    </div>
-    <div class="dobSection">
-      <p class="age">Age ${student.age}</p>
-      <p class="dob">${student.dob}</p>
-    </div>
-  </div>
-</div>`;
-        teamsWrapper.innerHTML += studentCard;
-      });
-    } else {
-      teamsWrapper.innerHTML = '<p class="noDataText">No Students Registered yet.</p>';
-    }
-
-    // Toggle visibility
-    coachCards.forEach(card => card.style.display = 'none'); // Hide coach cards
-  }
-
-  function renderCoaches() {
-    // Toggle visibility
-    teamsWrapper.innerHTML = ''; // Clear students
-    coachCards.forEach(card => card.style.display = 'block'); // Show coach cards
-  }
-
-  // Initial render based on default selection
-  handleCategoryChange();
-
-</script> -->
-
 <script>
   const filters = <%- JSON.stringify(filters) %>;
   const coaches = <%- JSON.stringify(coaches) %>;
