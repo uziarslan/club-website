@@ -106,7 +106,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-4">
+                <div class="col-6">
                   <div class="form-group">
                     <label id="Jersey" class="form-text text-muted">
                       Jersey #
@@ -114,15 +114,7 @@
                     <input type="number" class="form-control" id="Jersey" name="jersey" required>
                   </div>
                 </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="age" class="form-text text-muted">
-                      Age (as of 7/31)
-                    </label>
-                    <input type="number" class="form-control" id="age" name="age" required>
-                  </div>
-                </div>
-                <div class="col-4">
+                <div class="col-6">
                   <div class="form-group">
                     <label id="dob" class="form-text text-muted">
                       Date of Birth (MM/DD/YYYY)
@@ -180,7 +172,7 @@
                     <video id="video" class="dnone mb-3 w-100" height="240" autoplay></video>
                     <button type="button" id="click-photo" class="btn btn-primary dnone text-center">Click
                       Photo</button>
-                      <!-- <button type="button" id="clear-photo" class="btn btn-danger w-25">Clear Photo</button> -->
+                    <!-- <button type="button" id="clear-photo" class="btn btn-danger w-25">Clear Photo</button> -->
                     <canvas id="canvas" class="dnone" width="320" height="240"></canvas>
                   </div>
                 </div>
@@ -196,12 +188,17 @@
   </div>
 </div>
 <script>
-  document.getElementById('uploadButton').addEventListener('click', function() {
-      document.getElementById('start-camera').style.display = 'none';
-  });
-  document.getElementById('fil-remove').addEventListener('click', function() {
-      document.getElementById('start-camera').style.display = 'block';
-  });
+  document.getElementById('uploadButton')
+    .addEventListener('click', function() {
+      document.getElementById('start-camera')
+        .style.display = 'none';
+    });
+  document.getElementById('fil-remove')
+    .addEventListener('click', function() {
+      document.getElementById('start-camera')
+        .style.display = 'block';
+    });
+
 </script>
 <script>
   let camera_button = document.querySelector("#start-camera");
@@ -213,7 +210,8 @@
   let stream;
 
   camera_button.addEventListener('click', async function() {
-    document.getElementById('uploadPanel').style.display = 'none';
+    document.getElementById('uploadPanel')
+      .style.display = 'none';
     click_button.style.display = "block";
     video.style.display = "block";
     camera_button.style.display = "none";
@@ -245,7 +243,7 @@
       stopCamera();
     }, 'image/jpeg');
   });
-  
+
 
   function stopCamera() {
     if (stream) {
@@ -253,13 +251,15 @@
       tracks.forEach(track => track.stop());
     }
   }
-    // Event listener for the clear photo button
-    document.getElementById('clear-photo').addEventListener('click', function() {
-        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-        captureInput.value = ''; // Clear the selected file
-        click_button.style.display = "block";
-        canvas.style.display = "none";
-    camera_button.style.display = "none";
+  // Event listener for the clear photo button
+  document.getElementById('clear-photo')
+    .addEventListener('click', function() {
+      canvas.getContext('2d')
+        .clearRect(0, 0, canvas.width, canvas.height);
+      captureInput.value = ''; // Clear the selected file
+      click_button.style.display = "block";
+      canvas.style.display = "none";
+      camera_button.style.display = "none";
     });
 
 </script>

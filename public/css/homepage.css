@@ -382,9 +382,7 @@ body::before {
   padding: 21px 21px 29px 21px;
   border-radius: 20px;
   width: 375px;
-  height: 250px;
   background-color: #717070;
-  /* display: none; */
 }
 
 .studentCardHead {

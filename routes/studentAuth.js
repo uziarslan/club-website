@@ -10,7 +10,7 @@ const { storage } = require('../cloudinary');
 const { isStudent } = require('../middlewares');
 const upload = multer({ storage });
 const { uploader } = require('cloudinary').v2
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 const router = express();
 
 
@@ -32,7 +32,7 @@ router.post('/student/register/:teamId', upload.fields(
         { name: "captureImage", maxCount: 1 }
     ]
 ), wrapAsync(async (req, res) => {
-    const { username, password, dop, jersey, coach } = req.body;
+    const { username, password, dop, jersey, coach, dob } = req.body;
     const { teamId } = req.params;
     const foundStudent = await Student.find({ username });
     const foundJersey = await Student.find({
@@ -40,6 +40,16 @@ router.post('/student/register/:teamId', upload.fields(
         dop,
         jersey
     });
+
+    const dateOfBirth = new Date(dob);
+
+    const today = new Date();
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const m = today.getMonth() - dateOfBirth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+        age--;
+    }
+
 
     if (coach === "none") {
         req.flash('error', 'You can not register without the coach.');
@@ -63,6 +73,7 @@ router.post('/student/register/:teamId', upload.fields(
         ...req.body,
         team: teamId,
         coach: req.body.coach,
+        age
     });
 
     if (req.files["image"]) {
