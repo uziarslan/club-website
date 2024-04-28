@@ -466,6 +466,14 @@ body::before {
   text-align: center;
 }
 
+.whatsapp-icon {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  font-size: 50px;
+  color: #25D366;
+  z-index: 19999;
+}
 
 @media (max-width:1860px) {
   .textAndButtons {
