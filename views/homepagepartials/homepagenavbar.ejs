@@ -1,4 +1,4 @@
-<div class="navbarContainer">
+<!-- <div class="navbarContainer">
   <nav class="navbar">
     <div class="logoContent">
       <img class="navbarLogo" src="/images/logo.png" />
@@ -9,10 +9,10 @@
     </div>
     <ul class="navButtonsContainer">
       <li class="navButtons active"><a href="/">Home</a></li>
-      <li class="navButtons"><a href="/">News</a></li>
-      <li class="navButtons"><a href="/">Teams</a></li>
-      <li class="navButtons"><a href="/">Staff</a></li>
-      <li class="navButtons"><a href="/">Table</a></li>
+      <li class="navButtons"><a href="#">News</a></li>
+      <li class="navButtons"><a href="#teams">Teams</a></li>
+      <li class="navButtons"><a href="#">Staff</a></li>
+      <li class="navButtons"><a href="#">Table</a></li>
       <% if(title === "Players"){ %>
       <button type="button" class="qrCodeBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Qr Code
@@ -27,4 +27,44 @@
       </div>
     </div>
   </nav>
-</div>
+</div> -->
+<nav style="z-index: 19999;" class="navbar navbar-expand-lg navbar-dark">
+  <a class="navbar-brand">
+    <div class="logoContent">
+      <img class="navbarLogo" src="/images/logo.png" />
+      <div class="logoTextContent">
+        <p class="logoTextContentMainHeading">Join Our Team</p>
+        <p class="logoTextContentSubheading">Find your team</p>
+      </div>
+    </div>
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">News</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#teams">Teams</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Staff</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Table</a>
+      </li>
+    </ul>
+  </div>
+  <div class="loginSection">
+    <i class='bx bx-search-alt'></i>
+    <div class="loginButtonContainer">
+      <a href="/student/login" class="loginButton">Login</a>
+    </div>
+  </div>
+</nav>

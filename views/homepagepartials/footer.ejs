@@ -2,5 +2,21 @@
   <i class="fab fa-whatsapp"></i>
 </a>
 </body>
+<script>
+  let navButtons = document.querySelectorAll(".nav-item");
+
+  function changeActive() {
+    navButtons.forEach(element => {
+      element.classList.remove("active");
+    });
+    this.classList.add("active");
+  }
+
+  // Attaching the function to buttons
+  navButtons.forEach(button => {
+    button.addEventListener('click', changeActive);
+  });
+
+</script>
 
 </html>
