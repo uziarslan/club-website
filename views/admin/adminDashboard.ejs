@@ -7,10 +7,10 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title mb-4">Search</h5>
-          <form action="/generate/excel" method="POST">
+          <form action="/generate/report" method="get">
             <div class="row">
               <div class="col-2">
-                <select name="team" class="form-control">
+                <select id="reportFormTeam" name="team" class="form-control">
                   <option disabled selected>Team</option>
                   <% for (let team of teams){ %>
                   <option value="<%= team._id %>"><%= team.name %></option>
@@ -25,7 +25,7 @@
                   <% } %>
                 </select>
               </div>
-              <button type="submit" class="btn btn-outline-primary btn-sm">Download PDF <i class="fa fa-download"></i></button>
+              <button type="submit" class="btn btn-outline-primary btn-sm">Generate <i class="fa fa-download"></i></button>
             </div>
           </form>
         </div>

@@ -282,62 +282,62 @@ router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
 
 
 // Generating a PDF
-router.post('/generate/document', isAdmin, wrapAsync(async (req, res) => {
-    const { team, division, coach } = req.body;
-    const t = await Team.findById(team).lean();
-    const c = await Coach.findById(coach).lean();
-    const filteredStudents = await Student.find({
-        team: team,
-        dop: division,
-    }).populate('team').populate('coach').lean();
+// router.post('/generate/document', isAdmin, wrapAsync(async (req, res) => {
+//     const { team, division, coach } = req.body;
+//     const t = await Team.findById(team).lean();
+//     const c = await Coach.findById(coach).lean();
+//     const filteredStudents = await Student.find({
+//         team: team,
+//         dop: division,
+//     }).populate('team').populate('coach').lean();
 
-    if (!filteredStudents.length) {
-        req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
-        return res.redirect('/admin/dashboard');
-    }
+//     if (!filteredStudents.length) {
+//         req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
+//         return res.redirect('/admin/dashboard');
+//     }
 
-    const doc = new PDFDocument();
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.pdf"`);
+//     const doc = new PDFDocument();
+//     res.setHeader('Content-Type', 'application/pdf');
+//     res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.pdf"`);
 
-    doc.pipe(res);
+//     doc.pipe(res);
 
-    const response = await fetch(t.image.path);
-    const logoBuffer = await response.buffer();
-    doc.image(logoBuffer, 50, 40, { width: 50 })
-        .fontSize(20)
-        .text(`${t.name} - ${c.fullname}`, 110, 50);
+//     const response = await fetch(t.image.path);
+//     const logoBuffer = await response.buffer();
+//     doc.image(logoBuffer, 50, 40, { width: 50 })
+//         .fontSize(20)
+//         .text(`${t.name} - ${c.fullname}`, 110, 50);
 
-    let currentYPosition = 100;
+//     let currentYPosition = 100;
 
-    for (const student of filteredStudents) {
-        const studentResponse = await fetch(student.image.path);
-        const imageBuffer = await studentResponse.buffer();
+//     for (const student of filteredStudents) {
+//         const studentResponse = await fetch(student.image.path);
+//         const imageBuffer = await studentResponse.buffer();
 
-        if (currentYPosition > doc.page.height - 100) {
-            doc.addPage();
-            currentYPosition = 50;
-        }
+//         if (currentYPosition > doc.page.height - 100) {
+//             doc.addPage();
+//             currentYPosition = 50;
+//         }
 
-        doc.image(imageBuffer, 50, currentYPosition, { width: 100 });
-        doc.fontSize(10)
-            .text(`Name: ${student.fullname}`, 160, currentYPosition)
-            .text(`DOB: ${student.dob}`, 160, currentYPosition + 20)
-            .text(`Jersey #: ${student.jersey}`, 160, currentYPosition + 40)
-            .text(`Role: ${student.role}`, 160, currentYPosition + 60);
+//         doc.image(imageBuffer, 50, currentYPosition, { width: 100 });
+//         doc.fontSize(10)
+//             .text(`Name: ${student.fullname}`, 160, currentYPosition)
+//             .text(`DOB: ${student.dob}`, 160, currentYPosition + 20)
+//             .text(`Jersey #: ${student.jersey}`, 160, currentYPosition + 40)
+//             .text(`Role: ${student.role}`, 160, currentYPosition + 60);
 
-        currentYPosition += 100;
-    }
+//         currentYPosition += 100;
+//     }
 
-    doc.end();
-}));
+//     doc.end();
+// }));
 
 
-async function fetchImageAsBuffer(url) {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-    return response.buffer();
-}
+// async function fetchImageAsBuffer(url) {
+//     const response = await fetch(url);
+//     if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+//     return response.buffer();
+// }
 
 
 // Generating Excel File
@@ -419,93 +419,111 @@ async function fetchImageAsBuffer(url) {
 
 // }));
 
-async function fetchImageAsBuffer(url, desiredWidth, desiredHeight) {
-    let response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-    let buffer = await response.buffer();
-    let dimensions = imageSize(buffer);
-
-    if (dimensions.width !== desiredWidth || dimensions.height !== desiredHeight) {
-        buffer = await sharp(buffer).resize(desiredWidth, desiredHeight).toBuffer()
-    }
-    return { buffer, dimensions: { width: desiredWidth, height: desiredHeight } };
-}
-
-async function addImageToWorksheet(workbook, worksheet, url, cell) {
-    const passportWidth = 120; // Your desired image width in pixels
-    const passportHeight = 150; // Your desired image height in pixels
-
-    const { buffer, dimensions } = await fetchImageAsBuffer(url, passportWidth, passportHeight);
-
-    // 1. Get Image ID
-    const imageId = workbook.addImage({
-        buffer: buffer,
-        extension: 'jpeg', // Adjust based on your image's actual format
+router.get('/generate/report', isAdmin, wrapAsync(async (req, res) => {
+    const { team, division } = req.query;
+    const t = await Team.findById(team).populate({
+        path: "students",
+        match: { dop: division, status: "approved" }
     });
+    const students = t.students.map(student => ({
+        ...student.toObject(),
+        teamImage: t.image.path
+    }));
 
-    // 2. Adjust row for images
-    const imageRow = cell.row + 1; // Assuming you want the image directly below  
-
-    // 3. Insert image into the cell
-    worksheet.addImage(imageId, {
-        tl: { col: cell.col, row: imageRow - 1 }, // Top-left corner
-        ext: { width: passportWidth, height: passportHeight }, // Image dimensions
-        editAs: 'oneCell' // Key Change: Treat image and cell as one entity
-    });
-
-    // 4. Automatic Row Height Adjustment
-    worksheet.getRow(imageRow).height = passportHeight / 1.3;
-    worksheet.getColumn(cell.col + 1).width = passportWidth / 7;
-}
-
-
-
-
-router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
-    const { team, division } = req.body;
-    const t = await Team.findById(team).lean();
-
-    const filteredStudents = await Student.find({ team: team, dop: division }).lean();
-
-    if (!filteredStudents.length) {
-        req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
-        return res.redirect('/admin/dashboard');
+    if (!students.length) {
+        req.flash("error", "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.")
+        return res.redirect('/admin/dashboard')
     }
-
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Students');
-
-    // if (t.image && t.image.path) {
-    //     await addImageToWorksheet(workbook, worksheet, t.image.path, { col: 0, row: 0 });
-    // }
-
-    for (let idx = 0; idx < filteredStudents.length; idx++) {
-        const student = filteredStudents[idx];
-        const imageRow = idx * 5;
-        const headerRow = imageRow + 1;
-        const dataRow = headerRow + 1;
-
-
-
-        if (student.image && student.image.path) {
-            await addImageToWorksheet(workbook, worksheet, student.image.path, { col: 0, row: imageRow });
-        }
-
-        worksheet.getCell(`A${headerRow + 1}`).value = 'Jersey';
-        worksheet.getCell(`B${headerRow + 1}`).value = 'Name';
-        worksheet.getCell(`C${headerRow + 1}`).value = 'D.O.B';
-
-        worksheet.getCell(`A${dataRow + 2}`).value = student.jersey;
-        worksheet.getCell(`B${dataRow + 2}`).value = student.fullname;
-        worksheet.getCell(`C${dataRow + 2}`).value = student.dob;
-    }
-
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.xlsx"`);
-
-    await workbook.xlsx.write(res);
-    res.end();
+    res.render('./admin/print', { students, teamName: t.name, teamLogo: t.image.path })
 }));
+
+// async function fetchImageAsBuffer(url, desiredWidth, desiredHeight) {
+//     let response = await fetch(url);
+//     if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+//     let buffer = await response.buffer();
+//     let dimensions = imageSize(buffer);
+
+//     if (dimensions.width !== desiredWidth || dimensions.height !== desiredHeight) {
+//         buffer = await sharp(buffer).resize(desiredWidth, desiredHeight).toBuffer()
+//     }
+//     return { buffer, dimensions: { width: desiredWidth, height: desiredHeight } };
+// }
+
+// async function addImageToWorksheet(workbook, worksheet, url, cell) {
+//     const passportWidth = 120; // Your desired image width in pixels
+//     const passportHeight = 150; // Your desired image height in pixels
+
+//     const { buffer, dimensions } = await fetchImageAsBuffer(url, passportWidth, passportHeight);
+
+//     // 1. Get Image ID
+//     const imageId = workbook.addImage({
+//         buffer: buffer,
+//         extension: 'jpeg', // Adjust based on your image's actual format
+//     });
+
+//     // 2. Adjust row for images
+//     const imageRow = cell.row + 1; // Assuming you want the image directly below  
+
+//     // 3. Insert image into the cell
+//     worksheet.addImage(imageId, {
+//         tl: { col: cell.col, row: imageRow - 1 }, // Top-left corner
+//         ext: { width: passportWidth, height: passportHeight }, // Image dimensions
+//         editAs: 'oneCell' // Key Change: Treat image and cell as one entity
+//     });
+
+//     // 4. Automatic Row Height Adjustment
+//     worksheet.getRow(imageRow).height = passportHeight / 1.3;
+//     worksheet.getColumn(cell.col + 1).width = passportWidth / 7;
+// }
+
+
+
+
+// router.post('/generate/excel', isAdmin, wrapAsync(async (req, res) => {
+//     const { team, division } = req.body;
+//     const t = await Team.findById(team).lean();
+
+//     const filteredStudents = await Student.find({ team: team, dop: division }).lean();
+
+//     if (!filteredStudents.length) {
+//         req.flash('error', "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.");
+//         return res.redirect('/admin/dashboard');
+//     }
+
+//     const workbook = new ExcelJS.Workbook();
+//     const worksheet = workbook.addWorksheet('Students');
+
+//     // if (t.image && t.image.path) {
+//     //     await addImageToWorksheet(workbook, worksheet, t.image.path, { col: 0, row: 0 });
+//     // }
+
+//     for (let idx = 0; idx < filteredStudents.length; idx++) {
+//         const student = filteredStudents[idx];
+//         const imageRow = idx * 5;
+//         const headerRow = imageRow + 1;
+//         const dataRow = headerRow + 1;
+
+
+
+//         if (student.image && student.image.path) {
+//             await addImageToWorksheet(workbook, worksheet, student.image.path, { col: 0, row: imageRow });
+//         }
+
+//         worksheet.getCell(`A${headerRow + 1}`).value = 'Jersey';
+//         worksheet.getCell(`B${headerRow + 1}`).value = 'Name';
+//         worksheet.getCell(`C${headerRow + 1}`).value = 'D.O.B';
+
+//         worksheet.getCell(`A${dataRow + 2}`).value = student.jersey;
+//         worksheet.getCell(`B${dataRow + 2}`).value = student.fullname;
+//         worksheet.getCell(`C${dataRow + 2}`).value = student.dob;
+//     }
+
+//     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//     res.setHeader('Content-Disposition', `attachment; filename="${t.name}-${division}.xlsx"`);
+
+//     await workbook.xlsx.write(res);
+//     res.end();
+// }));
 
 
 

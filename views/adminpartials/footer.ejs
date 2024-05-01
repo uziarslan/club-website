@@ -6,6 +6,10 @@
     </span>
   </div>
 </footer>
+<!-- <script>
+  const teams = document.getElementById('reportFormTeam')
+  teams.onchange
+</script> -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -51,105 +55,148 @@
       btnOuter.removeClass("file_uploading");
       btnOuter.removeClass("file_uploaded");
     });
+
 </script>
 <script>
-  var btnUpload1 = $("#upload_file1"),
-    btnOuter1 = $(".button_outer1");
+  var btnUpload1 = $("#upload_file1")
+    , btnOuter1 = $(".button_outer1");
   btnUpload1.on("change", function(e) {
-    var ext2 = btnUpload1.val().split('.').pop().toLowerCase();
+    var ext2 = btnUpload1.val()
+      .split('.')
+      .pop()
+      .toLowerCase();
     if ($.inArray(ext2, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
-      $(".error_msg1").text("Not an Image...");
+      $(".error_msg1")
+        .text("Not an Image...");
     } else {
-      $(".error_msg1").text("");
+      $(".error_msg1")
+        .text("");
       btnOuter1.addClass("file_uploading1");
       setTimeout(function() {
         btnOuter1.addClass("file_uploaded1");
       }, 3000);
       var uploadedFile1 = URL.createObjectURL(e.target.files[0]);
       setTimeout(function() {
-        $("#uploaded_view1").addClass("showdisplayblock");
+        $("#uploaded_view1")
+          .addClass("showdisplayblock");
 
 
-        $("#uploaded_view1").append('<img src="' + uploadedFile1 + '" />').addClass("show1");
+        $("#uploaded_view1")
+          .append('<img src="' + uploadedFile1 + '" />')
+          .addClass("show1");
       }, 3500);
     }
   });
-  $(".file_remove1").on("click", function(e) {
-    $("#uploaded_view1").removeClass("showdisplayblock");
+  $(".file_remove1")
+    .on("click", function(e) {
+      $("#uploaded_view1")
+        .removeClass("showdisplayblock");
 
-    $("#uploaded_view1").removeClass("show1");
+      $("#uploaded_view1")
+        .removeClass("show1");
 
-    $("#uploaded_view1").find("img").remove();
-    btnOuter1.removeClass("file_uploading1");
-    btnOuter1.removeClass("file_uploaded1");
-  });
+      $("#uploaded_view1")
+        .find("img")
+        .remove();
+      btnOuter1.removeClass("file_uploading1");
+      btnOuter1.removeClass("file_uploaded1");
+    });
+
 </script>
 <script>
-  var btnUpload3 = $("#upload_file3"),
-    btnOuter3 = $(".button_outer3");
+  var btnUpload3 = $("#upload_file3")
+    , btnOuter3 = $(".button_outer3");
   btnUpload3.on("change", function(e) {
-    var ext3 = btnUpload3.val().split('.').pop().toLowerCase();
+    var ext3 = btnUpload3.val()
+      .split('.')
+      .pop()
+      .toLowerCase();
     if ($.inArray(ext3, ['mp3', 'mpeg']) == -1) {
-      $(".error_msg3").text("Not an Audio...");
+      $(".error_msg3")
+        .text("Not an Audio...");
     } else {
-      $(".error_msg3").text("");
+      $(".error_msg3")
+        .text("");
       btnOuter3.addClass("file_uploading3");
       setTimeout(function() {
         btnOuter3.addClass("file_uploaded3");
       }, 3000);
       var uploadedFile3 = URL.createObjectURL(e.target.files[0]);
       setTimeout(function() {
-        $("#uploaded_view3").addClass("showdisplayblock");
+        $("#uploaded_view3")
+          .addClass("showdisplayblock");
         // Assuming uploadedFile3 contains the path to the audio file
         var audioElement = '<audio controls>' +
           '<source src="' + uploadedFile3 + '" type="audio/mpeg">' +
           '</audio>';
 
         // Append the audio element to the element with ID uploaded_view3
-        $("#uploaded_view3").append(audioElement).addClass("show3");
+        $("#uploaded_view3")
+          .append(audioElement)
+          .addClass("show3");
       }, 3500);
     }
   });
-  $(".file_remove3").on("click", function(e) {
-    $("#uploaded_view3").removeClass("showdisplayblock");
+  $(".file_remove3")
+    .on("click", function(e) {
+      $("#uploaded_view3")
+        .removeClass("showdisplayblock");
 
-    $("#uploaded_view3").removeClass("show3");
-    $("#uploaded_view3").find("img").remove();
-    btnOuter3.removeClass("file_uploading3");
-    btnOuter3.removeClass("file_uploaded3");
-  });
+      $("#uploaded_view3")
+        .removeClass("show3");
+      $("#uploaded_view3")
+        .find("img")
+        .remove();
+      btnOuter3.removeClass("file_uploading3");
+      btnOuter3.removeClass("file_uploaded3");
+    });
+
 </script>
 
 <script>
-  var btnUpload4 = $("#upload_file4"),
-    btnOuter4 = $(".button_outer4");
+  var btnUpload4 = $("#upload_file4")
+    , btnOuter4 = $(".button_outer4");
   btnUpload4.on("change", function(e) {
-    var ext4 = btnUpload4.val().split('.').pop().toLowerCase();
+    var ext4 = btnUpload4.val()
+      .split('.')
+      .pop()
+      .toLowerCase();
     if ($.inArray(ext4, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
-      $(".error_msg4").text("Not an Image...");
+      $(".error_msg4")
+        .text("Not an Image...");
     } else {
-      $(".error_msg4").text("");
+      $(".error_msg4")
+        .text("");
       btnOuter4.addClass("file_uploading4");
       setTimeout(function() {
         btnOuter4.addClass("file_uploaded4");
       }, 3000);
       var uploadedFile4 = URL.createObjectURL(e.target.files[0]);
       setTimeout(function() {
-        $("#uploaded_view4").addClass("showdisplayblock");
+        $("#uploaded_view4")
+          .addClass("showdisplayblock");
 
 
-        $("#uploaded_view4").append('<img src="' + uploadedFile4 + '" />').addClass("show4");
+        $("#uploaded_view4")
+          .append('<img src="' + uploadedFile4 + '" />')
+          .addClass("show4");
       }, 3500);
     }
   });
-  $(".file_remove4").on("click", function(e) {
-    $("#uploaded_view4").removeClass("showdisplayblock");
+  $(".file_remove4")
+    .on("click", function(e) {
+      $("#uploaded_view4")
+        .removeClass("showdisplayblock");
 
-    $("#uploaded_view4").removeClass("show4");
-    $("#uploaded_view4").find("img").remove();
-    btnOuter4.removeClass("file_uploading4");
-    btnOuter4.removeClass("file_uploaded4");
-  });
+      $("#uploaded_view4")
+        .removeClass("show4");
+      $("#uploaded_view4")
+        .find("img")
+        .remove();
+      btnOuter4.removeClass("file_uploading4");
+      btnOuter4.removeClass("file_uploaded4");
+    });
+
 </script>
 
 <script>
@@ -167,6 +214,7 @@
       // Additional logic or redirection after form submission response
     }
   });
+
 </script>
 <script src="/js/Javascript/jquery/dist/jquery.min.js"></script>
 <script src="/js/Javascript/popper.js/dist/umd/popper.min.js"></script>
@@ -187,11 +235,11 @@
         .DataTable({
           "order": [
             [0, "desc"]
-          ],
-          "lengthMenu": [10, 25, 50],
-          "stripeClasses": ['even', 'odd'],
-          "pagingType": "simple_numbers",
-        });
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
     });
   $(document)
     .ready(function() {
@@ -199,11 +247,11 @@
         .DataTable({
           "order": [
             [0, "desc"]
-          ],
-          "lengthMenu": [10, 25, 50],
-          "stripeClasses": ['even', 'odd'],
-          "pagingType": "simple_numbers",
-        });
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
     });
   $(document)
     .ready(function() {
@@ -211,12 +259,13 @@
         .DataTable({
           "order": [
             [0, "desc"]
-          ],
-          "lengthMenu": [10, 25, 50],
-          "stripeClasses": ['even', 'odd'],
-          "pagingType": "simple_numbers",
-        });
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
     });
+
 </script>
 </body>
 

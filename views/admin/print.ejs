@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= teamName %></title>
+  <link rel="icon" type="image/png" href="<%= teamLogo %>">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<style>
+  .dataContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .imageContainer {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+  }
+
+  .imageStyles {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+  }
+
+  table {
+    border-collapse: collapse;
+    /* Ensures that the border style is uniform */
+  }
+
+  th,
+  td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .tabelHeadings th {
+    background-color: red;
+    font-style: italic;
+  }
+
+  .branding {
+    color: red;
+    font-style: italic;
+  }
+
+  .printButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #1DA1F2;
+    width: 100px;
+    height: 100px;
+    border: none;
+    border-radius: 50%;
+  }
+
+  .printButton i {
+    font-size: 40px;
+    color: white;
+  }
+
+  @media print {
+
+    header,
+    footer,
+    button,
+    .noprint {
+      display: none;
+    }
+  }
+
+</style>
+
+<body>
+  <button class="printButton" onclick="window.print()"><i class='bx bx-printer'></i></button>
+  <div class="dataContainer">
+    <% for (let student of students){ %>
+    <table>
+      <thead>
+        <tr>
+          <th class="imageContainer">
+            <img class="imageStyles" src="/images/logo.png" alt="Company Logo">
+          </th>
+          <th class="imageContainer">
+            <img class="imageStyles" src="<%= student.teamImage %>" alt="Team Logo">
+          </th>
+          <th class="imageContainer">
+            <img class="imageStyles" src="<%= student.image.path %>" alt="Student Image">
+          </th>
+        </tr>
+        <tr class="tabelHeadings">
+          <th>Jersey</th>
+          <th>Name</th>
+          <th>D.O.B</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= student.jersey %></td>
+          <td><%= student.fullname %></td>
+          <td><%= student.dob %></td>
+        </tr>
+        <tr>
+          <td class="branding" colspan="3">BIG TRI STATE FOOTBALL DIVISION <%= student.dop %></td>
+        </tr>
+      </tbody>
+    </table>
+    <% } %>
+  </div>
+</body>
+
+</html>
