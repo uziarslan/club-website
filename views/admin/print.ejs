@@ -81,7 +81,7 @@
 <body>
   <button class="printButton" onclick="window.print()"><i class='bx bx-printer'></i></button>
   <div class="dataContainer">
-    <% for (let student of students){ %>
+    <% students.forEach((student, index) => { %>
     <table>
       <thead>
         <tr>
@@ -110,9 +110,12 @@
         <tr>
           <td class="branding" colspan="3">BIG TRI STATE FOOTBALL DIVISION <%= student.dop %></td>
         </tr>
+        <tr>
+          <td colspan="3">#<%= index + 1 %></td>
+        </tr>
       </tbody>
     </table>
-    <% } %>
+    <% }); %>
   </div>
 </body>
 
