@@ -55,6 +55,7 @@ app.set(path.join(__dirname, 'views'));
 
 // Using the app
 app.use(express.static(__dirname + '/public'));
+app.use('/scripts', express.static(path.join(__dirname, 'node_modules')));
 app.use(methodOverride('_method'));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));

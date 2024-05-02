@@ -535,10 +535,6 @@ body::before {
     display: none;
   }
 
-  .loginSection #menu {
-    display: block;
-  }
-
   .heroSection {
     display: flex;
     flex-direction: column-reverse;
