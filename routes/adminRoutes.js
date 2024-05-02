@@ -437,6 +437,33 @@ router.get('/generate/report', isAdmin, wrapAsync(async (req, res) => {
     res.render('./admin/print', { students, teamName: t.name, teamLogo: t.image.path })
 }));
 
+
+router.get('/generate/complete/report', isAdmin, wrapAsync(async (req, res) => {
+    const { team, division } = req.query;
+    const t = await Team.findById(team).populate({
+        path: "students",
+        match: { dop: division, status: "approved" }
+    }).populate("coaches");
+    const students = t.students.map(student => ({
+        ...student.toObject(),
+        teamImage: t.image.path
+    }));
+
+    const coaches = t.coaches.filter(coach => coach.status === "approved")
+
+    if (!students.length) {
+        req.flash("error", "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.")
+        return res.redirect('/admin/dashboard')
+    }
+    res.render('./admin/print2', {
+        students,
+        teamName: t.name,
+        teamLogo: t.image.path,
+        division,
+        coaches
+    });
+}));
+
 // async function fetchImageAsBuffer(url, desiredWidth, desiredHeight) {
 //     let response = await fetch(url);
 //     if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.statusText}`);

@@ -20,7 +20,7 @@
         <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p>
         <div class="buttons">
           <div class="joinourteamButtonWrapper">
-            <a href="/student/register/<%= team._id %>" class="joinOurTeamButton">Register as a student</a>
+            <a href="/student/register/<%= team._id %>" class="joinOurTeamButton">Register as a player</a>
           </div>
           <div class="supportusButtonWrapper">
             <a href="/coach/register" class="supportUsButton">Register as a coach</a>
@@ -55,10 +55,12 @@
       <div class="modal-body d-flex justify-content-center align-items-center">
         <img style="width: 250px; height: 250px;" src="<%= team.qrCode %>" />
       </div>
-      <!-- <div class="modal-footer">
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div> -->
+        <form action="/download/qr/<%= team._id %>" method="post">
+          <button type="submit" class="btn btn-primary">Download</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
@@ -112,7 +114,7 @@
         const studentCard = `
 <div class="studentCard">
     <div class="studentCardHead">
-        <img class="studentImage" src="${student.image.path}" alt="Student Image">
+        <img class="studentImage" src="${student.image.path}" alt="Player Image">
     </div>
     <div class="studentCardBody">
         <div class="studentDetails">
@@ -131,7 +133,7 @@
         teamsWrapper.innerHTML += studentCard;
       });
     } else {
-      teamsWrapper.innerHTML = '<p class="noDataText">No Students Registered yet.</p>';
+      teamsWrapper.innerHTML = '<p class="noDataText">No Player Registered yet.</p>';
     }
   }
 

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= teamName %></title>
+  <link rel="icon" type="image/png" href="<%= teamLogo %>">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<style>
+  .headerLogos {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+  }
+
+  .imageStyles {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+  }
+
+  .centeredText {
+    text-align: center;
+  }
+
+  .centeredText h2,
+  p {
+    margin: 0;
+  }
+
+  .noticeBoard {
+    margin-bottom: 15px;
+  }
+
+  .noticetext {
+    margin-top: 15px;
+    background-color: rgb(255, 255, 150);
+    padding: 10px 15px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  table {
+    border-collapse: collapse;
+    /* Ensures that the border style is uniform */
+  }
+
+  th,
+  td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .printButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #1DA1F2;
+    width: 100px;
+    height: 100px;
+    border: none;
+    border-radius: 50%;
+  }
+
+  .printButton i {
+    font-size: 40px;
+    color: white;
+  }
+
+  .coachTable {
+    margin: 20px auto;
+  }
+
+  .studentTable {
+    margin: 0 auto;
+  }
+
+  @media print {
+
+    header,
+    footer,
+    button,
+    .noprint {
+      display: none;
+    }
+
+  }
+
+</style>
+
+<body>
+  <button class="printButton" onclick="window.print()"><i class='bx bx-printer'></i></button>
+  <div class="headerLogos">
+    <img class="imageStyles" src="/images/logo.png" alt="Team logo" />
+    <div class="centeredText">
+      <h2><%= teamName %></h4>
+        <p>Mandatory Play Sheet</p>
+    </div>
+    <img class="imageStyles" src="<%= teamLogo %>" alt="Team logo" />
+  </div>
+  <div class="noticeBoard">
+    <p class="noticetext">Eligible Players are those who are eligible after the weigh-in. Weigh-ins to be held 1/2 hour before start of the game, or half time of the proceeding game. Total player count = total eligible players. </p>
+    <p class="noticetext">All eligible players must receive their manditory plays by the end of the 3rd quarter or they must enter the game at the start of the 4th quarter, and remain in the game until they have received their required # of plays.</p>
+  </div>
+  <table class="coachTable">
+    <thead>
+      <tr>
+        <th>Conference</th>
+        <th>Division of Play</th>
+        <!-- <th>Division of Play:</th> -->
+        <th>Head Coach</th>
+        <th>Cell Phone</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(let coach of coaches){ %>
+      <tr>
+        <td>Big Tri State Football</td>
+        <td><b><%= division %></b></td>
+        <!-- <td>[ ] National [ X] All American (Unlimited) ( X One)</td> -->
+        <td><%= coach.fullname %></td>
+        <td><%= coach.phone %></td>
+        <td><%= coach.username %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <table class="studentTable">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Jer. #</th>
+        <th>Players Name</th>
+        <th>Birthday</th>
+        <th>Age</th>
+        <th colspan="10">Association</th>
+        <th>Email Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% students.forEach((student, index) => { %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= student.jersey %></td>
+        <td><%= student.fullname %></td>
+        <td><%= student.dob %></td>
+        <td><%= student.age %></td>
+        <td colspan="10"><%= student.association %></td>
+        <td><%= student.username %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+
+</html>

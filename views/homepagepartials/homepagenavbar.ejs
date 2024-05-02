@@ -1,35 +1,5 @@
-<!-- <div class="navbarContainer">
-  <nav class="navbar">
-    <div class="logoContent">
-      <img class="navbarLogo" src="/images/logo.png" />
-      <div class="logoTextContent">
-        <p class="logoTextContentMainHeading">Join Our Team</p>
-        <p class="logoTextContentSubheading">Find your team</p>
-      </div>
-    </div>
-    <ul class="navButtonsContainer">
-      <li class="navButtons active"><a href="/">Home</a></li>
-      <li class="navButtons"><a href="#">News</a></li>
-      <li class="navButtons"><a href="#teams">Teams</a></li>
-      <li class="navButtons"><a href="#">Staff</a></li>
-      <li class="navButtons"><a href="#">Table</a></li>
-      <% if(title === "Players"){ %>
-      <button type="button" class="qrCodeBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Qr Code
-      </button>
-      <% } %>
-    </ul>
-    <div class="loginSection">
-      <i class='bx bx-search-alt'></i>
-      <i id="menu" class='bx bx-menu'></i>
-      <div class="loginButtonContainer">
-        <a href="/student/login" class="loginButton">Login</a>
-      </div>
-    </div>
-  </nav>
-</div> -->
 <nav style="z-index: 19999;" class="navbar navbar-expand-lg navbar-dark">
-  <a class="navbar-brand">
+  <a href="/" class="navbar-brand">
     <div class="logoContent">
       <img class="navbarLogo" src="/images/logo.png" />
       <div class="logoTextContent">
@@ -59,6 +29,18 @@
       <li class="nav-item">
         <a class="nav-link" href="#">Table</a>
       </li>
+      <li>
+        <div class="loginButtonContainerDisabled">
+          <a href="/student/login" class="loginButton">Login</a>
+        </div>
+      </li>
+      <% if(title === "Players"){ %>
+      <li>
+        <button type="button" class="qrCodeBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Qr Code
+        </button>
+      </li>
+      <% } %>
     </ul>
   </div>
   <div class="loginSection">

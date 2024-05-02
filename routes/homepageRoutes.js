@@ -42,12 +42,34 @@ router.get('/:teamId/player/show', wrapAsync(async (req, res) => {
     });
 }));
 
+
+router.post('/download/qr/:teamId', wrapAsync(async (req, res) => {
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId);
+
+    if (!team || !team.qrCode) {
+        return res.status(404).send('QR code not found');
+    }
+
+    const base64Data = team.qrCode.split(';base64,').pop();
+
+    const imgBuffer = Buffer.from(base64Data, 'base64');
+
+    res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Disposition': `attachment; filename="${team.name}.png"`
+    });
+
+    res.end(imgBuffer);
+}))
+
+
 // Change the domain name before going live
 
 // router.get('/seed', wrapAsync(async (req, res) => {
 //     const teams = await Team.find({});
 //     for (let team of teams) {
-//         qrcode.toDataURL(`http://localhost:3000/${team._id}/player/show`, async function (err, url) {
+//         qrcode.toDataURL(`https://bigtristate.com/${team._id}/player/show`, async function (err, url) {
 //             team.qrCode = url
 //             await team.save()
 //         });
