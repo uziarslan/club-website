@@ -65,37 +65,33 @@
   </div>
 
 
-  <!-- If Result Fetch Then Display it  Start-->
-  <!-- <div class="card-deck">
-    <div class="card col-lg-12 px-0 mb-4">
-      <div class="card-body">
-        <h5 class="card-title">Results</h5>
-        <div class="table-responsive">
-          <table class="table center-aligned-table" id="transactionTable">
-            <thead>
-              <tr class="text-primary">
-                <th>Team</th>
-                <th>Division</th>
-                <th>Coach</th>
-                <th>OPTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="">
-                <td>Multan Sultan</td>
-                <td>Multan </td>
-                <td>Mujtaba Azhar</td>
-                <td><a href="#" class="btn btn-outline-primary btn-sm">Download PDF <i class="fa fa-download"></i></a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="row mb-4">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Create Players</h5>
+          <form action="/upload-csv" method="post" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-2">
+                <select class="form-control" name="teamId" id="teams" onchange="updateCoaches()">
+                  <% for (let team of teams){ %>
+                  <option value="<%= team.id %>"><%= team.name %></option>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-2">
+                <select class="form-control" name="coachId" id="coaches"></select>
+              </div>
+              <div class="col-2">
+                <input type="file" required accept=".csv" name="csvFile" />
+              </div>
+              <button id="submitButton" type="submit" class="btn btn-outline-primary btn-sm">Upload and create</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </div> -->
-
-  <!-- If Result Fetch Then Display it END -->
+  </div>
 
   <div class="row">
     <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
@@ -108,12 +104,12 @@
               </h4>
             </div>
             <div class="float-left">
-              <p class="card-text text-dark">Loyal Students</p>
+              <p class="card-text text-dark">Loyal Players</p>
               <h4 class="bold-text">200</h4>
             </div>
           </div>
           <p class="text-muted">
-            Loyal Students
+            Loyal Players
           </p>
         </div>
       </div>
@@ -128,12 +124,12 @@
               </h4>
             </div>
             <div class="float-left">
-              <p class="card-text text-dark">FREQUENT Students</p>
+              <p class="card-text text-dark">FREQUENT Players</p>
               <h4 class="bold-text">600</h4>
             </div>
           </div>
           <p class="text-muted">
-            Frequent Students
+            Frequent Players
           </p>
         </div>
       </div>
@@ -148,17 +144,48 @@
               </h4>
             </div>
             <div class="float-left">
-              <p class="card-text text-dark">DISCONNECTED Students</p>
+              <p class="card-text text-dark">DISCONNECTED Players</p>
               <h4 class="bold-text">600</h4>
             </div>
           </div>
           <p class="text-muted">
-            Disconnected Students
+            Disconnected Players
           </p>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+  const teams = <%- JSON.stringify(teams) %>;
 
+  function updateCoaches() {
+    const selectedTeamId = document.getElementById('teams')
+      .value;
+    const selectedTeam = teams.find(team => team._id === selectedTeamId);
+    const coachesSelect = document.getElementById('coaches');
+    coachesSelect.innerHTML = '';
+    if (selectedTeam && selectedTeam.coaches.length) {
+      selectedTeam.coaches.forEach(coach => {
+        var button = document.querySelector("#submitButton");
+        button.disabled = false
+        const option = document.createElement('option');
+        option.value = coach._id;
+        option.textContent = coach.fullname;
+        coachesSelect.appendChild(option);
+      });
+    } else {
+      const option = document.createElement('option');
+      option.value = "none";
+      option.textContent = "None";
+      coachesSelect.appendChild(option);
+      var button = document.querySelector("#submitButton");
+      button.disabled = true
+    }
+  }
+
+  // Initialize coaches select options for the default selected team
+  updateCoaches();
+
+</script>
 <%- include('../adminpartials/footer') %>

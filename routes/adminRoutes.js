@@ -5,17 +5,12 @@ const Admin = mongoose.model('Admin');
 const Student = mongoose.model('Student');
 const Coach = mongoose.model("Coach");
 const Team = mongoose.model('Team');
-const PDFDocument = require('pdfkit');
 const wrapAsync = require('../utils/wrapAsync');
 const { isAdmin } = require('../middlewares');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
 const upload = multer({ storage });
-const fetch = require('node-fetch');
-const ExcelJS = require('exceljs');
 const { uploader } = require('cloudinary').v2
-const imageSize = require('image-size');
-const sharp = require('sharp');
 const qrcode = require('qrcode');
 const router = express();
 
@@ -74,7 +69,7 @@ router.post('/admin/login', (req, res, next) => {
 router.get('/admin/dashboard', isAdmin, wrapAsync(async (req, res) => {
     const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
     const { user } = req;
-    const teams = await Team.find({});
+    const teams = await Team.find({}).populate('coaches');
     const coaches = await Coach.find({ status: 'approved' });
     all_coaches = (await Coach.find({})).length;
     res.render('./admin/adminDashboard', {
