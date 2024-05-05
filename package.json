@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
@@ -9,6 +10,7 @@
     "exceljs": "^4.4.0",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
+    "got": "^14.2.1",
     "image-size": "^1.1.1",
     "method-override": "^3.0.0",
     "mongoose": "^8.2.4",
@@ -21,6 +23,7 @@
     "passport-local-mongoose": "^8.0.0",
     "pdfkit": "^0.15.0",
     "qrcode": "^1.5.3",
+    "request": "^2.88.2",
     "sharp": "^0.33.3",
     "stripe": "^14.24.0"
   },

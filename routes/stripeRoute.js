@@ -21,7 +21,7 @@ router.post('/create-checkout-session/:studentId', async (req, res) => {
           product_data: {
             name: "Laptop",
           },
-          unit_amount: 112124,
+          unit_amount: 2500,
         },
         quantity: 1,
       },

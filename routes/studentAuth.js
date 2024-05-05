@@ -32,8 +32,10 @@ router.post('/student/register/:teamId', upload.fields(
         { name: "captureImage", maxCount: 1 }
     ]
 ), wrapAsync(async (req, res) => {
-    const { username, password, dop, jersey, coach, dob } = req.body;
+    const { username, password, dop, jersey, coach, dobYear, dobMonth, dobDate } = req.body;
+    dob = `${dobYear}-${dobMonth}-${dobDate}`;
     const { teamId } = req.params;
+    const team = await Team.findById(teamId);
     const foundStudent = await Student.find({ username });
     const foundJersey = await Student.find({
         team: teamId,
@@ -73,7 +75,8 @@ router.post('/student/register/:teamId', upload.fields(
         ...req.body,
         team: teamId,
         coach: req.body.coach,
-        age
+        age,
+        association: team.name
     });
 
     if (req.files["image"]) {
