@@ -29,7 +29,14 @@ const studentSchema = new mongoose.Schema({
     image: {
         filename: String,
         path: String
-    }
+    },
+    documents: [
+        {
+            filename: String,
+            path: String,
+            documentName: String
+        }
+    ]
 });
 
 studentSchema.plugin(passportLocalMongoose)

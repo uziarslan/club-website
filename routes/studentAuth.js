@@ -29,10 +29,11 @@ router.get('/student/register/:teamId', wrapAsync(async (req, res) => {
 router.post('/student/register/:teamId', upload.fields(
     [
         { name: "image", maxCount: 1 },
-        { name: "captureImage", maxCount: 1 }
+        { name: "captureImage", maxCount: 1 },
+        { name: "document", maxCount: 6 },
     ]
-), wrapAsync(async (req, res) => {
-    const { username, password, dop, jersey, coach, dobYear, dobMonth, dobDate } = req.body;
+), wrapAsync(async (req, res, next) => {
+    const { username, password, dop, jersey, coach, dobYear, dobMonth, dobDate, documents, role, fullname, parent, phone, address } = req.body;
     dob = `${dobYear}-${dobMonth}-${dobDate}`;
     const { teamId } = req.params;
     const team = await Team.findById(teamId);
@@ -72,11 +73,19 @@ router.post('/student/register/:teamId', upload.fields(
     }
 
     const student = new Student({
-        ...req.body,
-        team: teamId,
         coach: req.body.coach,
+        team: teamId,
+        role,
+        association: team.name,
+        username,
+        dop,
+        fullname,
+        jersey,
         age,
-        association: team.name
+        dob,
+        parent,
+        phone,
+        address
     });
 
     if (req.files["image"]) {
@@ -89,6 +98,14 @@ router.post('/student/register/:teamId', upload.fields(
         const { filename, path } = req.files["captureImage"][0];
         student.image.filename = filename;
         student.image.path = path;
+    }
+
+    if (req.files["document"]) {
+        const docs = req.files["document"];
+        docs.forEach((document, i) => {
+            const { filename, path } = document;
+            student.documents.push({ filename, path, documentName: documents[i] });
+        });
     }
 
 

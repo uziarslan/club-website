@@ -67,6 +67,7 @@
             <table class="table center-aligned-table" id="transactionTable">
               <thead>
                 <tr class="text-primary">
+                  <th>Profile</th>
                   <th>Name</th>
                   <th>Coach</th>
                   <th>Email</th>
@@ -74,12 +75,14 @@
                   <th>Age</th>
                   <th>Date of Birth</th>
                   <th>Jersey #</th>
+                  <th>Documents</th>
                   <th>Option</th>
                 </tr>
               </thead>
               <tbody>
                 <% for (let student of pending_students){ %>
                 <tr class="">
+                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt=""></a></td>
                   <td><%= student.fullname %></td>
                   <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
@@ -87,6 +90,11 @@
                   <td><%= student.age %></td>
                   <td><%= student.dob %></td>
                   <td><%= student.jersey %></td>
+                  <td>
+                    <% for(let doc of student.documents){ %>
+                    <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+                    <% } %>
+                  </td>
                   <td>
                     <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
                     <a href="/admin/student/disqualify/<%= student._id %>" class="btn btn-outline-danger btn-sm">Disqualify</a>
