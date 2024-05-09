@@ -19,7 +19,7 @@ router.post('/coach/register', wrapAsync(async (req, res) => {
     const foundCoach = await Coach.find({ username });
 
     if (foundCoach.length) {
-        res.flash('error', "The coach is already registered.")
+        req.flash('error', "The coach is already registered.")
         return res.redirect("/coach/register")
     }
 
