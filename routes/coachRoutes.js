@@ -66,9 +66,9 @@ router.post('/coach/login', (req, res, next) => {
 
 router.get('/coach/:id', isCoach, wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
+    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U'];
+    const teams = await Team.find({}).populate('coaches');
     const coach = await Coach.findById(id).populate('students').populate('team');
-
     const footballers = coach.students.filter(student => student.role === 'football');
     const cheerleaders = coach.students.filter(student => student.role === "cheer");
     const approved_students = coach.students.filter(student => student.status === "approved");
@@ -83,6 +83,7 @@ router.get('/coach/:id', isCoach, wrapAsync(async (req, res) => {
         approved_students,
         pending_students,
         disqualified_students,
+        teams
     });
 }));
 

@@ -69,6 +69,7 @@
                 <tr class="text-primary">
                   <th>Profile</th>
                   <th>Name</th>
+                  <th>Team</th>
                   <th>Coach</th>
                   <th>Email</th>
                   <th>Phone</th>
@@ -82,8 +83,13 @@
               <tbody>
                 <% for (let student of pending_students){ %>
                 <tr class="">
-                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt=""></a></td>
+                  <% if (student.image.path){ %>
+                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
+                  <% }else{ %>
+                  <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
+                  <% } %>
                   <td><%= student.fullname %></td>
+                  <td><%= student.team.name %></td>
                   <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
                   <td><%= student.phone %></td>
@@ -117,26 +123,40 @@
             <table class="table center-aligned-table" id="transactionTable1">
               <thead>
                 <tr class="text-primary">
+                  <th>Profile</th>
                   <th>Name</th>
+                  <th>Team</th>
                   <th>Coach</th>
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Age</th>
                   <th>Date of Birth</th>
                   <th>Jersey #</th>
+                  <th>Documents</th>
                   <th>Option</th>
                 </tr>
               </thead>
               <tbody>
                 <% for (let student of approved_students){ %>
                 <tr class="">
+                  <% if (student.image.path){ %>
+                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
+                  <% }else{ %>
+                  <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
+                  <% } %>
                   <td><%= student.fullname %></td>
+                  <td><%= student.team.name %></td>
                   <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
                   <td><%= student.phone %></td>
                   <td><%= student.age %></td>
                   <td><%= student.dob %></td>
                   <td><%= student.jersey %></td>
+                  <td>
+                    <% for(let doc of student.documents){ %>
+                    <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+                    <% } %>
+                  </td>
                   <td>
                     <a href="/admin/student/pending/<%= student._id %>" class="btn btn-outline-warning btn-sm">Pending</a>
                     <a href="/admin/student/disqualify/<%= student._id %>" class="btn btn-outline-danger btn-sm">Disqualify</a>
@@ -159,26 +179,40 @@
             <table class="table center-aligned-table" id="transactionTable2">
               <thead>
                 <tr class="text-primary">
+                  <th>Profile</th>
                   <th>Name</th>
+                  <th>Team</th>
                   <th>Coach</th>
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Age</th>
                   <th>Date of Birth</th>
                   <th>Jersey #</th>
+                  <th>Documents</th>
                   <th>Option</th>
                 </tr>
               </thead>
               <tbody>
                 <% for (let student of disqualified_students){ %>
                 <tr class="">
+                  <% if (student.image.path){ %>
+                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
+                  <% }else{ %>
+                  <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
+                  <% } %>
                   <td><%= student.fullname %></td>
+                  <td><%= student.team.name %></td>
                   <td><%= student.coach.fullname %></td>
                   <td><%= student.username %></td>
                   <td><%= student.phone %></td>
                   <td><%= student.age %></td>
                   <td><%= student.dob %></td>
                   <td><%= student.jersey %></td>
+                  <td>
+                    <% for(let doc of student.documents){ %>
+                    <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+                    <% } %>
+                  </td>
                   <td>
                     <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
                   </td>

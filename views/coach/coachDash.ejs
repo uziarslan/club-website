@@ -1,5 +1,6 @@
 <%- include('../coachpartials/head') %>
 <div class="content-wrapper">
+  <%- include('../flash') %>
   <div class="row">
     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
       <div class="card">
@@ -13,6 +14,38 @@
       </div>
     </div>
   </div>
+
+  <div class="row mb-4">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Create Players</h5>
+          <form action="/upload-csv" method="post" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-2">
+                <select class="form-control" name="teamId" id="teams" onchange="updateCoaches()">
+                  <% for (let team of teams){ %>
+                  <option value="<%= team.id %>"><%= team.name %></option>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-2">
+                <select class="form-control" name="coachId" id="coaches"></select>
+              </div>
+              <div class="col-2">
+                <input type="file" required accept=".csv" name="csvFile" />
+              </div>
+              <div class="col-2">
+                <a href="/download-demo" class="btn btn-success btn-sm">Download Demo File</a>
+              </div>
+              <button id="submitButton" type="submit" class="btn btn-outline-primary btn-sm">Upload and create</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="card-deck">
     <div class="card col-lg-12 px-0 mb-4">
       <div class="card-body">
@@ -147,4 +180,37 @@
     </div>
   </div>
 </div>
+<script>
+  const teams = <%- JSON.stringify(teams) %>;
+
+  function updateCoaches() {
+    const selectedTeamId = document.getElementById('teams')
+      .value;
+    const selectedTeam = teams.find(team => team._id === selectedTeamId);
+    const coachesSelect = document.getElementById('coaches');
+    coachesSelect.innerHTML = '';
+    if (selectedTeam && selectedTeam.coaches.length) {
+      selectedTeam.coaches.forEach(coach => {
+        var button = document.querySelector("#submitButton");
+        button.disabled = false
+        const option = document.createElement('option');
+        option.value = coach._id;
+        option.textContent = coach.fullname;
+        coachesSelect.appendChild(option);
+      });
+    } else {
+      const option = document.createElement('option');
+      option.value = "none";
+      option.textContent = "None";
+      coachesSelect.appendChild(option);
+      var button = document.querySelector("#submitButton");
+      button.disabled = true
+    }
+  }
+
+  // Initialize coaches select options for the default selected team
+  updateCoaches();
+
+</script>
+
 <%- include('../coachpartials/footer') %>

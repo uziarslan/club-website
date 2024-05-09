@@ -69,7 +69,7 @@ router.post('/admin/login', (req, res, next) => {
 router.get('/admin/dashboard', isAdmin, wrapAsync(async (req, res) => {
     const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
     const { user } = req;
-    const teams = await Team.find({}).populate('coaches');
+    const teams = await Team.find({});
     const coaches = await Coach.find({ status: 'approved' });
     all_coaches = (await Coach.find({})).length;
     res.render('./admin/adminDashboard', {
@@ -84,9 +84,9 @@ router.get('/admin/dashboard', isAdmin, wrapAsync(async (req, res) => {
 // Managing students
 router.get('/admin/students', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
-    const pending_students = await Student.find({ status: 'pending' }).populate('coach');
-    const approved_students = await Student.find({ status: 'approved' }).populate('coach');
-    const disqualified_students = await Student.find({ status: 'disqualified' }).populate('coach');
+    const pending_students = await Student.find({ status: 'pending' }).populate('coach').populate('team');
+    const approved_students = await Student.find({ status: 'approved' }).populate('coach').populate('team');
+    const disqualified_students = await Student.find({ status: 'disqualified' }).populate('coach').populate('team');
     const all_students = (await Student.find({})).length;
 
     approved_progress = (approved_students.length / all_students) * 100;

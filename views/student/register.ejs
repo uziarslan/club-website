@@ -304,12 +304,13 @@
   document.addEventListener('DOMContentLoaded', function() {
     const addField = document.getElementById('addField');
     const form = document.getElementById('studentForm');
-    let counter = 1;
+    let counter = 0;
 
     addField.addEventListener('click', function() {
-      counter++;
-      const newFieldset = document.createElement('fieldset');
-      newFieldset.innerHTML = `<div class="row align-items-center">
+      if (counter < 6) {
+        counter++;
+        const newFieldset = document.createElement('fieldset');
+        newFieldset.innerHTML = `<div class="row align-items-center">
     <div class="col-6">
       <div class="form-group">
         <label class="form-label">Document type</label>
@@ -342,20 +343,30 @@
     <div class="col-1">
       <i class='bx bx-trash deleteField'></i>
     </div>
-  </div>`;
-      form.insertBefore(newFieldset, addField);
+    </div>`;
+        form.insertBefore(newFieldset, addField);
 
-      // Add event listener to delete button
-      const deleteButton = newFieldset.querySelector('.deleteField');
-      deleteButton.addEventListener('click', function() {
-        const fileInput = newFieldset.querySelector('input[type="file"]');
-        if (fileInput.files.length > 0) {
-          fileInput.value = null;
-        }
-        newFieldset.remove();
-      });
+        // Add event listener to delete button
+        const deleteButton = newFieldset.querySelector('.deleteField');
+        deleteButton.addEventListener('click', function() {
+          const fileInput = newFieldset.querySelector('input[type="file"]');
+          if (fileInput.files.length > 0) {
+            fileInput.value = null;
+          }
+          newFieldset.remove();
+          counter--;
+          if (counter < 6) {
+            addField.style.display = "";
+          }
+        });
+      }
+      if (counter >= 6) {
+        addField.style.display = "none";
+      }
     });
   });
+
+
 
 
   document.addEventListener("DOMContentLoaded", function() {
