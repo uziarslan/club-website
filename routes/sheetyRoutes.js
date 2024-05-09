@@ -33,89 +33,6 @@ router.get('/download-demo', (req, res) => {
 router.post('/upload-csv', upload.single('csvFile'), wrapAsync(async (req, res) => {
     const { teamId, coachId } = req.body;
     const { user } = req;
-    let hasErrors = false;
-    let processedRows = 0;
-    let totalRows = 0;
-    let errors = []
-    const stream = fs.createReadStream(req.file.path)
-        .pipe(csv({ mapHeaders: ({ header, index }) => header.toLowerCase().replace(/\W/g, '_').replace(/^_+/, '') })) // Map headers to keys and remove leading underscores
-        .on('data', async (row) => {
-            console.log("inside data")
-            if (hasErrors) return;
-
-            totalRows++;
-
-            const team = await Team.findById(teamId);
-            const foundStudent = await Student.findOne({ username: row.username });
-            const foundJersey = await Student.findOne({
-                team: teamId,
-                dop: row.dop,
-                jersey: row.jersey
-            });
-
-            if (foundStudent) {
-                errors.push(`Email duplication error user ${row.username} already registered!`)
-                // req.flash("error", `Email duplication error user ${row.username} already registered!`);
-                // hasErrors = true;
-                return;
-            }
-
-            if (foundJersey) {
-                errors.push(`Jersey duplication error user ${row.username} contains jersey# ${row.jersey} is already taken!`)
-                // req.flash("error", `Jersey duplication error user ${row.username} contains jersey# ${row.jersey} is already taken!`);
-                // hasErrors = true;
-                return;
-            }
-
-            const dateOfBirth = new Date(row.dob);
-            const today = new Date();
-            let age = today.getFullYear() - dateOfBirth.getFullYear();
-            const m = today.getMonth() - dateOfBirth.getMonth();
-
-            if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
-                age--;
-            }
-
-            const student = new Student({
-                ...row,
-                team: teamId,
-                coach: coachId,
-                age,
-                association: team.name
-            });
-
-            await Student.register(student, row.password);
-
-            processedRows++;
-            if (processedRows === totalRows && !hasErrors) {
-                // All rows processed without errors
-                req.flash("success", "Players created successfully.");
-                return res.redirect(`/coach/${user._id}`);
-            } else {
-                req.flash("error", "Players created successfully.");
-                return res.redirect(`/coach/${user._id}`);
-            }
-        });
-
-    // Perform cleanup after the stream has been processed
-    stream.on('close', () => {
-        fs.unlinkSync(req.file.path);
-        console.log(errors)
-        if (errors.length) {
-            req.flash('error', errors[0])
-        } else {
-            req.flash('success', 'Players created successfully.')
-        }
-        console.log("inside close")
-        return res.redirect(`/coach/${user._id}`);
-    });
-}));
-
-
-
-router.post('/upload-csv', upload.single('csvFile'), wrapAsync(async (req, res) => {
-    const { teamId, coachId } = req.body;
-    const { user } = req;
 
     fs.createReadStream(req.file.path)
         .pipe(csv({ mapHeaders: ({ header, index }) => header.toLowerCase().replace(/\W/g, '_').replace(/^_+/, '') })) // Map headers to keys and remove leading underscores
@@ -164,7 +81,7 @@ router.post('/upload-csv', upload.single('csvFile'), wrapAsync(async (req, res) 
                 address: row.address,
                 image: {
                     filename: "Manual added file",
-                    path: row.path
+                    path: row.image
                 },
             });
 
@@ -175,6 +92,5 @@ router.post('/upload-csv', upload.single('csvFile'), wrapAsync(async (req, res) 
             return res.redirect(`/coach/${user._id}`);
         });
 }));
-
 
 module.exports = router;
