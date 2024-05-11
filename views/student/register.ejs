@@ -83,7 +83,7 @@
                         <label class="form-text text-muted">
                           Select Option
                         </label>
-                        <select name="role" class="form-control" id="coach" required>
+                        <select name="role" class="form-control" required>
                           <option value="football">Football</option>
                           <option value="cheer">Cheer</option>
                         </select>
@@ -137,33 +137,9 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
-                      Division of play
-                    </label>
-                    <select name="dop" class="form-control" id="coach" required>
-                      <% for (let d of dop){ %>
-                      <option value="<%= d %>">
-                        <%= d %>
-                      </option>
-                      <% } %>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
                       Participant’s Full Name
                     </label>
                     <input required type="text" class="form-control p_input" name="fullname">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label id="Jersey" class="form-text text-muted">
-                      Jersey #
-                    </label>
-                    <input required type="number" class="form-control" id="Jersey" name="jersey" required>
                   </div>
                 </div>
                 <div class="col-6">
@@ -188,6 +164,24 @@
                         </select>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="jersey" class="form-text text-muted">
+                      Jersey #
+                    </label>
+                    <input required type="number" class="form-control" id="jersey" name="jersey" required>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Division of play
+                    </label>
+                    <select name="dop" class="form-control" id="dop" required></select>
                   </div>
                 </div>
               </div>
@@ -289,6 +283,19 @@
   </div>
 </div>
 <script>
+  const jerseyInput = document.getElementById('jersey');
+
+  jerseyInput.addEventListener('keypress', function(event) {
+    const key = event.key;
+    if (key.toLowerCase() === 'x') {
+      jerseyInput.type = 'text';
+      jerseyInput.value = 'X';
+      event.preventDefault();
+    } else {
+      jerseyInput.type = 'number';
+    }
+  });
+
   document.getElementById('uploadButton')
     .addEventListener('click', function() {
       document.getElementById('start-camera')
@@ -365,9 +372,6 @@
       }
     });
   });
-
-
-
 
   document.addEventListener("DOMContentLoaded", function() {
     hiddenButton = document.querySelector("#hiddenButton");
@@ -456,6 +460,44 @@
       dateSelect.add(option);
     }
   });
+
+
+  // Selecting Dop 2 years ahed only
+  const dobYearSelect = document.getElementById('dobYear');
+  const dobMonthSelect = document.getElementById('dobMonth');
+  const dobDateSelect = document.getElementById('dobDate');
+
+  // Get the DOP select element
+  const dopSelect = document.getElementById('dop');
+
+  // Update DOP options based on selected date of birth
+  function updateDopOptions() {
+    // Get the selected date of birth
+    const year = dobYearSelect.value;
+    const month = dobMonthSelect.value;
+    const date = dobDateSelect.value;
+
+    // Calculate the age based on the selected date of birth
+    const dob = new Date(`${year}-${month}-${date}`);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+
+    // Clear existing options
+    dopSelect.innerHTML = '';
+
+    const maxAge = Math.min(age + 2, 13);
+    console.log(maxAge)
+    // Add new options based on age
+    for (let i = Math.max(7, age); i <= maxAge; i++) {
+      const option = document.createElement('option');
+      option.value = `${i}U`;
+      option.textContent = `${i}U`;
+      dopSelect.appendChild(option);
+    }
+  }
+  dobYearSelect.addEventListener('change', updateDopOptions);
+  dobMonthSelect.addEventListener('change', updateDopOptions);
+  dobDateSelect.addEventListener('change', updateDopOptions);
 
 </script>
 <script>
