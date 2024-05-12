@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/css/style.css" />
-
+  <title><%= student.fullname %> || Invoice</title>
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
   <style>
@@ -164,7 +164,7 @@
         Invoice
         <small class="page-info">
           <i class="fa fa-angle-double-right text-80"></i>
-          ID: #111-222
+          ID: #<%= student._id %>
         </small>
       </h1>
     </div>
@@ -251,16 +251,16 @@
                     SubTotal
                   </div>
                   <div class="col-5">
-                    <span class="text-120 text-secondary-d1">$2,250</span>
+                    <span class="text-120 text-secondary-d1">$25</span>
                   </div>
                 </div>
 
                 <div class="row my-2">
                   <div class="col-7 text-right">
-                    Tax (10%)
+                    Tax (0%)
                   </div>
                   <div class="col-5">
-                    <span class="text-110 text-secondary-d1">$225</span>
+                    <span class="text-110 text-secondary-d1">$0</span>
                   </div>
                 </div>
 
@@ -269,7 +269,7 @@
                     Total Amount
                   </div>
                   <div class="col-5">
-                    <span class="text-150 text-success-d3 opacity-2">$2,475</span>
+                    <span class="text-150 text-success-d3 opacity-2">$25</span>
                   </div>
                 </div>
               </div>

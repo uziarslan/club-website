@@ -64,8 +64,6 @@
                     <div class="uploaded_file_view1" id="uploaded_view1">
                       <span class="file_remove1">X</span>
                     </div>
-
-
                   </div>
                 </div>
                 <div class="text-center">
@@ -78,7 +76,9 @@
             <% for (let team of teams){ %>
             <div class="col-3">
               <div class="card">
-                <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
+                <a href="/team/store/<%= team._id %>">
+                  <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
+                </a>
                 <div class="card-body">
                   <h5 class="card-title text-center mb-4"><%= team.name %></h5>
                   <div class="row">

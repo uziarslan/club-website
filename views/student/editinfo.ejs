@@ -1,4 +1,51 @@
 <%- include('../adminpartials/loginhead', {title: "Student || Edit"}) %>
+<style>
+  .dnone {
+    display: none;
+  }
+
+  .fset {
+    padding: 0px !important;
+    font-size: 16px !important;
+    font-weight: 500;
+  }
+
+  .iconWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .iconWrapper i {
+    font-size: 20px;
+    margin-left: -30px;
+    cursor: pointer;
+  }
+
+  .addField {
+    background-color: #04befe;
+    /* border-radius: 50%; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .addField p {
+    color: white;
+    margin: 0;
+  }
+
+  .deleteField {
+    font-size: 24px;
+    color: red;
+    cursor: pointer;
+  }
+
+</style>
+
 <div class="container-scroller">
   <div class="container-fluid">
     <div class="row">
@@ -7,7 +54,7 @@
           <div class="card-body px-5 py-5">
             <%- include('../flash') %>
             <h3 class="card-title text-left mb-3">Register as Student (<%= team.name %>)</h3>
-            <form action="/student/register/<%= team._id %>/<%=student._id%>?_method=PUT" method="POST" enctype="multipart/form-data">
+            <form id="studentEditForm" action="/student/register/<%= team._id %>/<%=student._id%>?_method=PUT" method="POST" enctype="multipart/form-data">
               <div class="row">
                 <div class="col-6">
                   <div class="row">
@@ -35,7 +82,7 @@
                         <label class="form-text text-muted">
                           Select Option
                         </label>
-                        <select name="role" class="form-control" id="coach" required>
+                        <select name="role" class="form-control" required>
                           <option value="football">Football</option>
                           <option value="cheer">Cheer</option>
                         </select>
@@ -48,17 +95,59 @@
                     <label class="form-text text-muted">
                       ASSOCIATION NAME
                     </label>
-                    <input value="<%= student.association %>" type="text" class="form-control p_input" name="association" required>
+                    <input disabled value="<%= team.name %>" type="text" class="form-control p_input" name="association">
                   </div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-12">
+                <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
                       Email
                     </label>
-                    <input value="<%= student.username %>" type="text" class="form-control p_input" name="username">
+                    <input value="<%= student.username %>" required type="text" class="form-control p_input" name="username">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Participant’s Full Name
+                    </label>
+                    <input value="<%= student.fullname %>" required type="text" class="form-control p_input" name="fullname">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label id="dob" class="form-text text-muted">
+                      YYYY/MM/DD
+                    </label>
+                    <div class="d-flex">
+                      <div class="col-4">
+                        <select class="form-control" id="dobYear" name="dobYear" required>
+                          <option disabled selected value="">Year</option>
+                        </select>
+                      </div>
+                      <div class="col-4">
+                        <select class="form-control" id="dobMonth" name="dobMonth" required>
+                          <option disabled selected value="">Month</option>
+                        </select>
+                      </div>
+                      <div class="col-4">
+                        <select class="form-control" id="dobDate" name="dobDate" required>
+                          <option disabled selected value="">Date</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="jersey" class="form-text text-muted">
+                      Jersey #
+                    </label>
+                    <input value="<%= student.jersey %>" required type="number" class="form-control" id="jersey" name="jersey" required>
                   </div>
                 </div>
               </div>
@@ -68,80 +157,42 @@
                     <label class="form-text text-muted">
                       Division of play
                     </label>
-                    <select name="dop" class="form-control" id="coach" required>
-                      <option selected value="<%= student.dop %>"><%= student.dop %></option>
-                      <% for (let d of dop){ %>
-                      <% if (student.dop !== d){ %>
-                      <option value="<%= d %>"><%= d %></option>
-                      <% } %>
-                      <% } %>
-                    </select>
+                    <select name="dop" class="form-control" id="dop" required></select>
                   </div>
                 </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label class="form-text text-muted">
-                      Participant’s Full Name
-                    </label>
-                    <input required value="<%= student.fullname %>" type="text" class="form-control p_input" name="fullname">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="Jersey" class="form-text text-muted">
-                      Jersey #
-                    </label>
-                    <input value="<%= student.jersey %>" type="number" class="form-control" id="Jersey" name="jersey" required>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="age" class="form-text text-muted">
-                      Age (as of 7/31)
-                    </label>
-                    <input value="<%= student.age %>" type="number" class="form-control" id="age" name="age" required>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label id="dob" class="form-text text-muted">
-                      Date of Birth (MM/DD/YYYY)
-                    </label>
-                    <input value="<%= student.dob %>" type="date" class="form-control" id="dob" name="dob" required>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
                 <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
                       Parent/Guardian Name(s)
                     </label>
-                    <input required value="<%= student.parent %>" type="text" class="form-control p_input" name="parent">
+                    <input value="<%= student.parent %>" type="text" class="form-control p_input" name="parent">
                   </div>
                 </div>
+              </div>
+              <div class="row">
                 <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
                       Phone Number
                     </label>
-                    <input value="<%= student.phone %>" required type="tel" class="form-control p_input" name="phone">
+                    <input value="<%= student.phone %>" type="tel" class="form-control p_input" name="phone">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Complete address (including City, State, and Zip Code)
+                    </label>
+                    <input value="<%= student.address %>" type="text" class="form-control p_input" name="address">
                   </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="form-text text-muted">
-                  Complete address (including City, State, and Zip Code)
-                </label>
-                <input required value="<%= student.address %>" type="text" class="form-control p_input" name="address">
-              </div>
               <div class="row mb-4">
                 <div class="col-6 mx-auto">
-                  <div class="panel">
+                  <div class="panel" id="uploadPanel">
+                    <!-- Upload Image Button -->
                     <div class="button_outer">
-                      <div class="btn_upload">
+                      <div class="btn_upload" id="uploadButton">
                         <input accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image">
                         Upload Image <i class="ms-1 fa fa-upload"></i>
                       </div>
@@ -151,12 +202,28 @@
                   </div>
                   <div class="error_msg"></div>
                   <div class="uploaded_file_view" id="uploaded_view">
-                    <span class="file_remove">X</span>
+                    <span class="file_remove" id="fil-remove">X</span>
+                  </div>
+                </div>
+                <div class="col-6 ">
+                  <div class="d-flex flex-column">
+                    <input type="file" name="captureImage" id="capturedImage" style="display: none;">
+                    <button type="button" id="start-camera" class=" button_outer btn_upload fset"> Capture Image <i class="ms-1 fa fa-upload"></i></button>
+                    <video id="video" class="dnone mb-3 w-100" height="240" autoplay></video>
+                    <button type="button" id="click-photo" class="btn btn-primary dnone text-center">Click
+                      Photo</button>
+                    <!-- <button type="button" id="clear-photo" class="btn btn-danger w-25">Clear Photo</button> -->
+                    <canvas id="canvas" class="dnone" width="320" height="240"></canvas>
                   </div>
                 </div>
               </div>
+              <div id="addField" class="row justify-content-center mb-3">
+                <div class="col-0 addField">
+                  <p>ADD Documents</p>
+                </div>
+              </div>
               <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-block enter-btn">Save Changes</button>
+                <button type="submit" class="btn btn-primary btn-block enter-btn">Save</button>
               </div>
             </form>
           </div>
@@ -165,4 +232,242 @@
     </div>
   </div>
 </div>
+<script>
+  let camera_button = document.querySelector("#start-camera");
+  let video = document.querySelector("#video");
+  let click_button = document.querySelector("#click-photo");
+  let canvas = document.querySelector("#canvas");
+  let captureInput = document.getElementById('capturedImage'); // File input to hold the captured image
+
+  let stream;
+
+  camera_button.addEventListener('click', async function() {
+    document.getElementById('uploadPanel')
+      .style.display = 'none';
+    click_button.style.display = "block";
+    video.style.display = "block";
+    camera_button.style.display = "none";
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: true
+      , audio: false
+    });
+    video.srcObject = stream;
+  });
+
+  click_button.addEventListener('click', function() {
+    canvas.getContext('2d')
+      .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob(function(blob) {
+      let file = new File([blob], 'capturedImage.jpg', {
+        type: 'image/jpeg'
+      });
+      let dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      captureInput.files = dataTransfer.files;
+
+      // Hide and stop video
+      video.style.display = "none";
+      click_button.style.display = "none";
+      camera_button.style.display = "block";
+      canvas.style.display = "block"; // Optional: Show canvas to see the captured photo
+      stopCamera();
+    }, 'image/jpeg');
+  });
+
+
+  function stopCamera() {
+    if (stream) {
+      let tracks = stream.getTracks();
+      tracks.forEach(track => track.stop());
+    }
+  }
+  // Event listener for the clear photo button
+  document.getElementById('clear-photo')
+    .addEventListener('click', function() {
+      canvas.getContext('2d')
+        .clearRect(0, 0, canvas.width, canvas.height);
+      captureInput.value = ''; // Clear the selected file
+      click_button.style.display = "block";
+      canvas.style.display = "none";
+      camera_button.style.display = "none";
+    });
+
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var yearSelect = document.getElementById('dobYear');
+    var monthSelect = document.getElementById('dobMonth');
+    var dateSelect = document.getElementById('dobDate');
+    var currentYear = new Date()
+      .getFullYear();
+
+    // Populate years
+    for (var i = currentYear; i >= currentYear - 100; i--) {
+      var option = document.createElement('option');
+      option.text = i;
+      option.value = i;
+      yearSelect.add(option);
+    }
+
+    // Populate months
+    for (var i = 1; i <= 12; i++) {
+      var option = document.createElement('option');
+      option.text = i < 10 ? '0' + i : i; // Add leading zero for single digit months
+      option.value = i < 10 ? '0' + i : i;
+      monthSelect.add(option);
+    }
+
+    // Populate dates (assuming 31 days for simplicity)
+    for (var i = 1; i <= 31; i++) {
+      var option = document.createElement('option');
+      option.text = i < 10 ? '0' + i : i; // Add leading zero for single digit dates
+      option.value = i < 10 ? '0' + i : i;
+      dateSelect.add(option);
+    }
+
+    yearSelect.value = '<%= year %>';
+    monthSelect.value = '<%= month %>';
+    dateSelect.value = '<%= date %>';
+    updateDopOptions();
+  });
+  // Selecting Dop 2 years ahed only
+  const dobYearSelect = document.getElementById('dobYear');
+  const dobMonthSelect = document.getElementById('dobMonth');
+  const dobDateSelect = document.getElementById('dobDate');
+
+  // Get the DOP select element
+  const dopSelect = document.getElementById('dop');
+
+  // Update DOP options based on selected date of birth
+  function updateDopOptions() {
+    // Get the selected date of birth
+    const year = dobYearSelect.value;
+    const month = dobMonthSelect.value;
+    const date = dobDateSelect.value;
+
+    // Calculate the age based on the selected date of birth
+    const dob = new Date(`${year}-${month}-${date}`);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+
+    // Clear existing options
+    dopSelect.innerHTML = '';
+
+    const maxAge = Math.min(age + 2, 13);
+    console.log(maxAge)
+    // Add new options based on age
+    for (let i = Math.max(7, age); i <= maxAge; i++) {
+      const option = document.createElement('option');
+      option.value = `${i}U`;
+      option.textContent = `${i}U`;
+      dopSelect.appendChild(option);
+    }
+  }
+  dobYearSelect.addEventListener('change', updateDopOptions);
+  dobMonthSelect.addEventListener('change', updateDopOptions);
+  dobDateSelect.addEventListener('change', updateDopOptions);
+
+</script>
+<script>
+  const jerseyInput = document.getElementById('jersey');
+
+  jerseyInput.addEventListener('keypress', function(event) {
+    const key = event.key;
+    if (key.toLowerCase() === 'x') {
+      jerseyInput.type = 'text';
+      jerseyInput.value = 'X';
+      event.preventDefault();
+    } else {
+      jerseyInput.type = 'number';
+    }
+  });
+
+  document.getElementById('uploadButton')
+    .addEventListener('click', function() {
+      document.getElementById('start-camera')
+        .style.display = 'none';
+    });
+  document.getElementById('fil-remove')
+    .addEventListener('click', function() {
+      document.getElementById('start-camera')
+        .style.display = 'block';
+    });
+
+  // JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+    const addField = document.getElementById('addField');
+    const form = document.getElementById('studentEditForm');
+    let counter = 0;
+
+    addField.addEventListener('click', function() {
+      if (counter < 6) {
+        counter++;
+        const newFieldset = document.createElement('fieldset');
+        newFieldset.innerHTML = `<div class="row align-items-center">
+    <div class="col-6">
+      <div class="form-group">
+        <label class="form-label">Document type</label>
+        <select name="documents" class="form-control">
+          <option value="State ID">State Id</option>
+          <option value="Passport">Passport</option>
+          <option value="School ID">School Id</option>
+          <option value="SSN">SSN</option>
+          <option value="Birth Certificate">Birth Certificate</option>
+          <option value="Medical Wavier">Medical Wavier</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="panel" id="uploadPanel">
+        <div class="button_outer">
+          <div class="btn_upload" id="uploadButton">
+            <input required accept=".jpeg, .jpg, .png" type="file" id="upload_document" name="document" onclick="addAnimation()">
+            Upload Document <i class="ms-1 fa fa-upload"></i>
+          </div>
+          <div class="processing_bar"></div>
+          <div class="success_box"></div>
+        </div>
+      </div>
+      <div class="error_msg"></div>
+      <div class="uploaded_file_view" id="uploaded_view">
+        <span class="file_remove" id="fil-remove">X</span>
+      </div>
+    </div>
+    <div class="col-1">
+      <i class='bx bx-trash deleteField'></i>
+    </div>
+    </div>`;
+        form.insertBefore(newFieldset, addField);
+
+        // Add event listener to delete button
+        const deleteButton = newFieldset.querySelector('.deleteField');
+        deleteButton.addEventListener('click', function() {
+          const fileInput = newFieldset.querySelector('input[type="file"]');
+          if (fileInput.files.length > 0) {
+            fileInput.value = null;
+          }
+          newFieldset.remove();
+          counter--;
+          if (counter < 6) {
+            addField.style.display = "";
+          }
+        });
+      }
+      if (counter >= 6) {
+        addField.style.display = "none";
+      }
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    hiddenButton = document.querySelector("#hiddenButton");
+    hiddenButton.click();
+  });
+
+</script>
+
 <%- include('../studentpartials/footer') %>

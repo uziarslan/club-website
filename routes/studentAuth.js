@@ -10,7 +10,8 @@ const { storage } = require('../cloudinary');
 const { isStudent } = require('../middlewares');
 const upload = multer({ storage });
 const { uploader } = require('cloudinary').v2
-
+const Mailjet = require('node-mailjet');
+const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 const router = express();
 
 
@@ -34,97 +35,133 @@ router.post('/student/register/:teamId', upload.fields(
     ]
 ), wrapAsync(async (req, res, next) => {
     const { username, password, dop, jersey, coach, dobYear, dobMonth, dobDate, documents, role, fullname, parent, phone, address } = req.body;
-    // dob = `${dobYear}-${dobMonth}-${dobDate}`;
-    // const { teamId } = req.params;
-    // const team = await Team.findById(teamId);
-    // const foundStudent = await Student.find({ username });
-    // const foundJersey = await Student.find({
-    //     team: teamId,
-    //     dop,
-    //     jersey
-    // });
+    dob = `${dobYear}-${dobMonth}-${dobDate}`;
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId);
+    const foundStudent = await Student.find({ username });
+    const foundJersey = await Student.find({
+        team: teamId,
+        dop,
+        jersey
+    });
 
-    // const dateOfBirth = new Date(dob);
+    const dateOfBirth = new Date(dob);
 
-    // const today = new Date();
-    // let age = today.getFullYear() - dateOfBirth.getFullYear();
-    // const m = today.getMonth() - dateOfBirth.getMonth();
-    // if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
-    //     age--;
-    // }
-
-
-    // if (coach === "none") {
-    //     req.flash('error', 'You can not register without the coach.');
-    //     await uploader.destroy(req.file.filename);
-    //     return res.redirect(`/student/register/${teamId}`);
-    // }
-
-    // if (foundJersey.length) {
-    //     req.flash('error', 'Looks like that jersey number is already on the team. Please choose a different one.');
-    //     await uploader.destroy(req.file.filename);
-    //     return res.redirect(`/student/register/${teamId}`);
-    // }
-
-    // if (foundStudent.length) {
-    //     req.flash('error', "It looks like a student with this email is already registered.");
-    //     await uploader.destroy(req.file.filename)
-    //     return res.redirect(`/student/register/${teamId}`);
-    // }
-
-    // const student = new Student({
-    //     coach: req.body.coach,
-    //     team: teamId,
-    //     role,
-    //     association: team.name,
-    //     username,
-    //     dop,
-    //     fullname,
-    //     jersey,
-    //     age,
-    //     dob,
-    //     parent,
-    //     phone,
-    //     address
-    // });
-
-    // if (req.files["image"]) {
-    //     const { filename, path } = req.files["image"][0];
-    //     student.image.filename = filename;
-    //     student.image.path = path;
-    // }
-
-    // if (req.files["captureImage"]) {
-    //     const { filename, path } = req.files["captureImage"][0];
-    //     student.image.filename = filename;
-    //     student.image.path = path;
-    // }
-
-    // if (req.files["document"]) {
-    //     const docs = req.files["document"];
-    //     docs.forEach((document, i) => {
-    //         const { filename, path } = document;
-    //         student.documents.push({ filename, path, documentName: documents[i] });
-    //     });
-    // }
+    const today = new Date();
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const m = today.getMonth() - dateOfBirth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+        age--;
+    }
 
 
-    // await Team.findByIdAndUpdate(teamId, {
-    //     $addToSet: { students: student._id }
-    // }, { new: true });
+    if (coach === "none") {
+        req.flash('error', 'You can not register without the coach.');
+        await uploader.destroy(req.file.filename);
+        return res.redirect(`/student/register/${teamId}`);
+    }
 
-    // await Coach.findByIdAndUpdate(req.body.coach, {
-    //     $addToSet: { students: student._id }
-    // }, { new: true });
+    if (foundJersey.length) {
+        req.flash('error', 'Looks like that jersey number is already on the team. Please choose a different one.');
+        await uploader.destroy(req.file.filename);
+        return res.redirect(`/student/register/${teamId}`);
+    }
 
-    // await Student.register(student, password, (err, newStudent) => {
-    //     if (err) {
-    //         next(err)
-    //     }
-    //     req.logIn(newStudent, () => {
-    //         res.redirect(`/invoice/${newStudent._id}`);
-    //     });
-    // });
+    if (foundStudent.length) {
+        req.flash('error', "It looks like a student with this email is already registered.");
+        await uploader.destroy(req.file.filename)
+        return res.redirect(`/student/register/${teamId}`);
+    }
+
+    const student = new Student({
+        coach: req.body.coach,
+        team: teamId,
+        role,
+        association: team.name,
+        username,
+        dop,
+        fullname,
+        jersey,
+        age,
+        dob,
+        parent,
+        phone,
+        address
+    });
+
+    if (req.files["image"]) {
+        const { filename, path } = req.files["image"][0];
+        student.image.filename = filename;
+        student.image.path = path;
+    }
+
+    if (req.files["captureImage"]) {
+        const { filename, path } = req.files["captureImage"][0];
+        student.image.filename = filename;
+        student.image.path = path;
+    }
+
+    if (req.files["document"]) {
+        const docs = req.files["document"];
+        docs.forEach((document, i) => {
+            const { filename, path } = document;
+            student.documents.push({ filename, path, documentName: documents[i] });
+        });
+    }
+
+
+    await Team.findByIdAndUpdate(teamId, {
+        $addToSet: { students: student._id }
+    }, { new: true });
+
+    await Coach.findByIdAndUpdate(req.body.coach, {
+        $addToSet: { students: student._id }
+    }, { new: true });
+
+    await Student.register(student, password, (err, newStudent) => {
+        if (err) {
+            next(err)
+        }
+        req.logIn(newStudent, async () => {
+            const emailData = {
+                FromEmail: 'support@pixelmba.com',
+                FromName: 'Big Tri State',
+                Recipients: [
+                    {
+                        Email: username,
+                        Name: fullname,
+                    },
+                ],
+                Subject: 'Welcome to Big Tri State',
+                TextPart: `This is an automated email`,
+                HTMLPart: `
+          <h2><strong>This can take upto 2 to 3 days for verification</strong></h2>
+          <p style="font-size: 16px; color: #333;">Use this link to login to PixelMBA:</p>
+          <a href="#" target="_blank">Log In</a>
+          <p style="font-size: 16px; color: #333;">PixelMBA</p>
+        `,
+            };
+
+            // Send the email with the verification link
+            const emailRequest = mailjet.post('send', { version: 'v3.1' }).request({
+                Messages: [
+                    {
+                        From: {
+                            Email: emailData.FromEmail,
+                            Name: emailData.FromName,
+                        },
+                        To: emailData.Recipients,
+                        Subject: emailData.Subject,
+                        TextPart: emailData.TextPart,
+                        HTMLPart: emailData.HTMLPart,
+                    },
+                ],
+            });
+
+            await emailRequest;
+            res.redirect(`/invoice/${newStudent._id}`);
+        });
+    });
 }));
 
 router.get('/student/login', wrapAsync(async (req, res) => {
@@ -174,10 +211,94 @@ router.get('/s/:id/edit', wrapAsync(async (req, res) => {
         path: 'coaches',
         match: { status: 'approved' }
     });
-    res.render('./student/editinfo', { student, team, dop });
+    const dob = student.dob.split('-');
+    const year = dob[0];
+    const month = dob[1];
+    const date = dob[2];
+    // res.send({ date, month, year })
+    res.render('./student/editinfo', { student, team, dop, year, month, date });
 }));
 
-router.put('/student/register/:teamId/:studentId', upload.single('image'), wrapAsync(async (req, res) => {
+//     const { role, association, username, dop, fullname, jersey, age, dob, parent, phone, address, coach } = req.body;
+//     const { teamId, studentId } = req.params;
+
+//     const student = await Student.findById(studentId);
+
+//     if (!student) {
+//         req.flash('error', 'Student not found.');
+//         return res.redirect(`/s/${studentId}/edit`);
+//     }
+
+//     await Team.findByIdAndUpdate(student.team, {
+//         $pull: { students: studentId }
+//     });
+
+//     await Coach.findByIdAndUpdate(student.coach, {
+//         $pull: { students: studentId }
+//     });
+
+//     if (coach === "none") {
+//         req.flash('error', 'You cannot register without selecting a coach.');
+//         await uploader.destroy(req.file.filename);
+//         return res.redirect(`/s/${studentId}/edit`);
+//     }
+
+//     const foundJersey = await Student.findOne({
+//         team: teamId,
+//         dop,
+//         jersey
+//     });
+
+//     if (foundJersey && foundJersey._id.toString() !== studentId) {
+//         req.flash('error', 'This jersey number is already assigned to another student in the team. Please choose a different one.');
+//         if (req.file) {
+//             await uploader.destroy(req.file.filename);
+//         }
+//         return res.redirect(`/s/${studentId}/edit`);
+//     }
+
+//     if (req.file) {
+//         await uploader.destroy(student.image.filename);
+//         const { filename, path } = req.file;
+//         student.image.filename = filename;
+//         student.image.path = path;
+//     }
+
+//     student.username = username;
+//     student.dop = dop;
+//     student.jersey = jersey;
+//     student.team = teamId;
+//     student.coach = coach;
+//     student.role = role
+//     student.association = association
+//     student.fullname = fullname
+//     student.age = age
+//     student.dob = dob
+//     student.parent = parent
+//     student.phone = phone
+//     student.address = address
+//     student.coach = coach
+//     await student.save();
+
+
+//     await Team.findByIdAndUpdate(teamId, {
+//         $addToSet: { students: studentId }
+//     });
+
+//     await Coach.findByIdAndUpdate(coach, {
+//         $addToSet: { students: studentId }
+//     });
+
+//     req.flash('success', 'Your information has been updated!')
+//     res.redirect(`/invoice/${studentId}`);
+// }));
+router.put('/student/register/:teamId/:studentId', upload.fields(
+    [
+        { name: "image", maxCount: 1 },
+        { name: "captureImage", maxCount: 1 },
+        { name: "document", maxCount: 6 },
+    ]
+), wrapAsync(async (req, res) => {
     const { role, association, username, dop, fullname, jersey, age, dob, parent, phone, address, coach } = req.body;
     const { teamId, studentId } = req.params;
 
@@ -198,7 +319,17 @@ router.put('/student/register/:teamId/:studentId', upload.single('image'), wrapA
 
     if (coach === "none") {
         req.flash('error', 'You cannot register without selecting a coach.');
-        await uploader.destroy(req.file.filename);
+        if (req.files["image"]) {
+            await uploader.destroy(req.files["image"][0].filename);
+        }
+        if (req.files["captureImage"]) {
+            await uploader.destroy(req.files["captureImage"][0].filename);
+        }
+        if (req.files["document"]) {
+            req.files["document"].forEach(async (document) => {
+                await uploader.destroy(document.filename);
+            });
+        }
         return res.redirect(`/s/${studentId}/edit`);
     }
 
@@ -208,19 +339,54 @@ router.put('/student/register/:teamId/:studentId', upload.single('image'), wrapA
         jersey
     });
 
-    if (foundJersey && foundJersey._id.toString() !== studentId) {
+    if (foundJersey) {
         req.flash('error', 'This jersey number is already assigned to another student in the team. Please choose a different one.');
-        if (req.file) {
-            await uploader.destroy(req.file.filename);
+        if (req.files["image"]) {
+            await uploader.destroy(req.files["image"][0].filename);
+        }
+        if (req.files["captureImage"]) {
+            await uploader.destroy(req.files["captureImage"][0].filename);
+        }
+        if (req.files["document"]) {
+            req.files["document"].forEach(async (document) => {
+                await uploader.destroy(document.filename);
+            });
         }
         return res.redirect(`/s/${studentId}/edit`);
     }
 
-    if (req.file) {
-        await uploader.destroy(student.image.filename);
-        const { filename, path } = req.file;
+    if (req.files["image"]) {
+        // Delete the existing image if it exists
+        if (student.image && student.image.filename) {
+            await uploader.destroy(student.image.filename);
+        }
+        const { filename, path } = req.files["image"][0];
         student.image.filename = filename;
         student.image.path = path;
+    }
+
+    if (req.files["captureImage"]) {
+        // Delete the existing captureImage if it exists
+        if (student.captureImage && student.captureImage.filename) {
+            await uploader.destroy(student.captureImage.filename);
+        }
+        const { filename, path } = req.files["captureImage"][0];
+        student.captureImage.filename = filename;
+        student.captureImage.path = path;
+    }
+
+    if (req.files["document"]) {
+        // Delete existing documents if they exist
+        if (student.documents.length > 0) {
+            student.documents.forEach(async (doc) => {
+                await uploader.destroy(doc.filename);
+            });
+        }
+        // Add new documents
+        req.files["document"].forEach((document, i) => {
+            const { filename, path } = document;
+            student.documents.push({ filename, path, documentName: req.body.documents[i] });
+        });
     }
 
     student.username = username;
@@ -228,17 +394,17 @@ router.put('/student/register/:teamId/:studentId', upload.single('image'), wrapA
     student.jersey = jersey;
     student.team = teamId;
     student.coach = coach;
-    student.role = role
-    student.association = association
-    student.fullname = fullname
-    student.age = age
-    student.dob = dob
-    student.parent = parent
-    student.phone = phone
-    student.address = address
-    student.coach = coach
-    await student.save();
+    student.role = role;
+    student.association = association;
+    student.fullname = fullname;
+    student.age = age;
+    student.dob = dob;
+    student.parent = parent;
+    student.phone = phone;
+    student.address = address;
+    student.coach = coach;
 
+    await student.save();
 
     await Team.findByIdAndUpdate(teamId, {
         $addToSet: { students: studentId }
@@ -248,7 +414,7 @@ router.put('/student/register/:teamId/:studentId', upload.single('image'), wrapA
         $addToSet: { students: studentId }
     });
 
-    req.flash('success', 'Your information has been updated!')
+    req.flash('success', 'Your information has been updated!');
     res.redirect(`/invoice/${studentId}`);
 }));
 
