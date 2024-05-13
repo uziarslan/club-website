@@ -419,6 +419,47 @@ router.put('/student/register/:teamId/:studentId', upload.fields(
 }));
 
 
+router.get("/sendemail", wrapAsync(async (req, res) => {
+    let username = "kk5268@nyu.edu"
+    let fullname = "Kushal Kothari"
+    const emailData = {
+        FromEmail: 'info@bigtristate.com',
+        FromName: 'Big Tri State',
+        Recipients: [
+            {
+                Email: username,
+                Name: fullname,
+            },
+        ],
+        Subject: 'Welcome to Big Tri State',
+        TextPart: `This is an automated email`,
+        HTMLPart: `
+          <h2><strong>This can take upto 2 to 3 days for verification</strong></h2>
+          <p style="font-size: 16px; color: #333;">Use this link to login to PixelMBA:</p>
+          <a href="#" target="_blank">Log In</a>
+          <p style="font-size: 16px; color: #333;">Big Tri State</p>
+        `,
+    };
+
+    // Send the email with the verification link
+    const emailRequest = mailjet.post('send', { version: 'v3.1' }).request({
+        Messages: [
+            {
+                From: {
+                    Email: emailData.FromEmail,
+                    Name: emailData.FromName,
+                },
+                To: emailData.Recipients,
+                Subject: emailData.Subject,
+                TextPart: emailData.TextPart,
+                HTMLPart: emailData.HTMLPart,
+            },
+        ],
+    });
+
+    await emailRequest;
+}))
+
 
 
 
