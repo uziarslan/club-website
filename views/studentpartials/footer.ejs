@@ -4,7 +4,13 @@
     const loadingOverlay = document.querySelector('.loading-overlay');
 
     form.addEventListener('submit', function() {
-      loadingOverlay.style.display = 'flex';
+      const usernameExists = form.getAttribute('data-username-exists');
+      if (usernameExists === 'true') {
+        event.preventDefault();
+        loadingOverlay.style.display = 'none'; // Hide the loading overlay
+      } else {
+        loadingOverlay.style.display = 'flex'; // Show the loading overlay
+      }
     });
 
     // Add this function where you handle the form submission response

@@ -14,6 +14,16 @@ const { uploader } = require('cloudinary').v2
 const qrcode = require('qrcode');
 const router = express();
 
+const { MailtrapClient } = require("mailtrap");
+
+// Mailtrap Integration
+const TOKEN = process.env.MAIL_TRAP_TOKEN;
+const ENDPOINT = "https://send.api.mailtrap.io/";
+const client = new MailtrapClient({ endpoint: ENDPOINT, token: TOKEN });
+const sender = {
+    email: "info@bigtristate.com",
+    name: "Big Tri State",
+}
 
 
 // Managing admin
@@ -107,7 +117,19 @@ router.get('/admin/students', isAdmin, wrapAsync(async (req, res) => {
 
 router.get('/admin/student/approve/:id', isAdmin, wrapAsync(async (req, res) => {
     const { id } = req.params;
-    await Student.findByIdAndUpdate(id, { status: 'approved' });
+    const student = await Student.findByIdAndUpdate(id, { status: 'approved' }).populate("team").populate("coach");
+    client.send({
+        from: sender,
+        to: [{
+            email: student.username
+        }],
+        template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
+        template_variables: {
+            "student": student,
+            "team": student.team,
+            "coach": student.coach
+        }
+    })
     res.redirect('/admin/students')
 }));
 

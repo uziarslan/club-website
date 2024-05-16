@@ -39,8 +39,9 @@ module.exports.isCoach = (req, res, next) => {
 }
 
 module.exports.isStudent = (req, res, next) => {
-    if (req.user instanceof Student) {
+    if (req.user instanceof Student && req.params.id === req.user._id.toString()) {
         return next();
     }
     res.redirect('/');
 }
+

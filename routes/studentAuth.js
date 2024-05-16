@@ -10,9 +10,8 @@ const { storage } = require('../cloudinary');
 const { isStudent } = require('../middlewares');
 const upload = multer({ storage });
 const { uploader } = require('cloudinary').v2
-const Mailjet = require('node-mailjet');
-const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 const router = express();
+
 
 
 // Defining routes
@@ -123,42 +122,6 @@ router.post('/student/register/:teamId', upload.fields(
             next(err)
         }
         req.logIn(newStudent, async () => {
-            const emailData = {
-                FromEmail: 'support@pixelmba.com',
-                FromName: 'Big Tri State',
-                Recipients: [
-                    {
-                        Email: username,
-                        Name: fullname,
-                    },
-                ],
-                Subject: 'Welcome to Big Tri State',
-                TextPart: `This is an automated email`,
-                HTMLPart: `
-          <h2><strong>This can take upto 2 to 3 days for verification</strong></h2>
-          <p style="font-size: 16px; color: #333;">Use this link to login to PixelMBA:</p>
-          <a href="#" target="_blank">Log In</a>
-          <p style="font-size: 16px; color: #333;">PixelMBA</p>
-        `,
-            };
-
-            // Send the email with the verification link
-            const emailRequest = mailjet.post('send', { version: 'v3.1' }).request({
-                Messages: [
-                    {
-                        From: {
-                            Email: emailData.FromEmail,
-                            Name: emailData.FromName,
-                        },
-                        To: emailData.Recipients,
-                        Subject: emailData.Subject,
-                        TextPart: emailData.TextPart,
-                        HTMLPart: emailData.HTMLPart,
-                    },
-                ],
-            });
-
-            await emailRequest;
             res.redirect(`/invoice/${newStudent._id}`);
         });
     });
@@ -182,6 +145,9 @@ router.post('/student/login', (req, res, next) => {
                 return next(err);
             }
             if (user instanceof Student) {
+                if (user.paymentStatus === "unpaid") {
+                    return res.redirect(`/invoice/${user._id}`);
+                }
                 req.flash('success', `Welcome back ${user.fullname}!`);
                 return res.redirect(`/student/${user._id}/${user.team._id}`);
             }
@@ -215,83 +181,26 @@ router.get('/s/:id/edit', wrapAsync(async (req, res) => {
     const year = dob[0];
     const month = dob[1];
     const date = dob[2];
-    // res.send({ date, month, year })
     res.render('./student/editinfo', { student, team, dop, year, month, date });
 }));
 
-//     const { role, association, username, dop, fullname, jersey, age, dob, parent, phone, address, coach } = req.body;
-//     const { teamId, studentId } = req.params;
+router.get('/profile/:id/edit', wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const student = await Student.findById(id).populate('coach');
+    const docName = ["State ID", "Passport", "School ID", "SSN", "Birth Certificate", "Medical Wavier"]
+    res.render('./student/profile', { student, docName });
+}));
 
-//     const student = await Student.findById(studentId);
+router.put('/profile/:id', wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const student = await Student.findByIdAndUpdate(id, { ...req.body });
+    req.logIn(student, function (err) {
+        if (err) { return next(err); }
+        req.flash("success", "Information has been updated successfully.")
+        res.redirect(`/profile/${id}/edit`);
+    });
+}));
 
-//     if (!student) {
-//         req.flash('error', 'Student not found.');
-//         return res.redirect(`/s/${studentId}/edit`);
-//     }
-
-//     await Team.findByIdAndUpdate(student.team, {
-//         $pull: { students: studentId }
-//     });
-
-//     await Coach.findByIdAndUpdate(student.coach, {
-//         $pull: { students: studentId }
-//     });
-
-//     if (coach === "none") {
-//         req.flash('error', 'You cannot register without selecting a coach.');
-//         await uploader.destroy(req.file.filename);
-//         return res.redirect(`/s/${studentId}/edit`);
-//     }
-
-//     const foundJersey = await Student.findOne({
-//         team: teamId,
-//         dop,
-//         jersey
-//     });
-
-//     if (foundJersey && foundJersey._id.toString() !== studentId) {
-//         req.flash('error', 'This jersey number is already assigned to another student in the team. Please choose a different one.');
-//         if (req.file) {
-//             await uploader.destroy(req.file.filename);
-//         }
-//         return res.redirect(`/s/${studentId}/edit`);
-//     }
-
-//     if (req.file) {
-//         await uploader.destroy(student.image.filename);
-//         const { filename, path } = req.file;
-//         student.image.filename = filename;
-//         student.image.path = path;
-//     }
-
-//     student.username = username;
-//     student.dop = dop;
-//     student.jersey = jersey;
-//     student.team = teamId;
-//     student.coach = coach;
-//     student.role = role
-//     student.association = association
-//     student.fullname = fullname
-//     student.age = age
-//     student.dob = dob
-//     student.parent = parent
-//     student.phone = phone
-//     student.address = address
-//     student.coach = coach
-//     await student.save();
-
-
-//     await Team.findByIdAndUpdate(teamId, {
-//         $addToSet: { students: studentId }
-//     });
-
-//     await Coach.findByIdAndUpdate(coach, {
-//         $addToSet: { students: studentId }
-//     });
-
-//     req.flash('success', 'Your information has been updated!')
-//     res.redirect(`/invoice/${studentId}`);
-// }));
 router.put('/student/register/:teamId/:studentId', upload.fields(
     [
         { name: "image", maxCount: 1 },
@@ -418,48 +327,97 @@ router.put('/student/register/:teamId/:studentId', upload.fields(
     res.redirect(`/invoice/${studentId}`);
 }));
 
+router.get('/check-username/:username', async (req, res) => {
+    const { username } = req.params;
+    const exists = await Student.findOne({ username });
+    res.json({ exists });
+});
 
-router.get("/sendemail", wrapAsync(async (req, res) => {
-    let username = "kk5268@nyu.edu"
-    let fullname = "Kushal Kothari"
-    const emailData = {
-        FromEmail: 'info@bigtristate.com',
-        FromName: 'Big Tri State',
-        Recipients: [
-            {
-                Email: username,
-                Name: fullname,
-            },
-        ],
-        Subject: 'Welcome to Big Tri State',
-        TextPart: `This is an automated email`,
-        HTMLPart: `
-          <h2><strong>This can take upto 2 to 3 days for verification</strong></h2>
-          <p style="font-size: 16px; color: #333;">Use this link to login to PixelMBA:</p>
-          <a href="#" target="_blank">Log In</a>
-          <p style="font-size: 16px; color: #333;">Big Tri State</p>
-        `,
-    };
+router.put('/:studentId/documents', upload.single('file'), async (req, res) => {
+    try {
+        const studentId = req.params.studentId;
+        const documentName = req.body.documentName;
+        const file = req.file;
 
-    // Send the email with the verification link
-    const emailRequest = mailjet.post('send', { version: 'v3.1' }).request({
-        Messages: [
-            {
-                From: {
-                    Email: emailData.FromEmail,
-                    Name: emailData.FromName,
+        // Find the student by ID
+        const student = await Student.findById(studentId);
+
+        // Find the document with the matching documentName
+        const document = student.documents.find(doc => doc.documentName === documentName);
+
+        // Delete the old image from Cloudinary if the document exists
+        if (document && document.filename) {
+            await uploader.destroy(document.filename);
+        }
+
+        // Upload the file to Cloudinary
+        const result = await uploader.upload(file.path);
+
+        let updatedStudent;
+        if (document) {
+            // If document exists, update its filename and path
+            updatedStudent = await Student.findOneAndUpdate(
+                { _id: studentId, "documents.documentName": documentName },
+                {
+                    $set: {
+                        "documents.$.filename": result.public_id,
+                        "documents.$.path": result.secure_url
+                    }
                 },
-                To: emailData.Recipients,
-                Subject: emailData.Subject,
-                TextPart: emailData.TextPart,
-                HTMLPart: emailData.HTMLPart,
-            },
-        ],
-    });
+                { new: true }
+            );
+        } else {
+            // If document doesn't exist, add a new document to the array
+            updatedStudent = await Student.findOneAndUpdate(
+                { _id: studentId },
+                {
+                    $push: {
+                        documents: {
+                            documentName: documentName,
+                            filename: result.public_id,
+                            path: result.secure_url
+                        }
+                    }
+                },
+                { new: true }
+            );
+        }
+        res.json({ message: 'Document updated successfully', student: updatedStudent });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to update document' });
+    }
+});
 
-    await emailRequest;
-}))
+router.put('/:studentId/image', upload.single('file'), async (req, res) => {
+    try {
+        const studentId = req.params.studentId;
+        const file = req.file;
 
+        // Find the student by ID
+        const student = await Student.findById(studentId);
+
+        // Delete the old image from Cloudinary if it exists
+        if (student.image && student.image.filename) {
+            await uploader.destroy(student.image.filename);
+        }
+
+        // Upload the new image to Cloudinary
+        const result = await uploader.upload(file.path);
+
+        // Update the student's profile image
+        const updatedStudent = await Student.findByIdAndUpdate(
+            studentId,
+            { $set: { image: { filename: result.public_id, path: result.secure_url } } },
+            { new: true }
+        );
+
+        res.json({ message: 'Profile image updated successfully', student: updatedStudent });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to update profile image' });
+    }
+});
 
 
 

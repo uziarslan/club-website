@@ -1,0 +1,208 @@
+<%- include('../studentpartials/head') %>
+<div class="content-wrapper">
+  <%- include("../flash") %>
+  <div class="row mb-2">
+    <div class="col-lg-12">
+      <form id="studentEditForm" action="/profile/<%= student._id %>?_method=PUT" method="POST">
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-text text-muted">
+                Email
+              </label>
+              <input id="usernameInput" value="<%= student.username %>" required type="text" class="form-control p_input" name="username">
+              <div id="message"></div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-text text-muted">
+                Participant’s Full Name
+              </label>
+              <input value="<%= student.fullname %>" required type="text" class="form-control p_input" name="fullname">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-text text-muted">
+                Parent/Guardian Name(s)
+              </label>
+              <input value="<%= student.parent %>" type="text" class="form-control p_input" name="parent">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-text text-muted">
+                Phone Number
+              </label>
+              <input value="<%= student.phone %>" type="tel" class="form-control p_input" name="phone">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-text text-muted">
+                Complete address (including City, State, and Zip Code)
+              </label>
+              <input value="<%= student.address %>" type="text" class="form-control p_input" name="address">
+            </div>
+          </div>
+        </div>
+        <div class="images-container">
+          <div style="display: flex; flex-direction: row; gap: 15px; justify-content: center; margin-bottom: 15px;">
+            <% docName.forEach((docName) => { %>
+            <% const document = student.documents.find(doc => doc.documentName === docName); %>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <p style="margin: 0; text-align: center;"><%= docName %></p>
+              <% if (document) { %>
+              <a id="<%= docName %>" href="<%= document.path %>" target="_blank">
+                <img data-doc-name="<%= docName %>" style="width: 100px; height: 100px; object-fit: contain;" src="<%= document.path %>" />
+              </a>
+              <% } else { %>
+              <img data-doc-name="<%= docName %>" style="width: 100px; height: 100px; object-fit: contain;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" />
+              <% } %>
+              <label class="btn btn-warning">Change</label>
+              <input data-document-name="<%= docName %>" data-student-id="<%= student._id %>" class="d-none" id="changeImage" type="file" accept=".jpeg, .jpg, .png" />
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary btn-block enter-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById('profileImage')
+    .addEventListener('change', function() {
+      const file = this.files[0];
+      const studentId = '<%= student._id %>';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const loadingOverlay = document.querySelector('.loading-overlay');
+      loadingOverlay.style.display = 'flex';
+
+      fetch(`/${studentId}/image`, {
+          method: 'PUT'
+          , body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data.message);
+          const img = document.querySelector('.user-info img');
+          if (img) {
+            img.src = data.student.image.path;
+          }
+          loadingOverlay.style.display = 'none';
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          loadingOverlay.style.display = 'none';
+        });
+    });
+
+</script>
+<script>
+  document.querySelectorAll('.btn-warning')
+    .forEach(btn => {
+      btn.addEventListener('click', function() {
+        const input = this.nextElementSibling;
+        input.click();
+      });
+    });
+
+  document.querySelectorAll('.images-container input[type="file"]')
+    .forEach(input => {
+      input.addEventListener('change', function() {
+        const file = this.files[0];
+        const documentName = this.getAttribute('data-document-name');
+        const studentId = this.getAttribute('data-student-id');
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('documentName', documentName);
+
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        loadingOverlay.style.display = 'flex';
+
+        fetch(`/${studentId}/documents`, {
+            method: 'PUT'
+            , body: formData
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(data.message);
+            const img = document.querySelector(`.images-container img[data-doc-name="${documentName}"]`);
+            const a = document.querySelector(`#${documentName}`);
+            if (img) {
+              img.src = data.student.documents.find(doc => doc.documentName === documentName)
+                .path;
+              a.href = img.src;
+            }
+            loadingOverlay.style.display = 'none';
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            loadingOverlay.style.display = 'none';
+          });
+      });
+    });
+
+</script>
+<script>
+  const usernameInput = document.getElementById('usernameInput');
+  const messageDiv = document.getElementById('message');
+  const form = document.getElementById('studentEditForm');
+
+  usernameInput.addEventListener('blur', function() {
+    const username = usernameInput.value;
+    fetch(`/check-username/${username}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.exists) {
+          usernameInput.classList.add('is-invalid');
+          usernameInput.classList.remove('is-valid');
+          messageDiv.innerHTML = `<div class="invalid-feedback">Student with username ${username} already exists</div>`;
+          const inValidFeedback = document.querySelector(".invalid-feedback");
+          inValidFeedback.style.display = "block"
+          form.setAttribute('data-username-exists', 'true');
+        } else {
+          usernameInput.classList.add('is-valid');
+          usernameInput.classList.remove('is-invalid');
+          messageDiv.innerHTML = `<div class="valid-feedback">Username ${username} is available</div>`;
+          const ValidFeedback = document.querySelector(".valid-feedback");
+          ValidFeedback.style.color = "green"
+          ValidFeedback.style.marginTop = "0.25rem"
+          form.setAttribute('data-username-exists', 'false');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        messageDiv.innerHTML = `<div class="invalid-feedback" >Error checking username</div>`;
+      });
+  });
+
+</script>
+<%- include('../studentpartials/footer') %>

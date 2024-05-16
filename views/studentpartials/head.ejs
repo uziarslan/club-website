@@ -57,13 +57,14 @@
             <% }else{ %>
             <img src="/images/face.jpg" alt="Profile Image">
             <% } %>
+            <label style="text-align: center; text-decoration: underline; cursor: pointer; color: blue;" for="profileImage">Change</label>
+            <input type="file" class="d-none" id="profileImage" />
             <p class="name"><%= student.fullname %></p>
             <p class="designation"><%= student.role.toUpperCase() %></p>
           </div>
           <ul class="nav">
-
             <li class="nav-item active">
-              <a class="nav-link" href="">
+              <a class="nav-link" href="/student/<%= student._id %>/<%= student.team %>">
                 <img src="/images/icons/5.png" alt="">
                 <span class="menu-title">Dashboard</span>
               </a>
@@ -77,8 +78,8 @@
                 <ul class="nav flex-column sub-menu">
 
                   <li class="nav-item">
-                    <a class="nav-link" href="#">
-                      ChangePassword
+                    <a class="nav-link" href="/profile/<%= student._id %>/edit">
+                      Profile
                     </a>
                   </li>
                   <li class="nav-item">

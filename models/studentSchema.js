@@ -36,7 +36,12 @@ const studentSchema = new mongoose.Schema({
             path: String,
             documentName: String
         }
-    ]
+    ],
+    paymentStatus: {
+        type: String,
+        enum: ["paid", "unpaid"],
+        default: "unpaid"
+    }
 });
 
 studentSchema.plugin(passportLocalMongoose)
