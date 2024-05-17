@@ -12,6 +12,11 @@ const upload = multer({ dest: 'public/uploads' });
 const router = express.Router();
 
 
+function convertDateFormat(date) {
+    const [month, day, year] = date.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
 router.get('/download-demo', (req, res) => {
     const filePath = path.join(__dirname, "..", 'public', 'uploads', 'demo.csv');
 
@@ -56,6 +61,9 @@ router.post('/upload-csv', upload.single('csvFile'), wrapAsync(async (req, res) 
                 return
             }
 
+            const dob = row.dob;
+            const formattedDate = convertDateFormat(dob);
+
             const dateOfBirth = new Date(row.dob);
             const today = new Date();
             let age = today.getFullYear() - dateOfBirth.getFullYear();
@@ -75,7 +83,7 @@ router.post('/upload-csv', upload.single('csvFile'), wrapAsync(async (req, res) 
                 dop: row.dop,
                 fullname: row.fullname,
                 jersey: row.jersey,
-                dob: row.dob,
+                dob: formattedDate,
                 parent: row.parent,
                 phone: row.phone,
                 address: row.address,

@@ -77,6 +77,7 @@
                   <th>Date of Birth</th>
                   <th>Jersey #</th>
                   <th>Documents</th>
+                  <th>Payment Status</th>
                   <th>Option</th>
                 </tr>
               </thead>
@@ -100,6 +101,9 @@
                     <% for(let doc of student.documents){ %>
                     <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
                     <% } %>
+                  </td>
+                  <td>
+                    <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
                   </td>
                   <td>
                     <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
@@ -133,6 +137,7 @@
                   <th>Date of Birth</th>
                   <th>Jersey #</th>
                   <th>Documents</th>
+                  <th>Payment Status</th>
                   <th>Option</th>
                 </tr>
               </thead>
@@ -156,6 +161,9 @@
                     <% for(let doc of student.documents){ %>
                     <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
                     <% } %>
+                  </td>
+                  <td>
+                    <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
                   </td>
                   <td>
                     <a href="/admin/student/pending/<%= student._id %>" class="btn btn-outline-warning btn-sm">Pending</a>
@@ -189,6 +197,7 @@
                   <th>Date of Birth</th>
                   <th>Jersey #</th>
                   <th>Documents</th>
+                  <th>Payment Status</th>
                   <th>Option</th>
                 </tr>
               </thead>
@@ -212,6 +221,9 @@
                     <% for(let doc of student.documents){ %>
                     <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
                     <% } %>
+                  </td>
+                  <td>
+                    <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
                   </td>
                   <td>
                     <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
