@@ -1,216 +1,686 @@
 <%- include('../coachpartials/head') %>
-<div class="content-wrapper">
-  <%- include('../flash') %>
-  <div class="row">
-    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="clearfix">
-            <i class="fa fa-users float-right icon-grey-big"></i>
-          </div>
-          <h4 class="card-title font-weight-normal text-success"><%= coach.students.length %></h4>
-          <h6 class="card-subtitle mb-4">All Players</h6>
-        </div>
-      </div>
-    </div>
-  </div>
+<style>
+  .dnone {
+    display: none;
+  }
 
-  <div class="row mb-4">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title mb-4">Create Players</h5>
-          <form action="/upload-csv" method="post" enctype="multipart/form-data">
+  .fset {
+    padding: 0px !important;
+    font-size: 16px !important;
+    font-weight: 500;
+  }
+
+  .iconWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .iconWrapper i {
+    font-size: 20px;
+    margin-left: -30px;
+    cursor: pointer;
+  }
+
+  .addDocumentButton {
+    background-color: #04befe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 7px;
+    border-radius: 5px;
+    width: 150px;
+    margin: 0 auto;
+  }
+
+  #addDocumentButton {
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  #addPlayer {
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  .deleteField {
+    font-size: 24px;
+    color: red;
+    cursor: pointer;
+  }
+
+  .required-highlight {
+    background-color: #ffe6e6 !important;
+  }
+
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="content-wrapper d-flex align-items-center auth-pages">
+      <div class="card col-lg-7 mx-auto">
+        <div class="card-body px-5 py-5">
+          <%- include('../flash') %>
+          <h3 class="card-title text-left mb-3">Create Players</h3>
+          <form id="studentForm" action="/student/register/<%= team._id %>" method="POST" enctype="multipart/form-data">
             <div class="row">
-              <div class="col-2">
-                <select class="form-control" name="teamId" id="teams" onchange="updateCoaches()">
-                  <% for (let team of teams){ %>
-                  <option value="<%= team.id %>"><%= team.name %></option>
-                  <% } %>
-                </select>
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label class="form-text text-muted">
+                        Select Option
+                      </label>
+                      <select name="role" class="form-control" required>
+                        <option value="football">Football</option>
+                        <option value="cheer">Cheer</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="col-2">
-                <select class="form-control" name="coachId" id="coaches"></select>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    ASSOCIATION NAME
+                  </label>
+                  <input disabled value="<%= team.name %>" type="text" class="form-control p_input" name="association">
+                </div>
               </div>
-              <div class="col-2">
-                <input type="file" required accept=".csv" name="csvFile" />
-              </div>
-              <div class="col-2">
-                <a href="/download-demo" class="btn btn-success btn-sm">Download Demo File</a>
-              </div>
-              <button id="submitButton" type="submit" class="btn btn-outline-primary btn-sm">Upload and create</button>
             </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Email
+                  </label>
+                  <input required type="text" class="form-control p_input" name="username">
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Create a Password
+                  </label>
+                  <div class="iconWrapper">
+                    <input required id="password" type="password" class="form-control p_input" name="password">
+                    <i class='bx bx-show' id="togglePassword"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Confirm Password
+                  </label>
+                  <div class="iconWrapper">
+                    <input required id="confirmPassword" type="password" class="form-control p_input">
+                    <i class='bx bx-show' id="confirmPasswordToggle"></i>
+                  </div>
+                  <div id="confirmPasswordFeedback" class="invalid-feedback">Passwords do not match</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Participant’s Full Name
+                  </label>
+                  <input required type="text" class="form-control p_input" name="fullname">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label id="dob" class="form-text text-muted">
+                    YYYY/MM/DD
+                  </label>
+                  <div class="d-flex">
+                    <div class="col-4">
+                      <select class="form-control" id="dobYear" name="dobYear" required>
+                        <option disabled selected value="">Year</option>
+                        <option value="2000">2000</option>
+                        <option value="2001">2001</option>
+                        <option value="2002">2002</option>
+                        <option value="2003">2003</option>
+                        <option value="2004">2004</option>
+                        <option value="2005">2005</option>
+                        <option value="2006">2006</option>
+                        <option value="2007">2007</option>
+                        <option value="2008">2008</option>
+                        <option value="2009">2009</option>
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                      </select>
+                    </div>
+                    <div class="col-4">
+                      <select class="form-control" id="dobMonth" name="dobMonth" required>
+                        <option disabled selected value="">Month</option>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="col-4">
+                      <select class="form-control" id="dobDate" name="dobDate" required>
+                        <option disabled selected value="">Date</option>
+                        <option value="01">1</option>
+                        <option value="02">2</option>
+                        <option value="03">3</option>
+                        <option value="04">4</option>
+                        <option value="05">5</option>
+                        <option value="06">6</option>
+                        <option value="07">7</option>
+                        <option value="08">8</option>
+                        <option value="09">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Division of play
+                  </label>
+                  <select name="dop" class="form-control" id="dop" required>
+                    <option value="7U">7U</option>
+                    <option value="8U">8U</option>
+                    <option value="9U">9U</option>
+                    <option value="10U">10U</option>
+                    <option value="11U">11U</option>
+                    <option value="12U">12U</option>
+                    <option value="13U">13U</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Parent/Guardian Name(s)
+                  </label>
+                  <input type="text" class="form-control p_input" name="parent">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Phone Number
+                  </label>
+                  <input type="tel" class="form-control p_input" name="phone">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Complete address (including City, State, and Zip Code)
+                  </label>
+                  <input type="text" class="form-control p_input" name="address">
+                </div>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-2"></div>
+              <div class="col-8">
+                <div class="panel" id="uploadPanel">
+                  <!-- Upload Image Button -->
+                  <div class="button_outer">
+                    <div class="btn_upload" id="uploadButton">
+                      <input accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image" onclick="addAnimation()">
+                      Upload Image <i class="ms-1 fa fa-upload"></i>
+                    </div>
+                    <div class="processing_bar"></div>
+                    <div class="success_box"></div>
+                  </div>
+                </div>
+                <div class="error_msg"></div>
+                <div class="uploaded_file_view" id="uploaded_view">
+                  <span class="file_remove" id="fil-remove">X</span>
+                </div>
+              </div>
+              <div class="col-2"></div>
+            </div>
+            <div id="documentField"></div>
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card-deck">
-    <div class="card col-lg-12 px-0 mb-4">
-      <div class="card-body">
-        <h5 class="card-title">Players</h5>
-        <div class="table-responsive">
-          <table class="table center-aligned-table">
-            <thead>
-              <tr class="text-primary">
-                <th>Jersey #</th>
-                <th>Devision</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Role</th>
-                <th>Date of Birth</th>
-                <th>Decision</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (let student of footballers){ %>
-              <tr class="">
-                <td><%= student.jersey %></td>
-                <td><%= student.dop %></td>
-                <td><%= student.fullname %></td>
-                <td><%= student.username %></td>
-                <td><%= student.phone %></td>
-                <td><%= student.role %></td>
-                <td><%= student.dob %></td>
-                <td><%= student.status %></td>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="card-deck">
-    <div class="card col-lg-12 px-0 mb-4">
-      <div class="card-body">
-        <h5 class="card-title">Cheer</h5>
-        <div class="table-responsive">
-          <table class="table center-aligned-table">
-            <thead>
-              <tr class="text-primary">
-                <th>Jersey #</th>
-                <th>Devision</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Role</th>
-                <th>Date of Birth</th>
-                <th>Decision</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (let student of cheerleaders){ %>
-              <tr class="">
-                <td><%= student.jersey %></td>
-                <td><%= student.dop %></td>
-                <td><%= student.fullname %></td>
-                <td><%= student.username %></td>
-                <td><%= student.phone %></td>
-                <td><%= student.role %></td>
-                <td><%= student.dob %></td>
-                <td><%= student.status %></td>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
-      <div class="card card-statistics">
-        <div class="card-body">
-          <div class="clearfix">
-            <div class="float-right">
-              <h4 class="text-success">
-                <i class="fa fa-smile-o highlight-icon" aria-hidden="true"></i>
-              </h4>
-            </div>
-            <div class="float-left">
-              <h4 class="bold-text"><%= approved_students.length %></h4>
-            </div>
+          <div class="addDocumentButton mb-3">
+            <button id="addDocumentButton">Add Document</button>
           </div>
-          <p class="text-muted">
-            Approved Players
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
-      <div class="card card-statistics">
-        <div class="card-body">
-          <div class="clearfix">
-            <div class="float-right">
-              <h4 class="text-warning">
-                <i class="fa fa-meh-o highlight-icon" aria-hidden="true"></i>
-              </h4>
-            </div>
-            <div class="float-left">
-              <h4 class="bold-text"><%= pending_students.length %></h4>
-            </div>
+          <div class="addDocumentButton mb-3">
+            <button id="addPlayer">Add Player</button>
           </div>
-          <p class="text-muted">
-            Pending Players
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 mb-4">
-      <div class="card card-statistics">
-        <div class="card-body">
-          <div class="clearfix">
-            <div class="float-right">
-              <h4 class="text-danger">
-                <i class="fa fa-frown-o highlight-icon" aria-hidden="true"></i>
-              </h4>
-            </div>
-            <div class="float-left">
-              <h4 class="bold-text"><%= disqualified_students.length %></h4>
-            </div>
+          <div class="text-center">
+            <button id="registerButton" type="button" class="btn btn-primary btn-block enter-btn">Register</button>
           </div>
-          <p class="text-muted">
-            Disqualified Players
-          </p>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script>
-  const teams = <%- JSON.stringify(teams) %>;
+  const addDocumentButton = document.getElementById('addDocumentButton');
 
-  function updateCoaches() {
-    const selectedTeamId = document.getElementById('teams')
-      .value;
-    const selectedTeam = teams.find(team => team._id === selectedTeamId);
-    const coachesSelect = document.getElementById('coaches');
-    coachesSelect.innerHTML = '';
-    if (selectedTeam && selectedTeam.coaches.length) {
-      selectedTeam.coaches.forEach(coach => {
-        var button = document.querySelector("#submitButton");
-        button.disabled = false
-        const option = document.createElement('option');
-        option.value = coach._id;
-        option.textContent = coach.fullname;
-        coachesSelect.appendChild(option);
-      });
-    } else {
-      const option = document.createElement('option');
-      option.value = "none";
-      option.textContent = "None";
-      coachesSelect.appendChild(option);
-      var button = document.querySelector("#submitButton");
-      button.disabled = true
+  function appendForm(type) {
+    const formContainer = document.getElementById('documentField');
+    const newForm = document.createElement('div');
+    let formContent;
+
+    if (type === 'player') {
+      // Player form content
+      formContent = `<hr>
+<div class="row">
+  <div class="col-6">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label class="form-text text-muted">
+            Select Option
+          </label>
+          <select name="role" class="form-control" required>
+            <option value="football">Football</option>
+            <option value="cheer">Cheer</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="form-group">
+      <label class="form-text text-muted">
+        Participant’s Full Name
+      </label>
+      <input required type="text" class="form-control p_input" name="fullname">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <div class="form-group">
+      <label id="dob" class="form-text text-muted">
+        YYYY/MM/DD
+      </label>
+      <div class="d-flex">
+        <div class="col-4">
+          <select class="form-control" class="dobYear" name="dobYear" required>
+            <option disabled selected value="">Year</option>
+            <option value="2000">2000</option>
+            <option value="2001">2001</option>
+            <option value="2002">2002</option>
+            <option value="2003">2003</option>
+            <option value="2004">2004</option>
+            <option value="2005">2005</option>
+            <option value="2006">2006</option>
+            <option value="2007">2007</option>
+            <option value="2008">2008</option>
+            <option value="2009">2009</option>
+            <option value="2010">2010</option>
+            <option value="2011">2011</option>
+            <option value="2012">2012</option>
+            <option value="2013">2013</option>
+            <option value="2014">2014</option>
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+          </select>
+        </div>
+        <div class="col-4">
+          <select class="form-control" class="dobMonth" name="dobMonth" required>
+            <option disabled selected value="">Month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <div class="col-4">
+          <select class="form-control" class="dobDate" name="dobDate" required>
+            <option disabled selected value="">Date</option>
+            <option value="01">1</option>
+            <option value="02">2</option>
+            <option value="03">3</option>
+            <option value="04">4</option>
+            <option value="05">5</option>
+            <option value="06">6</option>
+            <option value="07">7</option>
+            <option value="08">8</option>
+            <option value="09">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+            <option value="31">31</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="form-group">
+      <label class="form-text text-muted">
+        Division of play
+      </label>
+      <select name="dop" class="form-control" id="dop" required>
+      <option value="7U">7U</option>
+      <option value="8U">8U</option>
+      <option value="9U">9U</option>
+      <option value="10U">10U</option>
+      <option value="11U">11U</option>
+      <option value="12U">12U</option>
+      <option value="13U">13U</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <div class="form-group">
+      <label class="form-text text-muted">
+        Parent/Guardian Name(s)
+      </label>
+      <input type="text" class="form-control p_input" name="parent">
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="form-group">
+      <label class="form-text text-muted">
+        Phone Number
+      </label>
+      <input type="tel" class="form-control p_input" name="phone">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="form-group">
+      <label class="form-text text-muted">
+        Complete address (including City, State, and Zip Code)
+      </label>
+      <input type="text" class="form-control p_input" name="address">
+    </div>
+  </div>
+</div>
+<div class="row mb-4">
+  <div class="col-2"></div>
+  <div class="col-8">
+    <div class="panel" id="uploadPanel">
+      <!-- Upload Image Button -->
+      <div class="button_outer">
+        <div class="btn_upload" id="uploadButton">
+          <input accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image" onclick="addAnimation()">
+          Upload Image <i class="ms-1 fa fa-upload"></i>
+        </div>
+        <div class="processing_bar"></div>
+        <div class="success_box"></div>
+      </div>
+    </div>
+    <div class="error_msg"></div>
+    <div class="uploaded_file_view" id="uploaded_view">
+      <span class="file_remove" id="fil-remove">X</span>
+    </div>
+  </div>
+  <div class="col-2"></div>
+</div>
+`;
+    } else if (type === 'document') {
+      formContent = `
+<div class="row align-items-center">
+  <div class="col-6">
+    <div class="form-group">
+      <label class="form-label">Document type</label>
+      <select name="documents" class="form-control">
+        <option value="State ID">State Id</option>
+        <option value="Passport">Passport</option>
+        <option value="School ID">School Id</option>
+        <option value="SSN">SSN</option>
+        <option value="Birth Certificate">Birth Certificate</option>
+        <option value="Medical Wavier">Medical Wavier</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-5">
+    <div class="panel" id="uploadPanel">
+      <div class="button_outer">
+        <div class="btn_upload" id="uploadButton">
+          <input required accept=".jpeg, .jpg, .png" type="file" id="upload_document" name="document" onclick="addAnimation()">
+          Upload Document <i class="ms-1 fa fa-upload"></i>
+        </div>
+        <div class="processing_bar"></div>
+        <div class="success_box"></div>
+      </div>
+    </div>
+    <div class="error_msg"></div>
+    <div class="uploaded_file_view" id="uploaded_view">
+      <span class="file_remove" id="fil-remove">X</span>
+    </div>
+  </div>
+  <div class="col-1">
+    <i class='bx bx-trash deleteField' onclick="removeDocumentSection(this)"></i>
+  </div>
+</div>`;
     }
+
+    newForm.innerHTML = formContent;
+    formContainer.appendChild(newForm);
   }
 
-  // Initialize coaches select options for the default selected team
-  updateCoaches();
+  document.addEventListener('DOMContentLoaded', function() {
+    addDocumentButton.addEventListener('click', function() {
+      appendForm('document');
+    });
+
+    // Event listener for "ADD Player" button (unchanged)
+    document.getElementById('addPlayer')
+      .addEventListener('click', function() {
+        appendForm('player');
+      });
+  });
+
+  function removeDocumentSection(element) {
+    element.parentElement.parentElement.remove();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const registerButton = document.getElementById('registerButton');
+    const form = document.getElementById('studentForm');
+
+    registerButton.addEventListener('click', function(event) {
+      if (form.checkValidity()) {
+        form.submit();
+      } else {
+        event.preventDefault();
+        highlightRequiredFields();
+      }
+    });
+
+    function highlightRequiredFields() {
+      const requiredFields = form.querySelectorAll('[required]');
+      requiredFields.forEach(field => {
+        field.classList.remove('required-highlight');
+      });
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          field.classList.add('required-highlight');
+        }
+      });
+    }
+  });
 
 </script>
+<script>
+  const togglePassword = document
+    .querySelector('#togglePassword');
+  const password = document.querySelector('#password');
+  togglePassword.addEventListener('click', () => {
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = password
+      .getAttribute('type') === 'password' ?
+      'text' : 'password';
+    password.setAttribute('type', type);
+    // Toggle the eye and bi-eye icon
+    this.classList.toggle('bi-eye');
+  });
+  const confirmPassword = document
+    .querySelector('#confirmPasswordToggle');
+  const confirmPasswordField = document.querySelector('#confirmPassword');
+  confirmPassword.addEventListener('click', () => {
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = confirmPasswordField
+      .getAttribute('type') === 'password' ?
+      'text' : 'password';
+    confirmPasswordField.setAttribute('type', type);
+    // Toggle the eye and bi-eye icon
+    this.classList.toggle('bi-eye');
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var password = document.getElementById('password');
+    var confirmPassword = document.getElementById('confirmPassword');
+    var confirmPasswordFeedback = document.getElementById('confirmPasswordFeedback');
+    var formGroup = confirmPassword.closest('.form-group');
+
+    function checkPasswordMatch() {
+      if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
+        formGroup.classList.add('has-error');
+        confirmPassword.classList.add('is-invalid');
+        confirmPasswordFeedback.style.display = 'block';
+      } else {
+        formGroup.classList.remove('has-error');
+        confirmPassword.classList.remove('is-invalid');
+        confirmPasswordFeedback.style.display = 'none';
+      }
+    }
+
+    confirmPassword.addEventListener('blur', checkPasswordMatch);
+  });
+
+</script>
+<script>
+  function addAnimation() {
+    $('.btn_upload input[type="file"]')
+      .on('change', function(e) {
+        var ext = $(this)
+          .val()
+          .split('.')
+          .pop()
+          .toLowerCase();
+        var btnOuter = $(this)
+          .closest('.button_outer');
+        var error_msg = btnOuter.next('.error_msg');
+        var uploaded_view = btnOuter.next('#uploaded_view');
+
+        if ($.inArray(ext, ['jpeg', 'jpg', 'png']) == -1) {
+          error_msg.text('Not an Image...');
+        } else {
+          error_msg.text('');
+          btnOuter.addClass('file_uploading');
+          setTimeout(function() {
+            btnOuter.addClass('file_uploaded');
+          }, 3000); // Adjust timing if needed
+
+          var uploadedFile = URL.createObjectURL(e.target.files[0]);
+          setTimeout(function() {
+            uploaded_view.addClass('showdisplayblock');
+            uploaded_view.html('<img src="' + uploadedFile + '" />')
+              .addClass('show');
+          }, 1500); // Adjust timing if needed
+        }
+      });
+
+    $('.file_remove')
+      .on('click', function() {
+        var uploaded_view = $(this)
+          .closest('.uploaded_file_view');
+        var btnOuter = uploaded_view.prev('.button_outer');
+        uploaded_view.removeClass('showdisplayblock show')
+          .html('');
+        btnOuter.removeClass('file_uploading file_uploaded');
+        btnOuter.find('input[type="file"]')
+          .val('');
+      });
+  }
+
+</script>
+
 
 <%- include('../coachpartials/footer') %>
