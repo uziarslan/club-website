@@ -170,22 +170,12 @@
               <div class="row">
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="jersey" class="form-text text-muted">
-                      Jersey #
-                    </label>
-                    <input required type="number" class="form-control" id="jersey" name="jersey" required>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
                     <label class="form-text text-muted">
                       Division of play
                     </label>
                     <select name="dop" class="form-control" id="dop" required></select>
                   </div>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
@@ -194,6 +184,8 @@
                     <input type="text" class="form-control p_input" name="parent">
                   </div>
                 </div>
+              </div>
+              <div class="row">
                 <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
@@ -202,12 +194,14 @@
                     <input type="tel" class="form-control p_input" name="phone">
                   </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="form-text text-muted">
-                  Complete address (including City, State, and Zip Code)
-                </label>
-                <input type="text" class="form-control p_input" name="address">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="form-text text-muted">
+                      Complete address (including City, State, and Zip Code)
+                    </label>
+                    <input type="text" class="form-control p_input" name="address">
+                  </div>
+                </div>
               </div>
               <div class="row mb-4">
                 <div class="col-6 mx-auto">
@@ -283,19 +277,6 @@
   </div>
 </div>
 <script>
-  const jerseyInput = document.getElementById('jersey');
-
-  jerseyInput.addEventListener('keypress', function(event) {
-    const key = event.key;
-    if (key.toLowerCase() === 'x') {
-      jerseyInput.type = 'text';
-      jerseyInput.value = 'X';
-      event.preventDefault();
-    } else {
-      jerseyInput.type = 'number';
-    }
-  });
-
   document.getElementById('uploadButton')
     .addEventListener('click', function() {
       document.getElementById('start-camera')

@@ -41,6 +41,11 @@ const studentSchema = new mongoose.Schema({
         type: String,
         enum: ["paid", "unpaid"],
         default: "unpaid"
+    },
+    registrationMode: {
+        type: String,
+        enum: ["single", "bulk"],
+        default: "single"
     }
 });
 

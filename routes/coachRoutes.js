@@ -2,11 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Coach = mongoose.model('Coach');
 const Team = mongoose.model('Team');
+const Student = mongoose.model("Student");
 const passport = require('passport')
 const wrapAsync = require('../utils/wrapAsync');
 const { isCoach } = require('../middlewares');
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
+const { uploader } = require('cloudinary').v2
 const router = express();
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Defining routes
 router.get('/coach/register', wrapAsync(async (req, res) => {
@@ -67,23 +73,11 @@ router.post('/coach/login', (req, res, next) => {
 router.get('/coach/:id', isCoach, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U'];
-    const teams = await Team.find({}).populate('coaches');
     const coach = await Coach.findById(id).populate('students').populate('team');
-    const footballers = coach.students.filter(student => student.role === 'football');
-    const cheerleaders = coach.students.filter(student => student.role === "cheer");
-    const approved_students = coach.students.filter(student => student.status === "approved");
-    const pending_students = coach.students.filter(student => student.status === "pending");
-    const disqualified_students = coach.students.filter(student => student.status === "disqualified");
 
     res.render('./coach/coachDash', {
         coach,
-        footballers,
-        cheerleaders,
-        dop,
-        approved_students,
-        pending_students,
-        disqualified_students,
-        teams
+        dop
     });
 }));
 
@@ -111,6 +105,129 @@ router.get('/coach/:id/:dopNum', isCoach, wrapAsync(async (req, res) => {
         pending_students,
         disqualified_students,
     });
+}));
+
+
+// Check for the jersey Number
+router.get('/team/:teamId/division/:division/jersey/:jerseyNumber/check', wrapAsync(async (req, res) => {
+    const { teamId, division, jerseyNumber } = req.params;
+    const student = await Student.findOne({ team: teamId, dop: division, jersey: jerseyNumber.toUpperCase() });
+
+    if (student) {
+        return res.json({ available: false, message: 'Jersey number is already taken.' });
+    } else {
+        return res.json({ available: true, message: 'Jersey number is available.' });
+    }
+}));
+
+// Router to assign the jersey number
+router.post('/assign-jerseys', wrapAsync(async (req, res) => {
+    const { division, data } = req.body;
+
+    for (let studentId in data) {
+        const jerseyNumber = data[studentId];
+        const student = await Student.findById(studentId);
+        if (student && student.jersey.toLowerCase() !== jerseyNumber.toLowerCase()) {
+            student.jersey = jerseyNumber.toUpperCase();
+            await student.save();
+        }
+    }
+
+    res.json({ success: true });
+}));
+
+// Router to handle bulk student Registration
+router.post('/team/:teamId/admin/register', isCoach, upload.any(), wrapAsync(async (req, res) => {
+    const { user } = req;
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId);
+
+    const playerFiles = {};
+    req.files.forEach(file => {
+        const match = file.fieldname.match(/(\w+)\[(\d+)\]/);
+        if (match) {
+            const type = match[1];
+            const playerIndex = match[2];
+
+            if (!playerFiles[playerIndex]) {
+                playerFiles[playerIndex] = {
+                    images: [],
+                    documents: []
+                };
+            }
+
+            if (type === 'image') {
+                playerFiles[playerIndex].images.push(file);
+            } else if (type === 'document') {
+                const documentIndex = playerFiles[playerIndex].documents.length;
+                const documentName = Array.isArray(req.body.documentType[playerIndex]) ? req.body.documentType[playerIndex][documentIndex] : req.body.documentType[playerIndex];
+                playerFiles[playerIndex].documents.push({ ...file, documentName });
+            }
+        }
+    });
+
+    for (const playerIndex in playerFiles) {
+        const { images, documents } = playerFiles[playerIndex];
+        const dobYear = req.body.dobYear[playerIndex]
+        const dobMonth = req.body.dobMonth[playerIndex]
+        const dobDate = req.body.dobDate[playerIndex]
+        dob = `${dobMonth}-${dobDate}-${dobYear}`;
+        const dateOfBirth = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - dateOfBirth.getFullYear();
+        const m = today.getMonth() - dateOfBirth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+            age--;
+        }
+        // Create a new Student object
+        const student = new Student({
+            coach: user._id,
+            team: teamId,
+            role: req.body.role[playerIndex],
+            username: user.username,
+            association: team.name,
+            dop: req.body.dop[playerIndex],
+            fullname: req.body.fullname[playerIndex],
+            age: age,
+            dob: dob,
+            parent: req.body.parent[playerIndex],
+            phone: req.body.phone[playerIndex],
+            address: req.body.address[playerIndex],
+            image: images.length > 0 ? { filename: images[0].filename, path: images[0].path } : null,
+            documents: documents.map(doc => ({ filename: doc.filename, path: doc.path, documentName: doc.documentName })),
+            registrationMode: "bulk"
+        });
+        await Coach.findByIdAndUpdate(user._id, {
+            $addToSet: { students: student._id }
+        }, { new: true });
+
+        await Team.findByIdAndUpdate(teamId, {
+            $addToSet: { students: student._id }
+        }, { new: true });
+
+        await student.save();
+    }
+    const totalAmount = 2500 * Object.keys(playerFiles).length;
+
+    const session = await stripe.checkout.sessions.create({
+        line_items: [
+            {
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: "Student Registration",
+                    },
+                    unit_amount: totalAmount,
+                },
+                quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `${process.env.DOMAIN}/bulk/success?coach_id=${user._id}`,
+        cancel_url: `${process.env.DOMAIN}/bulk/cancel?coach_id=${user._id}`
+    });
+
+    res.redirect(session.url);
 }));
 
 module.exports = router;

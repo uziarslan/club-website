@@ -9,7 +9,23 @@
 <script src="/js/misc.js"></script>
 <script src="/js/chart.js"></script>
 <script src="/js/maps.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form'); // Update with your form selector
+    const loadingOverlay = document.querySelector('.loading-overlay');
 
+    form.addEventListener('submit', function() {
+      loadingOverlay.style.display = 'flex';
+    });
+
+    // Add this function where you handle the form submission response
+    function handleFormResponse() {
+      loadingOverlay.style.display = 'none';
+      // Additional logic or redirection after form submission response
+    }
+  });
+
+</script>
 </body>
 
 </html>

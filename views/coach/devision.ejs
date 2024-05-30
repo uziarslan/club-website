@@ -16,7 +16,10 @@
   <div class="card-deck">
     <div class="card col-lg-12 px-0 mb-4">
       <div class="card-body">
-        <h5 class="card-title">Players</h5>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title m-0">Players</h5>
+          <button id="submitButton" type="button" class="btn btn-success text-white">Save</button>
+        </div>
         <div class="table-responsive">
           <table class="table center-aligned-table">
             <thead>
@@ -32,18 +35,24 @@
               </tr>
             </thead>
             <tbody>
-              <% for (let student of footballers){ %>
-              <tr class="">
-                <td><%= student.jersey %></td>
-                <td><%= student.dop %></td>
-                <td><%= student.fullname %></td>
-                <td><%= student.username %></td>
-                <td><%= student.phone %></td>
-                <td><%= student.role %></td>
-                <td><%= student.dob %></td>
-                <td><%= student.status %></td>
-              </tr>
-              <% } %>
+              <form id="jerseyForm">
+                <% for (let student of footballers){ %>
+                <tr class="">
+                  <td>
+                    <div class="form-group">
+                      <input style="width: 100px;" class="form-control jersey-input" type="<%= student.jersey.toLowerCase() === 'x'? 'text': 'number'%>" name="jersey<%= student._id %>" data-student-id=" <%= student._id %>" value="<%= student.jersey %>" />
+                      <div id="message"></div>
+                    </div>
+                  </td>
+                  <td><%= student.dop %></td>
+                  <td><%= student.fullname %></td>
+                  <td><%= student.username %></td>
+                  <td><%= student.phone %></td>
+                  <td><%= student.role %></td>
+                  <td><%= student.dob %></td>
+                  <td><%= student.status %></td>
+                </tr>
+                <% } %>
             </tbody>
           </table>
         </div>
@@ -71,7 +80,12 @@
             <tbody>
               <% for (let student of cheerleaders){ %>
               <tr class="">
-                <td><%= student.jersey %></td>
+                <td>
+                  <div class="form-group">
+                    <input style="width: 100px;" class="form-control jersey-input" type="number" name="jersey<%= student._id %>" data-student-id=" <%= student._id %>" value="<%= student.jersey %>" />
+                    <div id="message"></div>
+                  </div>
+                </td>
                 <td><%= student.dop %></td>
                 <td><%= student.fullname %></td>
                 <td><%= student.username %></td>
@@ -81,6 +95,7 @@
                 <td><%= student.status %></td>
               </tr>
               <% } %>
+              </form>
             </tbody>
           </table>
         </div>
@@ -147,4 +162,125 @@
     </div>
   </div>
 </div>
+<script>
+  const jerseyInputs = document.querySelectorAll('.jersey-input');
+  jerseyInputs.forEach(input => {
+    input.addEventListener('keypress', function(event) {
+      const key = event.key;
+      if (key.toLowerCase() === 'x') {
+        input.type = 'text';
+        input.maxLength = 1
+      } else {
+        input.type = 'number';
+      }
+    });
+  });
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const jerseyInputs = document.querySelectorAll('.jersey-input');
+    const submitButton = document.querySelector("#submitButton");
+
+    jerseyInputs.forEach(input => {
+      input.addEventListener('change', async function() {
+        const jerseyNumber = input.value;
+        const teamId = '<%= coach.team._id %>';
+        const division = '<%= dopNum %>';
+        const messageDiv = input.nextElementSibling;
+
+        if (jerseyNumber) {
+          let duplicate = false;
+          jerseyInputs.forEach(otherInput => {
+            if (otherInput !== input && otherInput.value === jerseyNumber) {
+              duplicate = true;
+            }
+          });
+
+          if (duplicate) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            messageDiv.innerHTML = '<div class="text-danger">Taken in other field</div>';
+          } else {
+            const response = await fetch(`/team/${teamId}/division/${division}/jersey/${jerseyNumber}/check`);
+            const result = await response.json();
+
+            if (!result.available) {
+              input.classList.add('is-invalid');
+              input.classList.remove('is-valid');
+              messageDiv.innerHTML = '<div class="text-danger">Jersey# taken</div>';
+            } else {
+              input.classList.add('is-valid');
+              input.classList.remove('is-invalid');
+              messageDiv.innerHTML = '<div class="text-success">Jersey# available</div>';
+            }
+          }
+        } else {
+          input.classList.remove('is-invalid', 'is-valid');
+          messageDiv.innerHTML = '';
+        }
+
+        const isInvalid = Array.from(jerseyInputs)
+          .some(input => input.classList.contains('is-invalid'));
+
+        submitButton.disabled = isInvalid;
+      });
+    });
+  });
+
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const submitButton = document.querySelector("#submitButton");
+    const jerseyForm = document.querySelector("#jerseyForm");
+
+    submitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      jerseyForm.dispatchEvent(new Event('submit'));
+    });
+
+    jerseyForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const formData = new FormData(jerseyForm);
+      const division = '<%= dopNum %>';
+      const data = {};
+
+      for (let [key, value] of formData.entries()) {
+        if (key.startsWith('jersey')) {
+          const studentId = key.replace('jersey', '');
+          data[studentId] = value;
+        }
+      }
+
+      const response = await fetch(`/assign-jerseys`, {
+        method: 'POST'
+        , headers: {
+          'Content-Type': 'application/json'
+        }
+        , body: JSON.stringify({
+          division
+          , data
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        const inputFields = document.querySelectorAll('.jersey-input');
+        inputFields.forEach((input) => {
+          input.classList.remove('is-valid');
+        });
+        const messageDiv = document.querySelectorAll('#message');
+        messageDiv.forEach((div) => {
+          div.innerHTML = '';
+        })
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        loadingOverlay.style.display = 'none';
+      } else {
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        loadingOverlay.style.display = 'none';
+        alert('An error occurred. Please try again.');
+      }
+    });
+  });
+
+</script>
 <%- include('../coachpartials/footer') %>

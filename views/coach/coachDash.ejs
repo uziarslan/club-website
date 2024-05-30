@@ -29,7 +29,7 @@
     justify-content: center;
     padding: 10px 7px;
     border-radius: 5px;
-    width: 150px;
+    width: 180px;
     margin: 0 auto;
   }
 
@@ -54,7 +54,6 @@
   }
 
 </style>
-
 <div class="container-fluid">
   <div class="row">
     <div class="content-wrapper d-flex align-items-center auth-pages">
@@ -62,7 +61,7 @@
         <div class="card-body px-5 py-5">
           <%- include('../flash') %>
           <h3 class="card-title text-left mb-3">Create Players</h3>
-          <form id="studentForm" action="/student/register/<%= team._id %>" method="POST" enctype="multipart/form-data">
+          <form id="studentForm" action="/team/<%= coach.team._id %>/admin/register" method="POST" enctype="multipart/form-data">
             <div class="row">
               <div class="col-6">
                 <div class="row">
@@ -71,7 +70,7 @@
                       <label class="form-text text-muted">
                         Select Option
                       </label>
-                      <select name="role" class="form-control" required>
+                      <select name="role[0]" class="form-control" required>
                         <option value="football">Football</option>
                         <option value="cheer">Cheer</option>
                       </select>
@@ -84,7 +83,7 @@
                   <label class="form-text text-muted">
                     ASSOCIATION NAME
                   </label>
-                  <input disabled value="<%= team.name %>" type="text" class="form-control p_input" name="association">
+                  <input disabled value="<%= coach.team.name %>" type="text" class="form-control p_input" name="association[0]">
                 </div>
               </div>
             </div>
@@ -92,82 +91,19 @@
               <div class="col-6">
                 <div class="form-group">
                   <label class="form-text text-muted">
-                    Email
+                    Player's Full Name
                   </label>
-                  <input required type="text" class="form-control p_input" name="username">
-                </div>
-              </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label class="form-text text-muted">
-                    Create a Password
-                  </label>
-                  <div class="iconWrapper">
-                    <input required id="password" type="password" class="form-control p_input" name="password">
-                    <i class='bx bx-show' id="togglePassword"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label class="form-text text-muted">
-                    Confirm Password
-                  </label>
-                  <div class="iconWrapper">
-                    <input required id="confirmPassword" type="password" class="form-control p_input">
-                    <i class='bx bx-show' id="confirmPasswordToggle"></i>
-                  </div>
-                  <div id="confirmPasswordFeedback" class="invalid-feedback">Passwords do not match</div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label class="form-text text-muted">
-                    Participant’s Full Name
-                  </label>
-                  <input required type="text" class="form-control p_input" name="fullname">
+                  <input required type="text" class="form-control p_input" name="fullname[0]">
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group">
                   <label id="dob" class="form-text text-muted">
-                    YYYY/MM/DD
+                    MM/DD/YYYY
                   </label>
                   <div class="d-flex">
                     <div class="col-4">
-                      <select class="form-control" id="dobYear" name="dobYear" required>
-                        <option disabled selected value="">Year</option>
-                        <option value="2000">2000</option>
-                        <option value="2001">2001</option>
-                        <option value="2002">2002</option>
-                        <option value="2003">2003</option>
-                        <option value="2004">2004</option>
-                        <option value="2005">2005</option>
-                        <option value="2006">2006</option>
-                        <option value="2007">2007</option>
-                        <option value="2008">2008</option>
-                        <option value="2009">2009</option>
-                        <option value="2010">2010</option>
-                        <option value="2011">2011</option>
-                        <option value="2012">2012</option>
-                        <option value="2013">2013</option>
-                        <option value="2014">2014</option>
-                        <option value="2015">2015</option>
-                        <option value="2016">2016</option>
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                      </select>
-                    </div>
-                    <div class="col-4">
-                      <select class="form-control" id="dobMonth" name="dobMonth" required>
+                      <select class="form-control" id="dobMonth" name="dobMonth[0]" required>
                         <option disabled selected value="">Month</option>
                         <option value="01">January</option>
                         <option value="02">February</option>
@@ -184,7 +120,7 @@
                       </select>
                     </div>
                     <div class="col-4">
-                      <select class="form-control" id="dobDate" name="dobDate" required>
+                      <select class="form-control" id="dobDate" name="dobDate[0]" required>
                         <option disabled selected value="">Date</option>
                         <option value="01">1</option>
                         <option value="02">2</option>
@@ -219,6 +155,36 @@
                         <option value="31">31</option>
                       </select>
                     </div>
+                    <div class="col-4">
+                      <select class="form-control" id="dobYear" name="dobYear[0]" required>
+                        <option disabled selected value="">Year</option>
+                        <option value="2000">2000</option>
+                        <option value="2001">2001</option>
+                        <option value="2002">2002</option>
+                        <option value="2003">2003</option>
+                        <option value="2004">2004</option>
+                        <option value="2005">2005</option>
+                        <option value="2006">2006</option>
+                        <option value="2007">2007</option>
+                        <option value="2008">2008</option>
+                        <option value="2009">2009</option>
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -229,7 +195,7 @@
                   <label class="form-text text-muted">
                     Division of play
                   </label>
-                  <select name="dop" class="form-control" id="dop" required>
+                  <select name="dop[0]" class="form-control" id="dop" required>
                     <option value="7U">7U</option>
                     <option value="8U">8U</option>
                     <option value="9U">9U</option>
@@ -245,7 +211,7 @@
                   <label class="form-text text-muted">
                     Parent/Guardian Name(s)
                   </label>
-                  <input type="text" class="form-control p_input" name="parent">
+                  <input type="text" class="form-control p_input" name="parent[0]">
                 </div>
               </div>
             </div>
@@ -255,7 +221,7 @@
                   <label class="form-text text-muted">
                     Phone Number
                   </label>
-                  <input type="tel" class="form-control p_input" name="phone">
+                  <input type="tel" class="form-control p_input" name="phone[0]">
                 </div>
               </div>
               <div class="col-6">
@@ -263,7 +229,7 @@
                   <label class="form-text text-muted">
                     Complete address (including City, State, and Zip Code)
                   </label>
-                  <input type="text" class="form-control p_input" name="address">
+                  <input type="text" class="form-control p_input" name="address[0]">
                 </div>
               </div>
             </div>
@@ -274,7 +240,7 @@
                   <!-- Upload Image Button -->
                   <div class="button_outer">
                     <div class="btn_upload" id="uploadButton">
-                      <input accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image" onclick="addAnimation()">
+                      <input required accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image[0]" onclick="addAnimation()">
                       Upload Image <i class="ms-1 fa fa-upload"></i>
                     </div>
                     <div class="processing_bar"></div>
@@ -294,10 +260,10 @@
             <button id="addDocumentButton">Add Document</button>
           </div>
           <div class="addDocumentButton mb-3">
-            <button id="addPlayer">Add Player</button>
+            <button id="addPlayer">Add another Player #<span id="playerCount">1</span></button>
           </div>
           <div class="text-center">
-            <button id="registerButton" type="button" class="btn btn-primary btn-block enter-btn">Register</button>
+            <button id="registerButton" type="button" class="btn btn-primary btn-block enter-btn">Register All Players</button>
           </div>
         </div>
       </div>
@@ -311,9 +277,10 @@
     const formContainer = document.getElementById('documentField');
     const newForm = document.createElement('div');
     let formContent;
+    const playerCount = parseInt(document.getElementById('playerCount')
+      .textContent);
 
     if (type === 'player') {
-      // Player form content
       formContent = `<hr>
 <div class="row">
   <div class="col-6">
@@ -334,9 +301,9 @@
   <div class="col-6">
     <div class="form-group">
       <label class="form-text text-muted">
-        Participant’s Full Name
+        Player's Full Name
       </label>
-      <input required type="text" class="form-control p_input" name="fullname">
+      <input required type="text" class="form-control p_input" name="fullname[${playerCount}]">
     </div>
   </div>
 </div>
@@ -344,11 +311,64 @@
   <div class="col-6">
     <div class="form-group">
       <label id="dob" class="form-text text-muted">
-        YYYY/MM/DD
+        MM/DD/YYYY
       </label>
       <div class="d-flex">
+      <div class="col-4">
+        <select class="form-control" class="dobMonth" name="dobMonth[${playerCount}]" required>
+          <option disabled selected value="">Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+      <div class="col-4">
+        <select class="form-control" class="dobDate" name="dobDate[${playerCount}]" required>
+          <option disabled selected value="">Date</option>
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="26">26</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="29">29</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+        </select>
+      </div>
         <div class="col-4">
-          <select class="form-control" class="dobYear" name="dobYear" required>
+          <select class="form-control" class="dobYear" name="dobYear[${playerCount}]" required>
             <option disabled selected value="">Year</option>
             <option value="2000">2000</option>
             <option value="2001">2001</option>
@@ -377,59 +397,6 @@
             <option value="2024">2024</option>
           </select>
         </div>
-        <div class="col-4">
-          <select class="form-control" class="dobMonth" name="dobMonth" required>
-            <option disabled selected value="">Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </div>
-        <div class="col-4">
-          <select class="form-control" class="dobDate" name="dobDate" required>
-            <option disabled selected value="">Date</option>
-            <option value="01">1</option>
-            <option value="02">2</option>
-            <option value="03">3</option>
-            <option value="04">4</option>
-            <option value="05">5</option>
-            <option value="06">6</option>
-            <option value="07">7</option>
-            <option value="08">8</option>
-            <option value="09">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-          </select>
-        </div>
       </div>
     </div>
   </div>
@@ -438,7 +405,7 @@
       <label class="form-text text-muted">
         Division of play
       </label>
-      <select name="dop" class="form-control" id="dop" required>
+      <select name="dop[${playerCount}]" class="form-control" id="dop" required>
       <option value="7U">7U</option>
       <option value="8U">8U</option>
       <option value="9U">9U</option>
@@ -456,7 +423,7 @@
       <label class="form-text text-muted">
         Parent/Guardian Name(s)
       </label>
-      <input type="text" class="form-control p_input" name="parent">
+      <input type="text" class="form-control p_input" name="parent[${playerCount}]">
     </div>
   </div>
   <div class="col-6">
@@ -464,7 +431,7 @@
       <label class="form-text text-muted">
         Phone Number
       </label>
-      <input type="tel" class="form-control p_input" name="phone">
+      <input type="tel" class="form-control p_input" name="phone[${playerCount}]">
     </div>
   </div>
 </div>
@@ -474,7 +441,7 @@
       <label class="form-text text-muted">
         Complete address (including City, State, and Zip Code)
       </label>
-      <input type="text" class="form-control p_input" name="address">
+      <input type="text" class="form-control p_input" name="address[${playerCount}]">
     </div>
   </div>
 </div>
@@ -485,7 +452,7 @@
       <!-- Upload Image Button -->
       <div class="button_outer">
         <div class="btn_upload" id="uploadButton">
-          <input accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image" onclick="addAnimation()">
+          <input required accept=".jpeg, .jpg, .png" type="file" id="upload_file" name="image[${playerCount}]" onclick="addAnimation()">
           Upload Image <i class="ms-1 fa fa-upload"></i>
         </div>
         <div class="processing_bar"></div>
@@ -500,13 +467,16 @@
   <div class="col-2"></div>
 </div>
 `;
+      document.getElementById('playerCount')
+        .textContent = parseInt(playerCount) + 1;
+
     } else if (type === 'document') {
       formContent = `
 <div class="row align-items-center">
   <div class="col-6">
     <div class="form-group">
       <label class="form-label">Document type</label>
-      <select name="documents" class="form-control">
+      <select required name="documentType[${playerCount - 1}]" class="form-control">
         <option value="State ID">State Id</option>
         <option value="Passport">Passport</option>
         <option value="School ID">School Id</option>
@@ -520,7 +490,7 @@
     <div class="panel" id="uploadPanel">
       <div class="button_outer">
         <div class="btn_upload" id="uploadButton">
-          <input required accept=".jpeg, .jpg, .png" type="file" id="upload_document" name="document" onclick="addAnimation()">
+          <input required accept=".jpeg, .jpg, .png" type="file" id="upload_document" name="document[${playerCount - 1}]" onclick="addAnimation()">
           Upload Document <i class="ms-1 fa fa-upload"></i>
         </div>
         <div class="processing_bar"></div>
@@ -558,6 +528,8 @@
     element.parentElement.parentElement.remove();
   }
 
+  // Function to prevent from Submitting the empty form
+
   document.addEventListener('DOMContentLoaded', function() {
     const registerButton = document.getElementById('registerButton');
     const form = document.getElementById('studentForm');
@@ -570,6 +542,10 @@
         highlightRequiredFields();
       }
     });
+
+    // registerButton.addEventListener('click', function(event) {
+    //   form.submit();
+    // });
 
     function highlightRequiredFields() {
       const requiredFields = form.querySelectorAll('[required]');

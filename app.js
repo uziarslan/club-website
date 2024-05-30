@@ -25,7 +25,6 @@ const coachRoutes = require('./routes/coachRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const homepageRoutes = require('./routes/homepageRoutes');
 const stripeRoute = require('./routes/stripeRoute');
-const sheetyRoutes = require('./routes/sheetyRoutes');
 const ExpressError = require('./utils/ExpressError');
 const wrapAsync = require('./utils/wrapAsync');
 
@@ -108,7 +107,6 @@ app.use(coachRoutes)
 app.use(adminRoutes)
 app.use(homepageRoutes)
 app.use(stripeRoute)
-app.use(sheetyRoutes)
 // Logout route for every user
 app.get('/logout', wrapAsync(async (req, res) => {
     req.logout(() => {

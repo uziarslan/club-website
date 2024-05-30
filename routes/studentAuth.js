@@ -5,9 +5,9 @@ const Coach = mongoose.model('Coach')
 const Team = mongoose.model('Team')
 const passport = require('passport')
 const wrapAsync = require('../utils/wrapAsync');
+const { isStudent } = require('../middlewares');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
-const { isStudent } = require('../middlewares');
 const upload = multer({ storage });
 const { uploader } = require('cloudinary').v2
 const router = express();
@@ -33,17 +33,11 @@ router.post('/student/register/:teamId', upload.fields(
         { name: "document", maxCount: 6 },
     ]
 ), wrapAsync(async (req, res, next) => {
-    const { username, password, dop, jersey, coach, dobYear, dobMonth, dobDate, documents, role, fullname, parent, phone, address } = req.body;
-    dob = `${dobYear}-${dobMonth}-${dobDate}`;
+    const { username, password, dop, coach, dobYear, dobMonth, dobDate, documents, role, fullname, parent, phone, address } = req.body;
+    dob = `${dobMonth}-${dobDate}-${dobYear}`;
     const { teamId } = req.params;
     const team = await Team.findById(teamId);
     const foundStudent = await Student.find({ username });
-    const foundJersey = await Student.find({
-        team: teamId,
-        dop,
-        jersey
-    });
-
     const dateOfBirth = new Date(dob);
 
     const today = new Date();
@@ -56,12 +50,6 @@ router.post('/student/register/:teamId', upload.fields(
 
     if (coach === "none") {
         req.flash('error', 'You can not register without the coach.');
-        await uploader.destroy(req.file.filename);
-        return res.redirect(`/student/register/${teamId}`);
-    }
-
-    if (foundJersey.length) {
-        req.flash('error', 'Looks like that jersey number is already on the team. Please choose a different one.');
         await uploader.destroy(req.file.filename);
         return res.redirect(`/student/register/${teamId}`);
     }
@@ -80,7 +68,6 @@ router.post('/student/register/:teamId', upload.fields(
         username,
         dop,
         fullname,
-        jersey,
         age,
         dob,
         parent,

@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Student = mongoose.model('Student');
+const Coach = mongoose.model('Coach');
 const router = express.Router();
 const wrapAsync = require('../utils/wrapAsync');
 const { MailtrapClient } = require("mailtrap");
@@ -28,7 +29,7 @@ router.post('/create-checkout-session/:studentId', async (req, res) => {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: "Laptop",
+            name: "Player Registration",
           },
           unit_amount: 2500,
         },
@@ -36,8 +37,8 @@ router.post('/create-checkout-session/:studentId', async (req, res) => {
       },
     ],
     mode: 'payment',
-    success_url: `http://localhost:3000/success?student_id=${studentId}`,
-    cancel_url: 'http://localhost:3000/cancel?student_id=${studentId}',
+    success_url: `${process.env.DOMAIN}/success?student_id=${studentId}`,
+    cancel_url: `${process.env.DOMAIN}/cancel?student_id=${studentId}`,
   });
   res.redirect(303, session.url);
 
@@ -88,5 +89,17 @@ router.get('/cancel', wrapAsync(async (req, res) => {
     }
   });
 }))
+
+router.get('/bulk/success', wrapAsync(async (req, res) => {
+  const { coach_id } = req.query;
+  const coach = await Coach.findById(coach_id).populate("students");
+  const bulkRegisteredStudents = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid")
+  bulkRegisteredStudents.forEach(async student => {
+    student.paymentStatus = "paid";
+    await student.save();
+  });
+  req.flash("success", "Players has been registered successfully.")
+  res.redirect(`/coach/${coach._id}`)
+}));
 
 module.exports = router;
