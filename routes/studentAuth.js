@@ -61,7 +61,6 @@ router.post('/student/register/:teamId', upload.fields(
     }
 
     const student = new Student({
-        coach: req.body.coach,
         team: teamId,
         role,
         association: team.name,
@@ -74,6 +73,13 @@ router.post('/student/register/:teamId', upload.fields(
         phone,
         address
     });
+
+    if (coach !== "none") {
+        await Coach.findByIdAndUpdate(req.body.coach, {
+            $addToSet: { students: student._id }
+        }, { new: true });
+        student.coach = req.body.coach;
+    }
 
     if (req.files["image"]) {
         const { filename, path } = req.files["image"][0];
@@ -97,10 +103,6 @@ router.post('/student/register/:teamId', upload.fields(
 
 
     await Team.findByIdAndUpdate(teamId, {
-        $addToSet: { students: student._id }
-    }, { new: true });
-
-    await Coach.findByIdAndUpdate(req.body.coach, {
         $addToSet: { students: student._id }
     }, { new: true });
 
