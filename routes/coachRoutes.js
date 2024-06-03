@@ -88,13 +88,15 @@ router.get('/coach/:id/:dopNum', isCoach, wrapAsync(async (req, res) => {
         path: 'students',
         match: { dop: dopNum }
     });;
-
-    const footballers = coach.students.filter(student => student.role === 'football');
-    const cheerleaders = coach.students.filter(student => student.role === "cheer");
-    const approved_students = coach.students.filter(student => student.status === "approved");
-    const pending_students = coach.students.filter(student => student.status === "pending");
-    const disqualified_students = coach.students.filter(student => student.status === "disqualified");
-
+    const team = await Team.findOne({ coaches: { $in: [id] } })
+        .populate('students')
+        .populate('coaches');
+    const footballers = team.students.filter(student => student.role === 'football' && student.dop === dopNum);
+    const cheerleaders = team.students.filter(student => student.role === "cheer" && student.dop === dopNum);
+    const approved_students = team.students.filter(student => student.status === "approved" && student.dop === dopNum);
+    const pending_students = team.students.filter(student => student.status === "pending" && student.dop === dopNum);
+    const disqualified_students = team.students.filter(student => student.status === "disqualified" && student.dop === dopNum);
+    const totalDivisonStudents = footballers.length + cheerleaders.length;
     res.render('./coach/devision', {
         coach,
         dop,
@@ -104,6 +106,7 @@ router.get('/coach/:id/:dopNum', isCoach, wrapAsync(async (req, res) => {
         approved_students,
         pending_students,
         disqualified_students,
+        totalDivisonStudents
     });
 }));
 

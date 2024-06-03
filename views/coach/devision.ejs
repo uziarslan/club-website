@@ -7,7 +7,7 @@
           <div class="clearfix">
             <i class="fa fa-users float-right icon-grey-big"></i>
           </div>
-          <h4 class="card-title font-weight-normal text-success"><%= coach.students.length %></h4>
+          <h4 class="card-title font-weight-normal text-success"><%= totalDivisonStudents %></h4>
           <h6 class="card-subtitle mb-4">Players <%= dopNum %></h6>
         </div>
       </div>
@@ -40,7 +40,11 @@
                 <tr class="">
                   <td>
                     <div class="form-group">
-                      <input style="width: 100px;" class="form-control jersey-input" type="<%= student.jersey.toLowerCase() === 'x'? 'text': 'number'%>" name="jersey<%= student._id %>" data-student-id=" <%= student._id %>" value="<%= student.jersey %>" />
+                      <% if (student.jersey) {%>
+                      <input style="width: 100px;" class="form-control jersey-input" type="<%= student.jersey.toLowerCase() === 'x'? 'text': 'number'%>" pattern="[0-9]{3}" name="jersey<%= student._id %>" data-student-id=" <%= student._id %>" value="<%= student.jersey %>" />
+                      <% }else{ %>
+                      <input style="width: 100px;" class="form-control jersey-input" type="number" pattern="[0-9]{3}" name="jersey<%= student._id %>" data-student-id="<%= student._id %>" />
+                      <% } %>
                       <div id="message"></div>
                     </div>
                   </td>
@@ -82,7 +86,11 @@
               <tr class="">
                 <td>
                   <div class="form-group">
-                    <input style="width: 100px;" class="form-control jersey-input" type="number" name="jersey<%= student._id %>" data-student-id=" <%= student._id %>" value="<%= student.jersey %>" />
+                    <% if (student.jersey) {%>
+                    <input style="width: 100px;" class="form-control jersey-input" type="<%= student.jersey.toLowerCase() === 'x'? 'text': 'number'%>" pattern="[0-9]{3}" name="jersey<%= student._id %>" data-student-id=" <%= student._id %>" value="<%= student.jersey %>" />
+                    <% }else{ %>
+                    <input style="width: 100px;" class="form-control jersey-input" type="number" pattern="[0-9]{3}" name="jersey<%= student._id %>" data-student-id="<%= student._id %>" />
+                    <% } %>
                     <div id="message"></div>
                   </div>
                 </td>
@@ -180,7 +188,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const jerseyInputs = document.querySelectorAll('.jersey-input');
     const submitButton = document.querySelector("#submitButton");
-
+    submitButton.disabled = true;
     jerseyInputs.forEach(input => {
       input.addEventListener('change', async function() {
         const jerseyNumber = input.value;
@@ -220,8 +228,7 @@
         }
 
         const isInvalid = Array.from(jerseyInputs)
-          .some(input => input.classList.contains('is-invalid'));
-
+          .some(input => input.classList.contains('is-invalid') || input.value === '');
         submitButton.disabled = isInvalid;
       });
     });
