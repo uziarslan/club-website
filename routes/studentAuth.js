@@ -48,12 +48,6 @@ router.post('/student/register/:teamId', upload.fields(
     }
 
 
-    if (coach === "none") {
-        req.flash('error', 'You can not register without the coach.');
-        await uploader.destroy(req.file.filename);
-        return res.redirect(`/student/register/${teamId}`);
-    }
-
     if (foundStudent.length) {
         req.flash('error', "It looks like a student with this email is already registered.");
         await uploader.destroy(req.file.filename)
