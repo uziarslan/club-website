@@ -61,7 +61,7 @@
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-text text-muted">
-                          Select Coach
+                          Team/Coach Admin
                         </label>
                         <select name="coach" class="form-control" id="coach" required>
                           <% if (team.coaches.length){ %>
@@ -72,7 +72,7 @@
                           <% } %>
                           <% } %>
                           <% }else{ %>
-                          <option value="none">No Coach Yet</option>
+                          <option value="none">No Admin Yet</option>
                           <% } %>
                         </select>
                       </div>
@@ -111,7 +111,7 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label class="form-text text-muted">
-                      Participant’s Full Name
+                      Player’s Full Name
                     </label>
                     <input value="<%= student.fullname %>" required type="text" class="form-control p_input" name="fullname">
                   </div>

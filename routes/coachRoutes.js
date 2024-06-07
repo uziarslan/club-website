@@ -139,6 +139,19 @@ router.post('/assign-jerseys', wrapAsync(async (req, res) => {
     res.json({ success: true });
 }));
 
+// Router to handle the invoice for BULK registered students
+router.get('/team/admin/invoice', isCoach, wrapAsync(async (req, res, next) => {
+    const { user } = req;
+    const coach = await Coach.findById(user._id).populate('students').populate('team');
+    const bulk_students = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid")
+    res.render('./coach/invoice', {
+        coach,
+        bulk_students,
+        no_students: bulk_students.length,
+        subtotal: bulk_students.length * 25
+    });
+}));
+
 // Router to handle bulk student Registration
 router.post('/team/:teamId/admin/register', isCoach, upload.any(), wrapAsync(async (req, res) => {
     const { user } = req;
@@ -210,7 +223,16 @@ router.post('/team/:teamId/admin/register', isCoach, upload.any(), wrapAsync(asy
 
         await student.save();
     }
-    const totalAmount = 2500 * Object.keys(playerFiles).length;
+    res.redirect('/team/admin/invoice');
+}));
+
+//Router to handle the payment for bulk students
+router.post('/bulk-payment', isCoach, wrapAsync(async (req, res, next) => {
+    const { user } = req;
+    const coach = await Coach.findById(user._id).populate('students');
+    const pending_payment = coach.students.filter(student => student.paymentStatus === 'unpaid' && student.registrationMode === "bulk");
+
+    const totalAmount = 2500 * pending_payment.length;
 
     const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -231,6 +253,6 @@ router.post('/team/:teamId/admin/register', isCoach, upload.any(), wrapAsync(asy
     });
 
     res.redirect(session.url);
-}));
+}))
 
 module.exports = router;

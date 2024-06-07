@@ -33,7 +33,7 @@ router.post('/student/register/:teamId', upload.fields(
         { name: "document", maxCount: 6 },
     ]
 ), wrapAsync(async (req, res, next) => {
-    const { username, password, dop, coach, dobYear, dobMonth, dobDate, documents, role, fullname, parent, phone, address } = req.body;
+    const { username, password, dop, dobYear, dobMonth, dobDate, documents, role, fullname, parent, phone, address } = req.body;
     dob = `${dobMonth}-${dobDate}-${dobYear}`;
     const { teamId } = req.params;
     const team = await Team.findById(teamId);
@@ -65,15 +65,9 @@ router.post('/student/register/:teamId', upload.fields(
         dob,
         parent,
         phone,
-        address
+        address,
+        registrationMode: 'single'
     });
-
-    if (coach !== "none") {
-        await Coach.findByIdAndUpdate(req.body.coach, {
-            $addToSet: { students: student._id }
-        }, { new: true });
-        student.coach = req.body.coach;
-    }
 
     if (req.files["image"]) {
         const { filename, path } = req.files["image"][0];
