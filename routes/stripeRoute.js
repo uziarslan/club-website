@@ -93,10 +93,22 @@ router.get('/cancel', wrapAsync(async (req, res) => {
 router.get('/bulk/success', wrapAsync(async (req, res) => {
   const { coach_id } = req.query;
   const coach = await Coach.findById(coach_id).populate("students");
-  const bulkRegisteredStudents = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid")
+  const bulkRegisteredStudents = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid");
   bulkRegisteredStudents.forEach(async student => {
     student.paymentStatus = "paid";
     await student.save();
+  });
+  client.send({
+    from: sender,
+    to: [{
+      email: coach.username
+    }],
+    template_uuid: "41b0c2a3-b6ed-4a31-8793-4676dae8b449",
+    template_variables: {
+      "coach": coach,
+      "totalPlayers": bulkRegisteredStudents.length,
+      "amountPaid": bulkRegisteredStudents.length * 25
+    }
   });
   req.flash("success", "Players has been registered successfully.")
   res.redirect(`/coach/${coach._id}`)

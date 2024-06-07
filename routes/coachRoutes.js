@@ -12,6 +12,17 @@ const upload = multer({ storage });
 const { uploader } = require('cloudinary').v2
 const router = express();
 
+const { MailtrapClient } = require("mailtrap");
+
+// Mailtrap Integration
+const TOKEN = process.env.MAIL_TRAP_TOKEN;
+const ENDPOINT = "https://send.api.mailtrap.io/";
+const client = new MailtrapClient({ endpoint: ENDPOINT, token: TOKEN });
+const sender = {
+    email: "info@bigtristate.com",
+    name: "Big Tri State",
+}
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Defining routes
@@ -40,7 +51,17 @@ router.post('/coach/register', wrapAsync(async (req, res) => {
             next(err)
         }
         req.logIn(newCoach, () => {
-            return res.redirect(`/coach/${newCoach._id}`)
+            client.send({
+                from: sender,
+                to: [{
+                    email: coach.username
+                }],
+                template_uuid: "2f4dab3c-0677-484b-9d4f-b8e29607ef64",
+                template_variables: {
+                    "fullname": coach.fullname
+                }
+            });
+            return res.render(`./coach/success`)
         });
     });
 }));
@@ -62,9 +83,12 @@ router.post('/coach/login', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            if (user instanceof Coach) {
+            if (user instanceof Coach && user.status === "approved") {
                 req.flash('success', `Welcome back ${user.fullname}!`);
                 return res.redirect(`/coach/${user._id}`);
+            } else {
+                req.flash("error", `${user.fullname} your application is not yet approved. Please wait until it's verified.`)
+                return res.redirect(`/coach/login`);
             }
         });
     })(req, res, next);

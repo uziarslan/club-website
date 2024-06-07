@@ -171,8 +171,19 @@ router.get('/admin/coaches', isAdmin, wrapAsync(async (req, res) => {
 
 router.get('/admin/coach/approve/:id', isAdmin, wrapAsync(async (req, res) => {
     const { id } = req.params;
-    await Coach.findByIdAndUpdate(id, { status: 'approved' });
-    res.redirect('/admin/coaches')
+    const coach = await Coach.findByIdAndUpdate(id, { status: 'approved' }).populate('team');
+    client.send({
+        from: sender,
+        to: [{
+            email: coach.username
+        }],
+        template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
+        template_variables: {
+            "coach": coach,
+            "team": coach.team
+        }
+    });
+    res.redirect('/admin/coaches');
 }));
 
 router.get('/admin/coach/pending/:id', isAdmin, wrapAsync(async (req, res) => {
