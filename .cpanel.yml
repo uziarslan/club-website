@@ -2,4 +2,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/bigtkkff/bigtristate
-    - /bin/cp -R club-website $DEPLOYPATH
+    - /bin/cp -R * $DEPLOYPATH
