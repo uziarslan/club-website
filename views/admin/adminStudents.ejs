@@ -98,7 +98,11 @@
                     <% } %>
                     <td><%= student.fullname %></td>
                     <td><%= student.team.name %></td>
+                    <% if(student.coach){ %>
                     <td><%= student.coach.fullname %></td>
+                    <% }else{ %>
+                    <td></td>
+                    <% } %>
                     <td><%= student.username %></td>
                     <td><%= student.phone %></td>
                     <td><%= student.age %></td>
