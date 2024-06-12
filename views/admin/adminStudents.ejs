@@ -61,59 +61,64 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title text-warning">Pending Players</h5>
-
-          <div class="table-responsive">
-            <table class="table center-aligned-table" id="transactionTable">
-              <thead>
-                <tr class="text-primary">
-                  <th>Profile</th>
-                  <th>Name</th>
-                  <th>Team</th>
-                  <th>Coach</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Age</th>
-                  <th>Date of Birth</th>
-                  <th>Jersey #</th>
-                  <th>Documents</th>
-                  <th>Payment Status</th>
-                  <th>Option</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for (let student of pending_students){ %>
-                <tr class="">
-                  <% if (student.image.path){ %>
-                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
-                  <% }else{ %>
-                  <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
-                  <% } %>
-                  <td><%= student.fullname %></td>
-                  <td><%= student.team.name %></td>
-                  <td><%= student.coach.fullname %></td>
-                  <td><%= student.username %></td>
-                  <td><%= student.phone %></td>
-                  <td><%= student.age %></td>
-                  <td><%= student.dob %></td>
-                  <td><%= student.jersey %></td>
-                  <td>
-                    <% for(let doc of student.documents){ %>
-                    <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+          <form id="approve-students-form">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="card-title text-warning">Pending Players</h5>
+              <div>
+                <button type="button" class="btn btn-outline-success approve-button">Approve</button>
+                <button type="button" class="btn btn-outline-danger decline-button">Disqulify</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table center-aligned-table" id="transactionTable">
+                <thead>
+                  <tr class="text-primary">
+                    <th>Select</th>
+                    <th>Profile</th>
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Coach</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Date of Birth</th>
+                    <th>Jersey #</th>
+                    <th>Documents</th>
+                    <th>Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (let student of pending_students){ %>
+                  <tr class="">
+                    <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
+                    <% if (student.image.path){ %>
+                    <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
+                    <% }else{ %>
+                    <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
                     <% } %>
-                  </td>
-                  <td>
-                    <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
-                  </td>
-                  <td>
-                    <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
-                    <a href="/admin/student/disqualify/<%= student._id %>" class="btn btn-outline-danger btn-sm">Disqualify</a>
-                  </td>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
+                    <td><%= student.fullname %></td>
+                    <td><%= student.team.name %></td>
+                    <td><%= student.coach.fullname %></td>
+                    <td><%= student.username %></td>
+                    <td><%= student.phone %></td>
+                    <td><%= student.age %></td>
+                    <td><%= student.dob %></td>
+                    <td><%= student.jersey %></td>
+                    <td>
+                      <% for(let doc of student.documents){ %>
+                      <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+                      <% } %>
+                    </td>
+                    <td>
+                      <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+            <input type="hidden" id="selected-student-ids" name="selectedStudentIds" />
+            <input type="hidden" id="action-type" name="actionType" />
         </div>
       </div>
     </div>
@@ -122,11 +127,18 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title text-success">Approved Players</h5>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title text-success">Approved Players</h5>
+            <div>
+              <button type="button" class="btn btn-outline-warning pending-button">Pending</button>
+              <button type="button" class="btn btn-outline-danger decline-button">Disqulify</button>
+            </div>
+          </div>
           <div class="table-responsive">
             <table class="table center-aligned-table" id="transactionTable1">
               <thead>
                 <tr class="text-primary">
+                  <th>Select</th>
                   <th>Profile</th>
                   <th>Name</th>
                   <th>Team</th>
@@ -138,12 +150,12 @@
                   <th>Jersey #</th>
                   <th>Documents</th>
                   <th>Payment Status</th>
-                  <th>Option</th>
                 </tr>
               </thead>
               <tbody>
                 <% for (let student of approved_students){ %>
                 <tr class="">
+                  <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
                   <% if (student.image.path){ %>
                   <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
                   <% }else{ %>
@@ -164,10 +176,6 @@
                   </td>
                   <td>
                     <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
-                  </td>
-                  <td>
-                    <a href="/admin/student/pending/<%= student._id %>" class="btn btn-outline-warning btn-sm">Pending</a>
-                    <a href="/admin/student/disqualify/<%= student._id %>" class="btn btn-outline-danger btn-sm">Disqualify</a>
                   </td>
                 </tr>
                 <% } %>
@@ -182,11 +190,17 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title text-danger">Disqualified Players</h5>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title text-danger">Disqualified Players</h5>
+            <div>
+              <button type="button" class="btn btn-outline-success approve-button">Approve</button>
+            </div>
+          </div>
           <div class="table-responsive">
             <table class="table center-aligned-table" id="transactionTable2">
               <thead>
                 <tr class="text-primary">
+                  <th>Select</th>
                   <th>Profile</th>
                   <th>Name</th>
                   <th>Team</th>
@@ -198,12 +212,12 @@
                   <th>Jersey #</th>
                   <th>Documents</th>
                   <th>Payment Status</th>
-                  <th>Option</th>
                 </tr>
               </thead>
               <tbody>
                 <% for (let student of disqualified_students){ %>
                 <tr class="">
+                  <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
                   <% if (student.image.path){ %>
                   <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
                   <% }else{ %>
@@ -225,17 +239,76 @@
                   <td>
                     <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
                   </td>
-                  <td>
-                    <a href="/admin/student/approve/<%= student._id %>" class="btn btn-outline-success btn-sm">Approve</a>
-                  </td>
                 </tr>
                 <% } %>
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+  const approveButton = document.querySelectorAll('.approve-button');
+  approveButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('approved');
+    });
+  });
+
+  const declineButton = document.querySelectorAll('.decline-button');
+  declineButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('disqualified');
+    });
+  });
+
+  const pendingButton = document.querySelectorAll('.pending-button');
+  pendingButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('pending');
+    });
+  });
+
+  function handleAction(actionType) {
+    const checkboxes = document.querySelectorAll('.student-checkbox:checked');
+
+    const selectedIds = Array.from(checkboxes)
+      .map(checkbox => checkbox.getAttribute('data-student-id'));
+
+    const selectedStudentIdsInput = document.getElementById('selected-student-ids');
+    const actionTypeInput = document.getElementById('action-type');
+
+    if (selectedStudentIdsInput && actionTypeInput) {
+      selectedStudentIdsInput.value = selectedIds.join(',');
+      actionTypeInput.value = actionType;
+
+      fetch('/admin/student/action', {
+          method: 'POST'
+          , headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          , }
+          , body: 'selectedStudentIds=' + encodeURIComponent(selectedIds.join(',')) + '&actionType=' + encodeURIComponent(actionType)
+        , })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            console.error('Error processing coaches');
+          }
+        })
+        .catch(error => {
+          console.error('Network error:', error);
+        });
+    } else {
+      console.error('Hidden input fields not found');
+    }
+  }
+
+</script>
 <%- include('../adminpartials/footer') %>

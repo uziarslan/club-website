@@ -7,7 +7,7 @@ const coachSchema = new mongoose.Schema({
     phone: String,
     status: {
         type: String,
-        enum: ["approved", "pending", "deleted"],
+        enum: ["approved", "pending", "disqualified"],
         default: "pending"
     },
     students: [

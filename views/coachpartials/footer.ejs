@@ -10,6 +10,28 @@
 <script src="/js/chart.js"></script>
 <script src="/js/maps.js"></script>
 <script>
+  // Timeout for inactivity (in milliseconds)
+  const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 seconds for testing
+
+  let inactivityTimer;
+
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(logoutUser, INACTIVITY_TIMEOUT);
+  }
+
+  function logoutUser() {
+    window.location.href = '/logout';
+  }
+
+  // Add event listeners for user activity
+  window.onload = resetInactivityTimer;
+  document.onmousemove = resetInactivityTimer;
+  document.onkeypress = resetInactivityTimer;
+  document.ontouchstart = resetInactivityTimer; // for mobile devices
+
+</script>
+<script>
   document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form'); // Update with your form selector
     const loadingOverlay = document.querySelector('.loading-overlay');

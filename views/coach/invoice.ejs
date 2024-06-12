@@ -7,7 +7,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/css/style.css" />
   <title><%= coach.fullname %> || Invoice</title>
+  <script>
+    // Timeout for inactivity (in milliseconds)
+    const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 seconds for testing
+
+    let inactivityTimer;
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(logoutUser, INACTIVITY_TIMEOUT);
+    }
+
+    function logoutUser() {
+      window.location.href = '/logout';
+    }
+
+    // Add event listeners for user activity
+    window.onload = resetInactivityTimer;
+    document.onmousemove = resetInactivityTimer;
+    document.onkeypress = resetInactivityTimer;
+    document.ontouchstart = resetInactivityTimer; // for mobile devices
+
+  </script>
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
   <style>
     body {
@@ -152,6 +175,17 @@
       vertical-align: bottom !important;
     }
 
+    .removeIcon {
+      cursor: pointer;
+      font-size: 15px;
+      background-color: transparent;
+      border: none;
+    }
+
+    .removeIcon i {
+      color: red;
+    }
+
   </style>
 </head>
 
@@ -199,19 +233,25 @@
           </div>
           <div class="mt-4">
             <div class="row text-600 text-white bgc-default-tp1 py-25">
-              <div class=" col-4">Name</div>
-              <div class="col-2 ">Role</div>
-              <div class=" col-2 ">Date of birth</div>
-              <div class=" col-1">Division</div>
+              <div class="col-3">Name</div>
+              <div class="col-2">Role</div>
+              <div class="col-2">Date of birth</div>
+              <div class="col-1">Division</div>
+              <div class="col-1"></div>
             </div>
             <div class="text-95 text-secondary-d3">
               <% if(no_students !== 0){ %>
               <% for(let student of bulk_students){ %>
               <div class="row mb-2 mb-sm-0 py-25">
-                <div class="col-4"><%= student.fullname %></div>
+                <div class="col-3"><%= student.fullname %></div>
                 <div class="col-2"><%= student.role %></div>
-                <div class="col-2"><%= student.association %></div>
+                <div class="col-2"><%= student.dob %></div>
                 <div class="col-1 text-95"><%= student.dop %></div>
+                <form method="POST" action="/team/admin/<%= student._id %>?_method=DELETE" class="col-1">
+                  <button class="removeIcon">
+                    <i class='bx bx-trash'></i>
+                  </button>
+                </form>
               </div>
               <% } %>
               <% }else{ %>

@@ -5,6 +5,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= teamName %></title>
+  <script>
+    // Timeout for inactivity (in milliseconds)
+    const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 seconds for testing
+
+    let inactivityTimer;
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(logoutUser, INACTIVITY_TIMEOUT);
+    }
+
+    function logoutUser() {
+      window.location.href = '/logout';
+    }
+
+    // Add event listeners for user activity
+    window.onload = resetInactivityTimer;
+    document.onmousemove = resetInactivityTimer;
+    document.onkeypress = resetInactivityTimer;
+    document.ontouchstart = resetInactivityTimer; // for mobile devices
+
+  </script>
+
   <link rel="icon" type="image/png" href="<%= teamLogo %>">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -117,6 +140,7 @@
     </table>
     <% }); %>
   </div>
+
 </body>
 
 </html>

@@ -79,13 +79,19 @@ router.post('/coach/login', (req, res, next) => {
             req.flash('error', 'Invalid Email or Password');
             return res.redirect('/coach/login');
         }
-        req.logIn(user, (err) => {
+        req.logIn(user, async (err) => {
             if (err) {
                 return next(err);
             }
             if (user instanceof Coach && user.status === "approved") {
-                req.flash('success', `Welcome back ${user.fullname}!`);
-                return res.redirect(`/coach/${user._id}`);
+                const coach = await Coach.findById(req.user._id).populate("students");
+                const payment_pending = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid");
+                if (payment_pending.length) {
+                    return res.redirect('/team/admin/invoice');
+                } else {
+                    req.flash('success', `Welcome back ${user.fullname}!`);
+                    return res.redirect(`/coach/${user._id}`);
+                }
             } else {
                 req.flash("error", `${user.fullname} your application is not yet approved. Please wait until it's verified.`)
                 return res.redirect(`/coach/login`);
@@ -167,13 +173,18 @@ router.post('/assign-jerseys', wrapAsync(async (req, res) => {
 router.get('/team/admin/invoice', isCoach, wrapAsync(async (req, res, next) => {
     const { user } = req;
     const coach = await Coach.findById(user._id).populate('students').populate('team');
-    const bulk_students = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid")
-    res.render('./coach/invoice', {
-        coach,
-        bulk_students,
-        no_students: bulk_students.length,
-        subtotal: bulk_students.length * 25
-    });
+    const bulk_students = coach.students.filter(student => student.registrationMode === "bulk" && student.paymentStatus === "unpaid");
+    if (bulk_students.length) {
+        return res.render('./coach/invoice', {
+            coach,
+            bulk_students,
+            no_students: bulk_students.length,
+            subtotal: bulk_students.length * 25
+        });
+    } else {
+        return res.redirect(`/coach/${coach._id}`)
+    }
+
 }));
 
 // Router to handle bulk student Registration
@@ -277,6 +288,38 @@ router.post('/bulk-payment', isCoach, wrapAsync(async (req, res, next) => {
     });
 
     res.redirect(session.url);
-}))
+}));
+
+// router to delete the student from the invoice page
+router.delete('/team/admin/:studentId', wrapAsync(async (req, res) => {
+    const { user } = req;
+    const { studentId } = req.params;
+
+    await Coach.findByIdAndUpdate(
+        user._id,
+        { $pull: { students: studentId } },
+        { new: true }
+    );
+
+    // Find the student document
+    const student = await Student.findById(studentId);
+    if (student.image && student.image.path) {
+        await uploader.destroy(student.image.filename);
+    }
+    for (const document of student.documents) {
+        if (document.path) {
+            await uploader.destroy(document.filename);
+        }
+    }
+
+    await Team.findByIdAndUpdate(
+        student.team,
+        { $pull: { students: studentId } },
+        { new: true }
+    );
+
+    await Student.findByIdAndDelete(studentId);
+    res.redirect('/team/admin/invoice');
+}));
 
 module.exports = router;

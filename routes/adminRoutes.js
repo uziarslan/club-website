@@ -115,37 +115,38 @@ router.get('/admin/students', isAdmin, wrapAsync(async (req, res) => {
     });
 }));
 
-router.get('/admin/student/approve/:id', isAdmin, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const student = await Student.findByIdAndUpdate(id, { status: 'approved' }).populate("team").populate("coach");
-    client.send({
-        from: sender,
-        to: [{
-            email: student.username
-        }],
-        template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
-        template_variables: {
-            "student": student,
-            "team": student.team,
-            "coach": student.coach
-        }
-    })
-    res.redirect('/admin/students')
-}));
+// router.get('/admin/student/approve/:id', isAdmin, wrapAsync(async (req, res) => {
+//     const { id } = req.params;
+//     const student = await Student.findByIdAndUpdate(id, { status: 'approved' }).populate("team").populate("coach");
+//     client.send({
+//         from: sender,
+//         to: [{
+//             email: student.username
+//         }],
+//         template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
+//         template_variables: {
+//             "student": student,
+//             "team": student.team,
+//             "coach": student.coach
+//         }
+//     })
+//     res.redirect('/admin/students')
+// }));
 
-router.get('/admin/student/pending/:id', isAdmin, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    await Student.findByIdAndUpdate(id, { status: 'pending' });
-    res.redirect('/admin/students')
-}));
+// router.get('/admin/student/pending/:id', isAdmin, wrapAsync(async (req, res) => {
+//     const { id } = req.params;
+//     await Student.findByIdAndUpdate(id, { status: 'pending' });
+//     res.redirect('/admin/students')
+// }));
 
-router.get('/admin/student/disqualify/:id', isAdmin, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    await Student.findByIdAndUpdate(id, { status: 'disqualified' });
-    res.redirect('/admin/students')
-}));
+// router.get('/admin/student/disqualify/:id', isAdmin, wrapAsync(async (req, res) => {
+//     const { id } = req.params;
+//     await Student.findByIdAndUpdate(id, { status: 'disqualified' });
+//     res.redirect('/admin/students')
+// }));
 
 // Managing coaches
+
 router.get('/admin/coaches', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
     const pending_coaches = await Coach.find({ status: 'pending' }).populate('team');
@@ -169,36 +170,37 @@ router.get('/admin/coaches', isAdmin, wrapAsync(async (req, res) => {
     });
 }));
 
-router.get('/admin/coach/approve/:id', isAdmin, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const coach = await Coach.findByIdAndUpdate(id, { status: 'approved' }).populate('team');
-    client.send({
-        from: sender,
-        to: [{
-            email: coach.username
-        }],
-        template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
-        template_variables: {
-            "coach": coach,
-            "team": coach.team
-        }
-    });
-    res.redirect('/admin/coaches');
-}));
+// router.get('/admin/coach/approve/:id', isAdmin, wrapAsync(async (req, res) => {
+//     const { id } = req.params;
+//     const coach = await Coach.findByIdAndUpdate(id, { status: 'approved' }).populate('team');
+//     client.send({
+//         from: sender,
+//         to: [{
+//             email: coach.username
+//         }],
+//         template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
+//         template_variables: {
+//             "coach": coach,
+//             "team": coach.team
+//         }
+//     });
+//     res.redirect('/admin/coaches');
+// }));
 
-router.get('/admin/coach/pending/:id', isAdmin, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    await Coach.findByIdAndUpdate(id, { status: 'pending' });
-    res.redirect('/admin/coaches')
-}));
+// router.get('/admin/coach/pending/:id', isAdmin, wrapAsync(async (req, res) => {
+//     const { id } = req.params;
+//     await Coach.findByIdAndUpdate(id, { status: 'pending' });
+//     res.redirect('/admin/coaches')
+// }));
 
-router.get('/admin/coach/disqualify/:id', isAdmin, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    await Coach.findByIdAndUpdate(id, { status: 'disqualified' });
-    res.redirect('/admin/coaches')
-}));
+// router.get('/admin/coach/disqualify/:id', isAdmin, wrapAsync(async (req, res) => {
+//     const { id } = req.params;
+//     await Coach.findByIdAndUpdate(id, { status: 'disqualified' });
+//     res.redirect('/admin/coaches')
+// }));
 
 // Managing teams
+
 router.get('/admin/teams', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
     const teams = await Team.find({});
@@ -500,5 +502,55 @@ router.post('/team/teamId', wrapAsync(async (req, res) => {
     const team = Team.findById(teamId);
     res.send("Hitting the store post route")
 }));
+
+// Router to handle the multiple approve or disapprove request
+router.post('/admin/student/action', async (req, res) => {
+    const selectdeStudentIds = req.body.selectedStudentIds.split(',');
+    const actionType = req.body.actionType;
+
+    selectdeStudentIds.forEach(async (id) => {
+        const update = { status: actionType };
+        const student = await Student.findByIdAndUpdate(id, update).populate('team').populate('coach');
+        if (actionType === "approved") {
+            client.send({
+                from: sender,
+                to: [{
+                    email: student.username
+                }],
+                template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
+                template_variables: {
+                    "student": student,
+                    "team": student.team,
+                    "coach": student.coach
+                }
+            });
+        }
+    });
+    res.sendStatus(200);
+});
+router.post('/admin/coach/action', async (req, res) => {
+    const selectedCoachIds = req.body.selectedCoachIds.split(',');
+    const actionType = req.body.actionType;
+
+    selectedCoachIds.forEach(async (id) => {
+        const update = { status: actionType };
+        const coach = await Coach.findByIdAndUpdate(id, update).populate('team');
+        if (actionType === "approved") {
+            client.send({
+                from: sender,
+                to: [{
+                    email: coach.username
+                }],
+                template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
+                template_variables: {
+                    "coach": coach,
+                    "team": coach.team
+                }
+            });
+        }
+    });
+    res.sendStatus(200);
+});
+
 
 module.exports = router;
