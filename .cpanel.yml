@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/bigtkkff/bigtristate
+    - export DEPLOYPATH=/home/bigtkkff/bigtriwebsite
     - /bin/cp -R * $DEPLOYPATH
