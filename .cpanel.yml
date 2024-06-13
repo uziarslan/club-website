@@ -2,4 +2,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/bigtkkff/bigtriwebsite
-    - /bin/cp -R * $DEPLOYPATH
+    - /bin/rsync -av --exclude-from='.cpignore' . $DEPLOYPATH
