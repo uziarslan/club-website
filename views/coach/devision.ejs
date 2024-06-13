@@ -189,6 +189,7 @@
     const jerseyInputs = document.querySelectorAll('.jersey-input');
     const submitButton = document.querySelector("#submitButton");
     submitButton.disabled = true;
+
     jerseyInputs.forEach(input => {
       input.addEventListener('change', async function() {
         const jerseyNumber = input.value;
@@ -228,7 +229,7 @@
         }
 
         const isInvalid = Array.from(jerseyInputs)
-          .some(input => input.classList.contains('is-invalid') || input.value === '');
+          .some(input => input.classList.contains('is-invalid'));
         submitButton.disabled = isInvalid;
       });
     });
@@ -281,6 +282,7 @@
         })
         const loadingOverlay = document.querySelector('.loading-overlay');
         loadingOverlay.style.display = 'none';
+        submitButton.disabled = true;
       } else {
         const loadingOverlay = document.querySelector('.loading-overlay');
         loadingOverlay.style.display = 'none';

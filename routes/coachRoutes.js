@@ -160,7 +160,7 @@ router.post('/assign-jerseys', wrapAsync(async (req, res) => {
     for (let studentId in data) {
         const jerseyNumber = data[studentId];
         const student = await Student.findById(studentId);
-        if (student && student.jersey.toLowerCase() !== jerseyNumber.toLowerCase()) {
+        if (student && student !== jerseyNumber) {
             student.jersey = jerseyNumber.toUpperCase();
             await student.save();
         }
