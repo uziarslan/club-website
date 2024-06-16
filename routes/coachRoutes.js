@@ -207,7 +207,7 @@ router.post('/team/:teamId/admin/register', isCoach, upload.any(), wrapAsync(asy
                 };
             }
 
-            if (type === 'image') {
+            if (type === 'image' || type === "captureImage") {
                 playerFiles[playerIndex].images.push(file);
             } else if (type === 'document') {
                 const documentIndex = playerFiles[playerIndex].documents.length;

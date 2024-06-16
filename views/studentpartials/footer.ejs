@@ -22,7 +22,7 @@
 
 </script>
 <script src="/js/Javascript/jquery/dist/jquery.min.js"></script>
-<script src="/js/Javascript/jquery/dist/jquery.js"></script>
+<!-- <script src="/js/Javascript/jquery/dist/jquery.js"></script> -->
 <script src="/js/Javascript/popper.js/dist/umd/popper.min.js"></script>
 <script src="/js/Javascript/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/js/Javascript/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
@@ -43,95 +43,6 @@
           , "pagingType": "simple_numbers"
         , });
     });
-
-</script>
-<script>
-  var btnUpload = $("#upload_file")
-    , btnOuter = $(".button_outer");
-  btnUpload.on("change", function(e) {
-    var ext = btnUpload.val()
-      .split('.')
-      .pop()
-      .toLowerCase();
-    if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
-      $(".error_msg")
-        .text("Not an Image...");
-    } else {
-      $(".error_msg")
-        .text("");
-      btnOuter.addClass("file_uploading");
-      setTimeout(function() {
-        btnOuter.addClass("file_uploaded");
-      }, 3000);
-      var uploadedFile = URL.createObjectURL(e.target.files[0]);
-      setTimeout(function() {
-        $("#uploaded_view")
-          .addClass("showdisplayblock");
-
-        $("#uploaded_view")
-          .append('<img src="' + uploadedFile + '" />')
-          .addClass("show");
-      }, 3500);
-    }
-  });
-  $(".file_remove")
-    .on("click", function(e) {
-      $("#uploaded_view")
-        .removeClass("showdisplayblock");
-      $("#uploaded_view")
-        .removeClass("show");
-      $("#uploaded_view")
-        .find("img")
-        .remove();
-      btnOuter.removeClass("file_uploading");
-      btnOuter.removeClass("file_uploaded");
-    });
-
-</script>
-<script>
-  function addAnimation() {
-    $('.btn_upload input[type="file"]')
-      .on('change', function(e) {
-        var ext = $(this)
-          .val()
-          .split('.')
-          .pop()
-          .toLowerCase();
-        var btnOuter = $(this)
-          .closest('.button_outer');
-        var error_msg = btnOuter.next('.error_msg');
-        var uploaded_view = btnOuter.next('#uploaded_view');
-
-        if ($.inArray(ext, ['jpeg', 'jpg', 'png']) == -1) {
-          error_msg.text('Not an Image...');
-        } else {
-          error_msg.text('');
-          btnOuter.addClass('file_uploading');
-          setTimeout(function() {
-            btnOuter.addClass('file_uploaded');
-          }, 3000); // Adjust timing if needed
-
-          var uploadedFile = URL.createObjectURL(e.target.files[0]);
-          setTimeout(function() {
-            uploaded_view.addClass('showdisplayblock');
-            uploaded_view.html('<img src="' + uploadedFile + '" />')
-              .addClass('show');
-          }, 1500); // Adjust timing if needed
-        }
-      });
-
-    $('.file_remove')
-      .on('click', function() {
-        var uploaded_view = $(this)
-          .closest('.uploaded_file_view');
-        var btnOuter = uploaded_view.prev('.button_outer');
-        uploaded_view.removeClass('showdisplayblock show')
-          .html('');
-        btnOuter.removeClass('file_uploading file_uploaded');
-        btnOuter.find('input[type="file"]')
-          .val('');
-      });
-  }
 
 </script>
 
