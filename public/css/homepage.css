@@ -166,6 +166,20 @@ body::before {
   object-fit: cover;
 }
 
+.heroSectionImageMain {
+  width: 571px;
+  height: 711px;
+  z-index: 1001;
+  object-fit: cover;
+}
+
+.heroSectionImageMain {
+  width: 571px;
+  height: 711px;
+  z-index: 1001;
+  object-fit: fill;
+}
+
 .welcomeHeading {
   font-family: "Roboto";
   font-size: 64px;
@@ -197,13 +211,14 @@ body::before {
   z-index: 1000;
   left: 50%;
   transform: translate(-50%);
+  padding-right: 25px;
 }
 
 .textAndButtons {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 1100px;
+  /* width: 1100px; */
   gap: 118px;
 }
 
@@ -487,11 +502,11 @@ body::before {
   z-index: 19999;
 }
 
-@media (max-width:1860px) {
+/* @media (max-width:1860px) {
   .textAndButtons {
     width: 864px;
   }
-}
+} */
 
 @media (max-width:1530px) {
   .welcomeHeading {
@@ -508,13 +523,17 @@ body::before {
     width: auto;
     height: 440px;
   }
+
+  .heroSectionImageMain {
+    width: auto;
+    height: 440px;
+  }
 }
 
 @media (max-width:1415px) {
   .textAndButtons {
     flex-direction: column;
     align-items: center;
-    width: 440px;
     gap: 15px;
   }
 }
@@ -555,7 +574,6 @@ body::before {
   }
 
   .textAndButtons {
-    width: 355px;
     padding: 0 10px;
   }
 
@@ -577,6 +595,11 @@ body::before {
 
   .loginButtonContainerDisabled {
     display: block;
+  }
+
+  .heroSectionImageMain {
+    width: 100%;
+    height: 440px;
   }
 }
 

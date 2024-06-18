@@ -4,15 +4,15 @@
 <div class="body">
   <div class="heroSectionContainer">
     <div class="heroSection">
-      <img class="heroSectionImage" src="/images/hero-img.png" />
+      <img class="heroSectionImageMain" src="/images/hero-img.png" />
       <div>
-        <h1 class="welcomeHeading">Welcome to big tri state football club</h1>
-        <p class="welcomeSubheading">The website of your local football club</p>
+        <h1 class="welcomeHeading">Welcome to big tri state youth football</h1>
+        <!-- <p class="welcomeSubheading">The website of your local football club</p> -->
       </div>
     </div>
     <div class="backgroundBanner">
       <div class="textAndButtons">
-        <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p>
+        <!-- <p class="bannerText">Lorem ipsum dolor sit amet consectetur. Tellus orci cum turpis augue elementum. Imperdiet sodales semper ut mattis dolor convallis.</p> -->
         <div class="buttons">
           <div class="joinourteamButtonWrapper">
             <a href="#" class="joinOurTeamButton">Join our team</a>
@@ -38,9 +38,6 @@
           </div>
           <div class="teamBody">
             <h3 class="teamName"><%= team.name %></h3>
-            <% for (coach of team.coaches){ %>
-            <p class="coachName"><%= coach.fullname %></p>
-            <% } %>
           </div>
         </div>
         <a href="<%= team._id %>/player/show" class="arrowbutton">
