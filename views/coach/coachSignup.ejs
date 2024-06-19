@@ -1,4 +1,31 @@
 <%- include('../adminpartials/loginhead', {title: "Team Admin || Signup"}) %>
+<style>
+  .iconWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .iconWrapper i {
+    font-size: 20px;
+    margin-left: -30px;
+    cursor: pointer;
+  }
+
+  .content-wrapper {
+    background-color: #1E1E1E;
+  }
+
+
+  .card {
+    background-color: #717070;
+  }
+
+  .text-muted {
+    color: white !important;
+  }
+
+</style>
 <div class="container-scroller">
   <div class="container-fluid">
     <div class="row">
@@ -21,9 +48,22 @@
               </div>
               <div class="form-group">
                 <label id="saudiNumberHelp" class="form-text text-muted">
-                  Password
+                  Create a Password
                 </label>
-                <input type="password" class="form-control" name="password" id="password" required>
+                <div class="iconWrapper">
+                  <input required id="password" type="password" class="form-control p_input" name="password">
+                  <i class='bx bx-show' id="togglePassword"></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="saudiNumberHelp" class="form-text text-muted">
+                  Confirm Password
+                </label>
+                <div class="iconWrapper">
+                  <input required id="confirmPassword" type="password" class="form-control p_input">
+                  <i class='bx bx-show' id="confirmPasswordToggle"></i>
+                </div>
+                <div id="confirmPasswordFeedback" class="invalid-feedback">Passwords do not match</div>
               </div>
               <div class="form-group">
                 <label id="phone" class="form-text text-muted">
@@ -51,4 +91,54 @@
     </div>
   </div>
 </div>
+<script>
+  const togglePassword = document
+    .querySelector('#togglePassword');
+  const password = document.querySelector('#password');
+  togglePassword.addEventListener('click', () => {
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = password
+      .getAttribute('type') === 'password' ?
+      'text' : 'password';
+    password.setAttribute('type', type);
+    // Toggle the eye and bi-eye icon
+    this.classList.toggle('bi-eye');
+  });
+  const confirmPassword = document
+    .querySelector('#confirmPasswordToggle');
+  const confirmPasswordField = document.querySelector('#confirmPassword');
+  confirmPassword.addEventListener('click', () => {
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = confirmPasswordField
+      .getAttribute('type') === 'password' ?
+      'text' : 'password';
+    confirmPasswordField.setAttribute('type', type);
+    // Toggle the eye and bi-eye icon
+    this.classList.toggle('bi-eye');
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var password = document.getElementById('password');
+    var confirmPassword = document.getElementById('confirmPassword');
+    var confirmPasswordFeedback = document.getElementById('confirmPasswordFeedback');
+    var formGroup = confirmPassword.closest('.form-group');
+
+    function checkPasswordMatch() {
+      if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
+        formGroup.classList.add('has-error');
+        confirmPassword.classList.add('is-invalid');
+        confirmPasswordFeedback.style.display = 'block';
+      } else {
+        formGroup.classList.remove('has-error');
+        confirmPassword.classList.remove('is-invalid');
+        confirmPasswordFeedback.style.display = 'none';
+      }
+    }
+
+    confirmPassword.addEventListener('blur', checkPasswordMatch);
+  });
+
+</script>
 <%- include('../adminpartials/loginfooter') %>
