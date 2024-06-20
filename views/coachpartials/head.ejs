@@ -38,7 +38,7 @@
           <div class="user-info">
             <img src="<%= coach.team.image.path %>" alt="">
             <p class="name"><%= coach.fullname %></p>
-            <p class="designation">COACH</p>
+            <p class="text-center"><b>TEAM ADMIN</b></p>
           </div>
           <ul class="nav">
             <li class="nav-item active">
@@ -62,11 +62,11 @@
               </a>
               <div class="collapse" id="settings">
                 <ul class="nav flex-column sub-menu">
-                  <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">
-                      ChangePassword
+                  <li class="nav-item">
+                    <a class="nav-link" href="/team/admin/profile">
+                      Change Password
                     </a>
-                  </li> -->
+                  </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/logout">
                       Logout

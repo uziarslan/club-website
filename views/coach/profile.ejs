@@ -1,0 +1,90 @@
+<%- include('../coachpartials/head') %>
+
+<style>
+  .iconWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .iconWrapper i {
+    font-size: 20px;
+    margin-left: -30px;
+    cursor: pointer;
+  }
+
+</style>
+<div class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+<div class="content-wrapper">
+  <%- include('../flash') %>
+  <div class="container-scroller">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="content-wrapper full-page-wrapper auth-pages">
+          <div class="card col-lg-7 mx-auto">
+            <div class="card-body px-5 py-5">
+              <h3 class="card-title text-left mb-3">Change Password</h3>
+              <form action="/team/admin/profile?_method=PUT" method="POST">
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    Current Password
+                  </label>
+                  <div class="iconWrapper">
+                    <input required id="password" type="password" class="form-control p_input" name="currentPassword">
+                    <i class='bx bx-show' id="togglePassword"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-text text-muted">
+                    New Password
+                  </label>
+                  <div class="iconWrapper">
+                    <input required id="confirmPassword" type="password" class="form-control p_input" name="newPassword">
+                    <i class='bx bx-show' id="confirmPasswordToggle"></i>
+                  </div>
+                  <div id="confirmPasswordFeedback" class="invalid-feedback">Passwords do not match</div>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary btn-block enter-btn">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const togglePassword = document
+    .querySelector('#togglePassword');
+  const password = document.querySelector('#password');
+  togglePassword.addEventListener('click', () => {
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = password
+      .getAttribute('type') === 'password' ?
+      'text' : 'password';
+    password.setAttribute('type', type);
+    // Toggle the eye and bi-eye icon
+    this.classList.toggle('bi-eye');
+  });
+  const confirmPassword = document
+    .querySelector('#confirmPasswordToggle');
+  const confirmPasswordField = document.querySelector('#confirmPassword');
+  confirmPassword.addEventListener('click', () => {
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = confirmPasswordField
+      .getAttribute('type') === 'password' ?
+      'text' : 'password';
+    confirmPasswordField.setAttribute('type', type);
+    // Toggle the eye and bi-eye icon
+    this.classList.toggle('bi-eye');
+  });
+
+</script>
+
+<%- include('../adminpartials/footer') %>

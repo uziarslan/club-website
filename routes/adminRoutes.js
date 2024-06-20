@@ -309,6 +309,31 @@ router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
     res.redirect(`/admin/teams`);
 }))
 
+// Admin Profile
+router.get('/admin/profile', wrapAsync(async (req, res, next) => {
+    res.render('./admin/profile', { admin: req.user });
+}));
+
+router.put('/admin/profile', isAdmin, wrapAsync(async (req, res, next) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+        req.flash("error", "Please provide both current and new passwords");
+        return res.redirect('/admin/profile');
+    }
+    req.user.changePassword(currentPassword, newPassword, (err) => {
+        if (err) {
+            if (err.name === 'IncorrectPasswordError') {
+                req.flash("error", "Current password is incorrect")
+                return res.redirect('/admin/profile');
+            }
+            return res.status(500).send('An error occurred while changing the password');
+        } else {
+            req.flash('success', 'Password successfully changed');
+            return res.redirect('/admin/profile');
+        }
+    });
+}));
+
 // Generating a PDF
 // router.post('/generate/document', isAdmin, wrapAsync(async (req, res) => {
 //     const { team, division, coach } = req.body;

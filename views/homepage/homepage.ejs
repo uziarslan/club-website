@@ -1,6 +1,7 @@
 <%- include('../homepagepartials/head', {homepage: true, title: "Homepage"}) %>
 <%- include('../homepagepartials/homepagenavbar', {title: "Homepage"})%>
 <!-- Body goes in here -->
+
 <div class="body">
   <div class="heroSectionContainer">
     <div class="heroSection">
@@ -29,6 +30,11 @@
       <h2 class="ourteamsHeading">Our teams</h2>
       <p class="ourteamSubheading">Loreum ipsum text</p>
     </div>
+    <div class="search-container">
+      <button class="search-button"><i class="fas fa-search"></i></button>
+      <input onkeyup="filterTeamsSecond()" type="text" class="search-input" placeholder="Type to Search..." />
+      <ul class="dropdown-suggestions" id="suggestionsSecond"></ul>
+    </div>
     <div class="teamsWrapper">
       <% for (team of teams){ %>
       <div class="teamCardContainer">
@@ -48,4 +54,103 @@
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const teams = <%- JSON.stringify(teams) %>;
+
+    window.filterTeams = function() {
+      const input = document.querySelector('.input-search')
+        .value.toLowerCase();
+      const teamCards = document.querySelectorAll('.teamCardContainer');
+      const suggestions = document.getElementById('suggestions');
+
+      // Clear previous suggestions
+      suggestions.innerHTML = '';
+
+      // Filter and display team cards
+      teamCards.forEach(card => {
+        const teamName = card.querySelector('.teamName')
+          .textContent.toLowerCase();
+        if (teamName.includes(input)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show suggestions
+      if (input) {
+        const filteredTeams = teams.filter(team => team.name.toLowerCase()
+          .includes(input));
+        filteredTeams.forEach(team => {
+          const suggestionItem = document.createElement('li');
+          suggestionItem.textContent = team.name;
+          suggestionItem.onclick = (e) => {
+            e.preventDefault();
+            document.querySelector('.input-search')
+              .value = team.name;
+            filterTeams();
+            suggestions.innerHTML = '';
+            document.querySelector('.input-search')
+              .focus();
+          };
+          suggestions.appendChild(suggestionItem);
+        });
+      }
+    }
+  });
+
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const teams = <%- JSON.stringify(teams) %>;
+
+    window.filterTeamsSecond = function() {
+      const input = document.querySelector('.search-input')
+        .value.toLowerCase();
+      const teamCards = document.querySelectorAll('.teamCardContainer');
+      const suggestions = document.getElementById('suggestionsSecond');
+
+      // Clear previous suggestions
+      suggestions.innerHTML = '';
+
+      // Filter and display team cards
+      teamCards.forEach(card => {
+        const teamName = card.querySelector('.teamName')
+          .textContent.toLowerCase();
+        if (teamName.includes(input)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show suggestions
+      if (input) {
+        const filteredTeams = teams.filter(team => team.name.toLowerCase()
+          .includes(input));
+        filteredTeams.forEach(team => {
+          const suggestionItem = document.createElement('li');
+          suggestionItem.textContent = team.name;
+          suggestionItem.onclick = (e) => {
+            e.preventDefault();
+            document.querySelector('.search-input')
+              .value = team.name;
+            filterTeams();
+            suggestions.innerHTML = '';
+            document.querySelector('.search-input')
+              .focus();
+          };
+          suggestions.appendChild(suggestionItem);
+        });
+      }
+    }
+  });
+
+</script>
+
+
+
+
 <%- include('../homepagepartials/footer') %>

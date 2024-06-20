@@ -153,6 +153,34 @@ router.get('/team/:teamId/division/:division/jersey/:jerseyNumber/check', wrapAs
     }
 }));
 
+// Change Password or profile Page
+router.get('/team/admin/profile', wrapAsync(async (req, res, next) => {
+    const { _id } = req.user;
+    const dop = ['7U', '8U', '9U', '10U', '11U', '12U', '13U']
+    const coach = await Coach.findById(_id).populate('team')
+    res.render('./coach/profile', { coach, dop });
+}));
+
+router.put('/team/admin/profile', isCoach, wrapAsync(async (req, res, next) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+        req.flash("error", "Please provide both current and new passwords");
+        return res.redirect('/team/admin/profile');
+    }
+    req.user.changePassword(currentPassword, newPassword, (err) => {
+        if (err) {
+            if (err.name === 'IncorrectPasswordError') {
+                req.flash("error", "Current password is incorrect")
+                return res.redirect('/team/admin/profile');
+            }
+            return res.status(500).send('An error occurred while changing the password');
+        } else {
+            req.flash('success', 'Password successfully changed');
+            return res.redirect('/team/admin/profile');
+        }
+    });
+}));
+
 // Router to assign the jersey number
 router.post('/assign-jerseys', wrapAsync(async (req, res) => {
     const { division, data } = req.body;

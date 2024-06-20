@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
   <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
-
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="shortcut icon" href="/images/favicon.png" />
 
@@ -49,7 +49,7 @@
           <div class="user-info">
             <img src="/images/face.jpg" alt="">
             <p class="name"><%= admin.fullname %></p>
-            <p class="designation"><%= admin.role.toUpperCase() %></p>
+            <p class="text-center"><b><%= admin.role.toUpperCase() %></b></p>
           </div>
           <ul class="nav">
             <li class="nav-item <%= title == 'Admin || Dashboard' ? 'active' : '' %>">
@@ -59,21 +59,18 @@
               </a>
             </li>
             <li class="nav-item <%= title == 'Admin || Students' ? 'active' : '' %>">
-
               <a class="nav-link" href="/admin/students">
                 <img src="/images/icons/5.png" alt="">
                 <span class="menu-title">Players</span>
               </a>
             </li>
             <li class="nav-item <%= title == 'Admin || Coaches' ? 'active' : '' %>">
-
               <a class="nav-link" href="/admin/coaches">
                 <img src="/images/icons/005-forms.png" alt="">
                 <span class="menu-title">Coaches</span>
               </a>
             </li>
             <li class="nav-item <%= title == 'Admin || Teams' ? 'active' : '' %>">
-
               <a class="nav-link" href="/admin/teams">
                 <img src="/images/icons/006-form.png" alt="">
                 <span class="menu-title">Teams</span>
@@ -87,8 +84,8 @@
               <div class="collapse" id="settings">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="#">
-                      ChangePassword
+                    <a class="nav-link" href="/admin/profile">
+                      Change Password
                     </a>
                   </li>
                   <li class="nav-item">
