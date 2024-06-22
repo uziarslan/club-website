@@ -115,38 +115,8 @@ router.get('/admin/students', isAdmin, wrapAsync(async (req, res) => {
     });
 }));
 
-// router.get('/admin/student/approve/:id', isAdmin, wrapAsync(async (req, res) => {
-//     const { id } = req.params;
-//     const student = await Student.findByIdAndUpdate(id, { status: 'approved' }).populate("team").populate("coach");
-//     client.send({
-//         from: sender,
-//         to: [{
-//             email: student.username
-//         }],
-//         template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
-//         template_variables: {
-//             "student": student,
-//             "team": student.team,
-//             "coach": student.coach
-//         }
-//     })
-//     res.redirect('/admin/students')
-// }));
-
-// router.get('/admin/student/pending/:id', isAdmin, wrapAsync(async (req, res) => {
-//     const { id } = req.params;
-//     await Student.findByIdAndUpdate(id, { status: 'pending' });
-//     res.redirect('/admin/students')
-// }));
-
-// router.get('/admin/student/disqualify/:id', isAdmin, wrapAsync(async (req, res) => {
-//     const { id } = req.params;
-//     await Student.findByIdAndUpdate(id, { status: 'disqualified' });
-//     res.redirect('/admin/students')
-// }));
 
 // Managing coaches
-
 router.get('/admin/coaches', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
     const pending_coaches = await Coach.find({ status: 'pending' }).populate('team');
@@ -170,37 +140,8 @@ router.get('/admin/coaches', isAdmin, wrapAsync(async (req, res) => {
     });
 }));
 
-// router.get('/admin/coach/approve/:id', isAdmin, wrapAsync(async (req, res) => {
-//     const { id } = req.params;
-//     const coach = await Coach.findByIdAndUpdate(id, { status: 'approved' }).populate('team');
-//     client.send({
-//         from: sender,
-//         to: [{
-//             email: coach.username
-//         }],
-//         template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
-//         template_variables: {
-//             "coach": coach,
-//             "team": coach.team
-//         }
-//     });
-//     res.redirect('/admin/coaches');
-// }));
-
-// router.get('/admin/coach/pending/:id', isAdmin, wrapAsync(async (req, res) => {
-//     const { id } = req.params;
-//     await Coach.findByIdAndUpdate(id, { status: 'pending' });
-//     res.redirect('/admin/coaches')
-// }));
-
-// router.get('/admin/coach/disqualify/:id', isAdmin, wrapAsync(async (req, res) => {
-//     const { id } = req.params;
-//     await Coach.findByIdAndUpdate(id, { status: 'disqualified' });
-//     res.redirect('/admin/coaches')
-// }));
 
 // Managing teams
-
 router.get('/admin/teams', isAdmin, wrapAsync(async (req, res) => {
     const { user } = req;
     const teams = await Team.find({});
@@ -336,14 +277,21 @@ router.put('/admin/profile', isAdmin, wrapAsync(async (req, res, next) => {
 
 router.get('/generate/report', wrapAsync(async (req, res) => {
     const { team, division } = req.query;
-    let t = "";
+    const { referer } = req.headers;
+    let teamId;
+    if (!team) {
+        teamId = req.user.team
+    } else {
+        teamId = team;
+    }
+    let t;
     if (division === "all") {
-        t = await Team.findById(team).populate({
+        t = await Team.findById(teamId).populate({
             path: "students",
             match: { status: "approved" }
         }).populate("coaches");
     } else {
-        t = await Team.findById(team).populate({
+        t = await Team.findById(teamId).populate({
             path: "students",
             match: { dop: division, status: "approved" }
         }).populate("coaches");
@@ -355,7 +303,7 @@ router.get('/generate/report', wrapAsync(async (req, res) => {
 
     if (!students.length) {
         req.flash("error", "Sorry, no data was found matching your selected filters. Please adjust your filters and try again.")
-        return res.redirect('/admin/dashboard')
+        return res.redirect(referer);
     }
     res.render('./admin/print', { students, teamName: t.name, teamLogo: t.image.path })
 }));
@@ -369,7 +317,7 @@ router.get('/generate/complete/report', wrapAsync(async (req, res) => {
     } else {
         teamId = team;
     }
-    let t = "";
+    let t;
     if (division === "all") {
         t = await Team.findById(teamId).populate({
             path: "students",
