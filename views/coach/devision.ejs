@@ -1,5 +1,6 @@
 <%- include('../coachpartials/head') %>
 <div class="content-wrapper">
+  <%- include('../flash') %>
   <div class="row">
     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
       <div class="card">
@@ -10,6 +11,21 @@
           <h4 class="card-title font-weight-normal text-success"><%= totalDivisonStudents %></h4>
           <h6 class="card-subtitle mb-4">Players <%= dopNum %></h6>
         </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <form action="/generate/complete/report" class="card-body">
+          <h6 class="card-subtitle mb-4">Generate Complete Team Report</h6>
+          <select name="division" class="form-control">
+            <option disabled selected>Division</option>
+            <option value="all">All</option>
+            <% for (let d of dop){ %>
+            <option value="<%= d %>"><%= d %></option>
+            <% } %>
+          </select>
+          <button type="submit" class="btn btn-primary w-100 mt-2">Generate</button>
+        </form>
       </div>
     </div>
   </div>
@@ -243,11 +259,14 @@
 
     submitButton.addEventListener("click", function(event) {
       event.preventDefault();
+      const loadingOverlay = document.querySelector('.loading-overlay');
+      loadingOverlay.style.display = "flex";
       jerseyForm.dispatchEvent(new Event('submit'));
     });
 
     jerseyForm.addEventListener("submit", async function(event) {
       event.preventDefault();
+      const loadingOverlay = document.querySelector('.loading-overlay');
       const formData = new FormData(jerseyForm);
       const division = '<%= dopNum %>';
       const data = {};
@@ -269,7 +288,6 @@
           , data
         })
       });
-
       const result = await response.json();
       if (result.success) {
         const inputFields = document.querySelectorAll('.jersey-input');
@@ -280,11 +298,9 @@
         messageDiv.forEach((div) => {
           div.innerHTML = '';
         })
-        const loadingOverlay = document.querySelector('.loading-overlay');
         loadingOverlay.style.display = 'none';
         submitButton.disabled = true;
       } else {
-        const loadingOverlay = document.querySelector('.loading-overlay');
         loadingOverlay.style.display = 'none';
         alert('An error occurred. Please try again.');
       }

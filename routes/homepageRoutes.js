@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Student = mongoose.model('Student');
 const Coach = mongoose.model("Coach");
+const fs = require('fs');
+const path = require('path');
 const Team = mongoose.model('Team');
 const qrcode = require('qrcode');
 const wrapAsync = require('../utils/wrapAsync');
@@ -45,22 +47,45 @@ router.get('/:teamId/player/show', wrapAsync(async (req, res) => {
 
 router.post('/download/qr/:teamId', wrapAsync(async (req, res) => {
     const { teamId } = req.params;
-    const team = await Team.findById(teamId);
+    if (teamId) {
 
-    if (!team || !team.qrCode) {
-        return res.status(404).send('QR code not found');
+        const team = await Team.findById(teamId);
+        if (!team || !team.qrCode) {
+            return res.status(404).send('QR code not found');
+        }
+        const base64Data = team.qrCode.split(';base64,').pop();
+        const imgBuffer = Buffer.from(base64Data, 'base64');
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Disposition': `attachment; filename="${team.name}.png"`
+        });
+        return res.end(imgBuffer);
+
+    } else if (teamId === "homepage") {
+        const filePath = path.join(__dirname, '..', 'public', 'images', 'homepageqr.png');
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                return res.status(500).send('Error reading the file');
+            }
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Content-Disposition': 'attachment; filename="BigTriState.png"'
+            });
+            return res.end(data);
+        });
+    } else {
+        const filePath = path.join(__dirname, '..', 'public', 'images', 'adminqr.png');
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                return res.status(500).send('Error reading the file');
+            }
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Content-Disposition': 'attachment; filename="Admin.png"'
+            });
+            return res.end(data);
+        });
     }
-
-    const base64Data = team.qrCode.split(';base64,').pop();
-
-    const imgBuffer = Buffer.from(base64Data, 'base64');
-
-    res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Disposition': `attachment; filename="${team.name}.png"`
-    });
-
-    res.end(imgBuffer);
 }))
 
 

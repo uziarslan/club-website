@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="/css/style.css" />
+
   <link rel="shortcut icon" href="/images/favicon.png" />
 
   <style>
@@ -49,7 +50,7 @@
           <div class="user-info">
             <img src="/images/face.jpg" alt="">
             <p class="name"><%= admin.fullname %></p>
-            <p class="text-center"><b><%= admin.role.toUpperCase() %></b></p>
+            <p class="text-center"><b>SUPER <%= admin.role.toUpperCase() %></b></p>
           </div>
           <ul class="nav">
             <li class="nav-item <%= title == 'Admin || Dashboard' ? 'active' : '' %>">

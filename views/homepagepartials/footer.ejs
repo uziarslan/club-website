@@ -1,6 +1,36 @@
 <a href="https://wa.me/12014238468" target="_blank" class="whatsapp-icon">
   <i class="fab fa-whatsapp"></i>
 </a>
+
+<!-- Qr Code Modal -->
+<div style="z-index: 20000;" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Scan QR Code</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center align-items-center">
+        <img style="width: 250px; height: 250px;" src="<%= title === "Player"? team.qrCode : '/images/homepageqr.png' %>" />
+        <% if(title === "Player"){ %>
+        <p class="text-center m-0" style="font-family: 'Roboto';"><b><%= team.name %></b></p>
+        <% } %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <% if(title === "Player"){ %>
+        <form action="/download/qr/<%= team._id %>" method="post">
+          <button type="submit" class="btn btn-primary">Download</button>
+        </form>
+        <% }else{ %>
+        <form action="/download/qr/homepage" method="post">
+          <button type="submit" class="btn btn-primary">Download</button>
+        </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 <script>
   let navButtons = document.querySelectorAll(".nav-item");
