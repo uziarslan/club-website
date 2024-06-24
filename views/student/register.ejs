@@ -125,7 +125,7 @@
                     <input required type="text" class="form-control p_input" name="username">
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-lg-3 col-md-3 col-sm-12">
                   <div class="form-group">
                     <label class="form-text text-muted">
                       Create a Password
@@ -136,7 +136,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-lg-3 col-md-3 col-sm-12">
                   <div class="form-group">
                     <label class="form-text text-muted">
                       Confirm Password
@@ -163,18 +163,18 @@
                     <label id="dob" class="form-text text-muted">
                       MM/DD/YYYY
                     </label>
-                    <div class="d-flex">
-                      <div class="col-4">
+                    <div class="row">
+                      <div class="col-lg-4 col-md-4 col-sm-4">
                         <select class="form-control" id="dobMonth" name="dobMonth" required>
                           <option disabled selected value="">Month</option>
                         </select>
                       </div>
-                      <div class="col-4">
+                      <div class="col-lg-4 col-md-4 col-sm-4">
                         <select class="form-control" id="dobDate" name="dobDate" required>
                           <option disabled selected value="">Date</option>
                         </select>
                       </div>
-                      <div class="col-4">
+                      <div class="col-lg-4 col-md-4 col-sm-4">
                         <select class="form-control" id="dobYear" name="dobYear" required>
                           <option disabled selected value="">Year</option>
                         </select>
@@ -244,7 +244,6 @@
                     <video id="video" class="dnone mb-3 w-100" height="240" autoplay></video>
                     <button type="button" id="click-photo" class="btn btn-primary dnone text-center">Click
                       Photo</button>
-                    <!-- <button type="button" id="clear-photo" class="btn btn-danger w-25">Clear Photo</button> -->
                     <canvas id="canvas" class="dnone" width="320" height="240"></canvas>
                   </div>
                 </div>
@@ -328,7 +327,7 @@
         </select>
       </div>
     </div>
-    <div class="col-5">
+    <div class="col-lg-5 col-sm-5 col-md-5">
       <div class="panel" id="uploadPanel">
         <div class="button_outer">
           <div class="btn_upload" id="uploadButton">
@@ -344,7 +343,7 @@
         <span class="file_remove" id="fil-remove">X</span>
       </div>
     </div>
-    <div class="col-1">
+    <div class="col-lg-1 col-md-1 col-sm-1">
       <i class='bx bx-trash deleteField'></i>
     </div>
     </div>`;
@@ -604,5 +603,51 @@
       btnOuter.removeClass("file_uploading");
       btnOuter.removeClass("file_uploaded");
     });
+
+</script>
+<script>
+  function addAnimation() {
+    $('.btn_upload input[type="file"]')
+      .on('change', function(e) {
+        var ext = $(this)
+          .val()
+          .split('.')
+          .pop()
+          .toLowerCase();
+        var btnOuter = $(this)
+          .closest('.button_outer');
+        var error_msg = btnOuter.next('.error_msg');
+        var uploaded_view = btnOuter.next('#uploaded_view');
+
+        if ($.inArray(ext, ['jpeg', 'jpg', 'png']) == -1) {
+          error_msg.text('Not an Image...');
+        } else {
+          error_msg.text('');
+          btnOuter.addClass('file_uploading');
+          setTimeout(function() {
+            btnOuter.addClass('file_uploaded');
+          }, 3000); // Adjust timing if needed
+
+          var uploadedFile = URL.createObjectURL(e.target.files[0]);
+          setTimeout(function() {
+            uploaded_view.addClass('showdisplayblock');
+            uploaded_view.html('<img src="' + uploadedFile + '" />')
+              .addClass('show');
+          }, 1500); // Adjust timing if needed
+        }
+      });
+
+    $('.file_remove')
+      .on('click', function() {
+        var uploaded_view = $(this)
+          .closest('.uploaded_file_view');
+        var btnOuter = uploaded_view.prev('.button_outer');
+        uploaded_view.removeClass('showdisplayblock show')
+          .html('');
+        btnOuter.removeClass('file_uploading file_uploaded');
+        btnOuter.find('input[type="file"]')
+          .val('');
+      });
+  }
 
 </script>
