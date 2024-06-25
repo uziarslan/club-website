@@ -1,4 +1,35 @@
 <%- include('../adminpartials/head', {title: "Admin || Teams"}) %>
+<style>
+  .crossIconContainer {
+    position: relative;
+  }
+
+  .trashForm {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: red;
+  }
+
+  .trashButtonDelete {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    padding: 4px;
+  }
+
+  .trashButtonDelete i {
+    font-size: 24px;
+  }
+
+  .trashButtonDelete:hover {
+    color: white;
+  }
+
+</style>
 <div class="loading-overlay">
   <div class="loading-spinner"></div>
 </div>
@@ -6,106 +37,119 @@
   <%- include('../flash') %>
   <div class="container-scroller">
     <div class="container-fluid">
-      <div class="row">
-        <div class="content-wrapper full-page-wrapper auth-pages">
-          <div class="card col-lg-7 mx-auto">
-            <div class="card-body px-5 py-5">
-              <h3 class="card-title text-left mb-3">Edit <%= team.name %></h3>
-              <form action="/admin/team/<%= team._id %>?_method=PATCH" method="POST" enctype="multipart/form-data">
+      <form action="/admin/team/<%= team._id %>?_method=PATCH" method="POST" enctype="multipart/form-data">
+        <div class="row">
+          <div class="content-wrapper full-page-wrapper auth-pages">
+            <div class="card col-lg-7 mx-auto">
+              <div class="card-body px-5 py-5">
+                <h3 class="card-title text-left mb-3">Modify <%= team.name %></h3>
                 <div class="form-group">
                   <label class="form-text text-muted">
                     Team name
                   </label>
                   <input value="<%= team.name %>" required type="text" class="form-control p_input" name="name">
                 </div>
-                <div class="form-group">
-                  <div class="panel3 mx-auto">
-                    <div class="button_outer3">
-                      <div class="btn_upload3">
-                        <input type="file" id="upload_file3" accept="audio/mpeg, audio/mp3" name="audio">
-                        Audio <i class="ms-1 fa fa-upload"></i>
-                      </div>
-                      <div class="processing_bar3"></div>
-                      <div class="success_box3"></div>
-                    </div>
-                  </div>
-                  <div class="error_msg3"></div>
-                  <div class="uploaded_file_view3" id="uploaded_view3">
-                    <span class="file_remove3">X</span>
-                  </div>
-                </div>
-                <div class="row mb-4">
-                  <div class="col-6 mx-auto">
-                    <div class="panel4">
-                      <div class="button_outer4">
-                        <div class="btn_upload4">
-                          <input type="file" id="upload_file4" accept=".jpg, .jpeg, .png" id="upload_file" name="image">
-                          Team Logo <i class="ms-1 fa fa-upload"></i>
-                        </div>
-                        <div class="processing_bar4"></div>
-                        <div class="success_box4"></div>
-                      </div>
-                    </div>
-                    <div class="error_msg4"></div>
-                    <div class="uploaded_file_view4" id="uploaded_view4">
-                      <span class="file_remove4">X</span>
-                    </div>
-                    <div class="panel1">
-                      <div class="button_outer1">
-                        <div class="btn_upload1">
-                          <input type="file" id="upload_file1" accept=".jpg, .jpeg, .png" id="upload_background" name="teamImage">
-                          Team Background <i class="ms-1 fa fa-upload"></i>
-                        </div>
-                        <div class="processing_bar1"></div>
-                        <div class="success_box1"></div>
-                      </div>
-                    </div>
-                    <div class="error_msg1"></div>
-                    <div class="uploaded_file_view1" id="uploaded_view1">
-                      <span class="file_remove1">X</span>
-                    </div>
-
-
-                  </div>
-                </div>
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary btn-block enter-btn">Edit</button>
+                  <button type="submit" class="btn btn-primary btn-block enter-btn">Modify</button>
                 </div>
-              </form>
-            </div>
-          </div>
-          <div class="row p-5 mt-4 d-flex justify-content-center">
-            <div class="col-lg-3 col-md-4 col-sm-12">
-              <div class="card borderblack">
-                <% if (team.audio.path){ %>
-                <audio controls>
-                  <source src="<%= team.audio.path %>" type="<%= team.audio.contentType %>">
-                </audio>
-                <% }else{ %>
-                <p class="text-center my-0">No audio uploded</p>
-                <% } %>
-                <h5 class="btn-primary p-2 text-center mt-3">Current Audio</h5>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-12">
-              <div class="card borderblack">
-                <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
-                <h5 class="btn-primary p-2 text-center mt-3">Current Logo</h5>
+            <div class="row p-5 mt-4 d-flex justify-content-center">
+              <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="card borderblack">
+                  <% if (team.audio.path){ %>
+                  <div class="crossIconContainer">
+                    <audio controls>
+                      <source src="<%= team.audio.path %>" type="<%= team.audio.contentType %>">
+                    </audio>
+                    <div class="trashForm">
+                      <a href="/admin/team/delete/<%= team._id %>?option=audio" class="trashButtonDelete" type="submit"><i class='bx bx-trash'></i>
+                      </a>
+                    </div>
+                  </div>
+                  <% }else{ %>
+                  <div class="form-group">
+                    <div class="panel3 mx-auto">
+                      <div class="button_outer3">
+                        <div class="btn_upload3">
+                          <input type="file" id="upload_file3" accept="audio/mpeg, audio/mp3" name="audio">
+                          Audio <i class="ms-1 fa fa-upload"></i>
+                        </div>
+                        <div class="processing_bar3"></div>
+                        <div class="success_box3"></div>
+                      </div>
+                    </div>
+                    <div class="error_msg3"></div>
+                    <div class="uploaded_file_view3" id="uploaded_view3">
+                      <span class="file_remove3">X</span>
+                    </div>
+                  </div>
+                  <% } %>
+                  <h5 class="p-2 text-center mt-3">Current Audio</h5>
+                </div>
               </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-12">
-              <div class="card borderblack">
-                <% if(team.teamImage.path){ %>
-                <img class="card-img-top" src="<%= team.teamImage.path %>" width="100%" height="auto" alt="Card image cap">
-                <% }else{ %>
-                <p class="text-center my-0">No Image uploaded</p>
-                <% } %>
-                <h5 class="btn-primary p-2 text-center mt-3">Current Background</h5>
+              <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="card borderblack">
+                  <% if(team.image.path){ %>
+                  <div class="crossIconContainer">
+                    <img class="card-img-top" src="<%= team.image.path %>" width="100%" height="auto" alt="Card image cap">
+                    <div class="trashForm">
+                      <a href="/admin/team/delete/<%= team._id %>?option=logo" class="trashButtonDelete" type="submit"><i class='bx bx-trash'></i>
+                      </a>
+                    </div>
+                  </div>
+                  <% }else{ %>
+                  <div class="panel4">
+                    <div class="button_outer4">
+                      <div class="btn_upload4">
+                        <input type="file" id="upload_file4" accept=".jpg, .jpeg, .png" id="upload_file" name="image">
+                        Team Logo <i class="ms-1 fa fa-upload"></i>
+                      </div>
+                      <div class="processing_bar4"></div>
+                      <div class="success_box4"></div>
+                    </div>
+                  </div>
+                  <div class="error_msg4"></div>
+                  <div class="uploaded_file_view4" id="uploaded_view4">
+                    <span class="file_remove4">X</span>
+                  </div>
+                  <% } %>
+                  <h5 class="p-2 text-center mt-3">Current Logo</h5>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="card borderblack">
+                  <% if(team.teamImage.path){ %>
+                  <div class="crossIconContainer">
+                    <img class="card-img-top" src="<%= team.teamImage.path %>" width="100%" height="auto" alt="Card image cap">
+                    <div class="trashForm">
+                      <a href="/admin/team/delete/<%= team._id %>?option=background" class="trashButtonDelete" type="submit"><i class='bx bx-trash'></i>
+                      </a>
+                    </div>
+                  </div>
+                  <% }else{ %>
+                  <div class="panel1">
+                    <div class="button_outer1">
+                      <div class="btn_upload1">
+                        <input type="file" id="upload_file1" accept=".jpg, .jpeg, .png" id="upload_background" name="teamImage">
+                        Team Background <i class="ms-1 fa fa-upload"></i>
+                      </div>
+                      <div class="processing_bar1"></div>
+                      <div class="success_box1"></div>
+                    </div>
+                  </div>
+                  <div class="error_msg1"></div>
+                  <div class="uploaded_file_view1" id="uploaded_view1">
+                    <span class="file_remove1">X</span>
+                  </div>
+                  <% } %>
+                  <h5 class="p-2 text-center mt-3">Current Background</h5>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>

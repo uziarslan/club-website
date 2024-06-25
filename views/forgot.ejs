@@ -1,0 +1,54 @@
+<%- include('./adminpartials/loginhead', {title: "Forgot Password"}) %>
+<style>
+  .iconWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .iconWrapper i {
+    font-size: 20px;
+    margin-left: -30px;
+    cursor: pointer;
+  }
+
+  .content-wrapper {
+    background-color: #1E1E1E;
+  }
+
+
+  .card {
+    background-color: #717070;
+  }
+
+  .text-muted {
+    color: white !important;
+  }
+
+</style>
+<div class="container-scroller">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+        <div class="card col-lg-4 mx-auto">
+          <div class="card-body px-5 py-5">
+            <%- include('./flash') %>
+            <h3 class="card-title text-left mb-3">Forgot Password</h3>
+            <form action="/forgot?role=<%= role %>" method="POST">
+              <div class="form-group">
+                <label id="email" class="form-text text-muted">
+                  Email
+                </label>
+                <input type="email" class="form-control" name="username" id="email" required>
+              </div>
+              <div class="text-center">
+                <button type="submit" name="submit" class="btn btn-primary btn-block enter-btn">Send Link</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include("./adminpartials/loginfooter") %>

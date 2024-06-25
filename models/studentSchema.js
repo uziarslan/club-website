@@ -46,7 +46,9 @@ const studentSchema = new mongoose.Schema({
         type: String,
         enum: ["single", "bulk"],
         default: "single"
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 });
 
 studentSchema.plugin(passportLocalMongoose)

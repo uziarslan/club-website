@@ -195,28 +195,20 @@ router.patch('/admin/team/:teamId', isAdmin, upload.fields([
 ]), wrapAsync(async (req, res) => {
     const { teamId } = req.params;
     const { name } = req.body;
-
     let updateData = { name: name };
-
     if (req.files['image']) {
         const { filename, path } = req.files['image'][0];
         updateData['image'] = { filename, path };
     }
-
     if (req.files['teamImage']) {
         const { filename, path } = req.files['teamImage'][0];
         updateData['teamImage'] = { filename, path };
     }
-
     if (req.files['audio']) {
         const { filename, path, mimetype } = req.files['audio'][0];
         updateData['audio'] = { filename, path, contentType: mimetype };
     }
-
-
     const team = await Team.findById(teamId);
-
-    // Ensure filenames are present before attempting to delete
     if (team.image && updateData.image && team.image.filename) {
         await uploader.destroy(team.image.filename.split('.')[0]);
     }
@@ -226,12 +218,9 @@ router.patch('/admin/team/:teamId', isAdmin, upload.fields([
     if (team.audio && updateData.audio && team.audio.filename) {
         await uploader.destroy(team.audio.filename.split('.')[0]);
     }
-
-
     await Team.findByIdAndUpdate(teamId, updateData, { new: true });
-
     req.flash('success', 'Team changes have been applied!');
-    res.redirect('/admin/teams');
+    res.redirect(`/admin/team/${teamId}/edit`);
 }));
 
 router.delete('/admin/team/:teamId/delete', wrapAsync(async (req, res) => {
@@ -409,6 +398,47 @@ router.post('/admin/coach/action', async (req, res) => {
     });
     res.sendStatus(200);
 });
+
+// Router to handle the delete of Team's audio, logo and background
+router.get('/admin/team/delete/:teamId', wrapAsync(async (req, res, next) => {
+    const { option } = req.query;
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId);
+    if (!team) {
+        req.flash('error', "Team not found")
+        return res.redirect(`/admin/team/${teamId}/edit`);
+    }
+    let fieldToUpdate = {};
+    let resourceType;
+    let filename;
+    switch (option) {
+        case 'logo':
+            filename = team.image.filename;
+            fieldToUpdate = { 'image': { filename: '', path: '' } };
+            resourceType = 'image';
+            break;
+        case 'background':
+            filename = team.teamImage.filename;
+            fieldToUpdate = { 'teamImage': { filename: '', path: '' } };
+            resourceType = 'image';
+            break;
+        case 'audio':
+            filename = team.audio.filename;
+            fieldToUpdate = { 'audio': { filename: '', path: '', contentType: '' } };
+            resourceType = 'raw';
+            break;
+        default:
+            req.flash('error', "Invalid Option");
+            return res.redirect(`/admin/team/${teamId}/edit`);
+    }
+    if (filename) {
+        await uploader.destroy(filename, { resource_type: resourceType });
+    }
+    await Team.findByIdAndUpdate(teamId, { $set: fieldToUpdate });
+    req.flash('success', `${option.toUpperCase()} deleted successfully`);
+    return res.redirect(`/admin/team/${teamId}/edit`);
+}));
+
 
 
 module.exports = router;

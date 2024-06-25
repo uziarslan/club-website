@@ -27,6 +27,16 @@ const homepageRoutes = require('./routes/homepageRoutes');
 const stripeRoute = require('./routes/stripeRoute');
 const ExpressError = require('./utils/ExpressError');
 const wrapAsync = require('./utils/wrapAsync');
+const crypto = require('crypto');
+const { MailtrapClient } = require("mailtrap");
+
+const TOKEN = process.env.MAIL_TRAP_TOKEN;
+const ENDPOINT = "https://send.api.mailtrap.io/";
+const client = new MailtrapClient({ endpoint: ENDPOINT, token: TOKEN });
+const sender = {
+    email: "info@bigtristate.com",
+    name: "Big Tri State",
+}
 
 
 const PORT = process.env.PORT || 3000;
@@ -107,6 +117,151 @@ app.use(coachRoutes)
 app.use(adminRoutes)
 app.use(homepageRoutes)
 app.use(stripeRoute)
+
+
+// Reset Password logic
+
+app.get('/forgot/:role', wrapAsync(async (req, res, next) => {
+    const { role } = req.params;
+    res.render('forgot', { role });
+}));
+
+app.post('/forgot', wrapAsync(async (req, res) => {
+    const { username } = req.body;
+    const { role } = req.query;
+    let user;
+    switch (role) {
+        case 'admin':
+            user = await Admin.findOne({ username });
+            break;
+        case 'coach':
+            user = await Coach.findOne({ username });
+            break;
+        case 'student':
+            user = await Student.findOne({ username });
+            break
+        default:
+            req.flash('error', 'Invalid Option');
+            return res.redirect(`/forgot/${role}`);
+    }
+
+    if (!user) {
+        req.flash('error', 'No account with that username exists.');
+        return res.redirect(`/forgot/${role}`);
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    client.send({
+        from: sender,
+        to: [{ email: user.username }],
+        template_uuid: "41149d2b-9036-46c7-bcf4-f72f4d7f0eb0",
+        template_variables: {
+            "user_email": user.username,
+            "pass_reset_link": `${process.env.DOMAIN}/reset/${token}?role=${role}`
+        }
+    })
+
+    // end
+    req.flash('success', `An email has been sent to ${user.username} with further instructions.`);
+    res.redirect(`/forgot/${role}`);
+}));
+
+
+app.get('/reset/:token', wrapAsync(async (req, res) => {
+    const { role } = req.query;
+
+    let user;
+    switch (role) {
+        case 'admin':
+            user = await Admin.findOne({
+                resetPasswordToken: req.params.token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            break;
+        case 'coach':
+            user = await Coach.findOne({
+                resetPasswordToken: req.params.token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            break;
+        case 'student':
+            user = await Student.findOne({
+                resetPasswordToken: req.params.token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            break
+        default:
+            req.flash('error', 'Invalid Option');
+            return res.redirect(`/forgot/${role}`)
+    }
+
+    if (!user) {
+        req.flash('error', 'Password reset token is invalid or has expired.');
+        return res.redirect(`/forgot/${role}`);
+    }
+
+    res.render('reset', { token: req.params.token, role });
+}));
+
+
+app.post('/reset/:token', wrapAsync(async (req, res) => {
+    const { role } = req.query;
+
+    let user;
+    switch (role) {
+        case 'admin':
+            user = await Admin.findOne({
+                resetPasswordToken: req.params.token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            break;
+        case 'coach':
+            user = await Coach.findOne({
+                resetPasswordToken: req.params.token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            break;
+        case 'student':
+            user = await Student.findOne({
+                resetPasswordToken: req.params.token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            break
+        default:
+            req.flash('error', 'Invalid Option');
+            return res.redirect(`/forgot/${role}`)
+    }
+
+    if (!user) {
+        req.flash('error', 'Password reset token is invalid or has expired.');
+        return res.redirect(`/forgot/${role}`);
+    }
+
+    if (req.body.password === req.body.confirmPassword) {
+        user.setPassword(req.body.password, async (err) => {
+            if (err) {
+                req.flash('error', 'Error resetting password.');
+                return res.redirect(`/forgot/${role}`);
+            }
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpires = undefined;
+
+            await user.save();
+            req.flash('success', 'Success! Your password has been changed.');
+            res.redirect(`/${role}/login`);
+        });
+    } else {
+        req.flash('error', 'Passwords do not match.');
+        return res.redirect('back');
+    }
+}));
+
+
+
 // Logout route for every user
 app.get('/logout', wrapAsync(async (req, res) => {
     req.logout(() => {
