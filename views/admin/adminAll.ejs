@@ -1,0 +1,112 @@
+<%- include('../adminpartials/head', {title: "Admin || All"}) %>
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="clearfix">
+            <i class="fa fa-users float-right icon-grey-big"></i>
+          </div>
+          <h4 class="card-title font-weight-normal text-success">
+            <%= admins.length %>
+          </h4>
+          <h6 class="card-subtitle mb-4">Super Admins</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <form id="approve-coaches-form">
+            <div class="mb-2">
+              <h5 class="card-title text-success">Super Admins</h5>
+            </div>
+            <div class="table-responsive">
+              <table class="table center-aligned-table" id="transactionTable">
+                <thead>
+                  <tr class="text-primary">
+                    <th>Fullname</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (let admin of admins) { %>
+                  <tr>
+                    <td><%= admin.fullname %></td>
+                    <td><%= admin.username %></td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+  const approveButton = document.querySelectorAll('.approve-button');
+  approveButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('approved');
+    });
+  });
+
+  const declineButton = document.querySelectorAll('.decline-button');
+  declineButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('disqualified');
+    });
+  });
+
+  const pendingButton = document.querySelectorAll('.pending-button');
+  pendingButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('pending');
+    });
+  });
+
+  function handleAction(actionType) {
+    const checkboxes = document.querySelectorAll('.coach-checkbox:checked');
+
+    const selectedIds = Array.from(checkboxes)
+      .map(checkbox => checkbox.getAttribute('data-coach-id'));
+
+    const selectedCoachIdsInput = document.getElementById('selected-coach-ids');
+    const actionTypeInput = document.getElementById('action-type');
+
+    if (selectedCoachIdsInput && actionTypeInput) {
+      selectedCoachIdsInput.value = selectedIds.join(',');
+      actionTypeInput.value = actionType;
+
+      fetch('/admin/coach/action', {
+          method: 'POST'
+          , headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          , }
+          , body: 'selectedCoachIds=' + encodeURIComponent(selectedIds.join(',')) + '&actionType=' + encodeURIComponent(actionType)
+        , })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            console.error('Error processing coaches');
+          }
+        })
+        .catch(error => {
+          console.error('Network error:', error);
+        });
+    } else {
+      console.error('Hidden input fields not found');
+    }
+  }
+
+</script>
+<%- include('../adminpartials/footer') %>

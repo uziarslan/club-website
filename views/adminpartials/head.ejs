@@ -48,7 +48,7 @@
       <div class="row row-offcanvas row-offcanvas-right">
         <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
           <div class="user-info">
-            <img src="/images/face.jpg" alt="">
+            <img src="/images/logo.png" alt="">
             <p class="name"><%= admin.fullname %></p>
             <p class="text-center"><b>SUPER <%= admin.role.toUpperCase() %></b></p>
           </div>
@@ -75,6 +75,12 @@
               <a class="nav-link" href="/admin/teams">
                 <img src="/images/icons/006-form.png" alt="">
                 <span class="menu-title">Teams</span>
+              </a>
+            </li>
+            <li class="nav-item <%= title == 'Admin || All' ? 'active' : '' %>">
+              <a class="nav-link" href="/admin/all">
+                <img src="/images/icons/004-coding.png" alt="">
+                <span class="menu-title">Super Admins</span>
               </a>
             </li>
             <li class="nav-item ">

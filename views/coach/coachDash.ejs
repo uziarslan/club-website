@@ -90,7 +90,7 @@
       <div class="card col-lg-7 mx-auto">
         <div class="card-body px-5 py-5">
           <%- include('../flash') %>
-          <h3 class="card-title text-left mb-3">Register Players</h3>
+          <h3 class="card-title text-left mb-3">Register Player(s)</h3>
           <form id="studentForm" action="/team/<%= coach.team._id %>/admin/register" method="POST" enctype="multipart/form-data">
             <div class="row">
               <div class="col-6">
@@ -303,7 +303,7 @@
             <button id="addPlayer">Add another Player<span id="playerCount" class="d-none">1</span></button>
           </div>
           <div class="text-center">
-            <button id="registerButton" type="button" class="btn btn-primary btn-block enter-btn">Register All Players</button>
+            <button id="registerButton" type="button" class="btn btn-primary btn-block enter-btn">Register Player</button>
           </div>
         </div>
       </div>
@@ -563,6 +563,10 @@
 `;
       document.getElementById('playerCount')
         .textContent = parseInt(playerCount) + 1;
+
+      document.getElementById('registerButton')
+        .innerHTML = 'Register All Players'
+
 
     } else if (type === 'document') {
       formContent = `

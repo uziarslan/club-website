@@ -148,6 +148,12 @@ router.get('/admin/teams', isAdmin, wrapAsync(async (req, res) => {
     res.render('./admin/adminTeams', { admin: user, teams });
 }));
 
+// Managing Admins
+router.get('/admin/all', isAdmin, wrapAsync(async (req, res, next) => {
+    const admins = await Admin.find({});
+    res.render('./admin/adminAll', { admins, admin: req.user });
+}));
+
 router.post('/admin/teams', isAdmin, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'audio', maxCount: 1 }, { name: 'teamImage', maxCount: 1 }]), wrapAsync(async (req, res) => {
     const foundTeam = await Team.find({ name: req.body.name });
     if (foundTeam.length) {
