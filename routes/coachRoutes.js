@@ -350,4 +350,48 @@ router.delete('/team/admin/:studentId', wrapAsync(async (req, res) => {
     res.redirect('/team/admin/invoice');
 }));
 
+
+// Managing Zelle
+router.post('/zelle/paid/bulk', isCoach, wrapAsync(async (req, res, next) => {
+    const { _id } = req.user;
+    const { paymentNumber } = req.body;
+    const coach = await Coach.findById(_id).populate('students');
+
+    if (!paymentNumber) {
+        req.flash('error', 'Please enter the invoice number as evidence if you paid through Zelle.');
+        return res.redirect('/team/admin/invoice');
+    }
+
+    const bulk_students = coach.students.filter(student => student.paymentStatus === "unpaid" && student.registrationMode === "bulk");
+
+    bulk_students.forEach(async (student) => {
+        student.paymentMethod = 'zelle';
+        student.paymentStatus = 'review';
+        student.paymentNumber = paymentNumber;
+        await student.save();
+    });
+
+    req.flash('success', 'You application is under review.');
+    res.redirect('/team/admin/invoice');
+
+}));
+
+
+router.post('/cash/paid/bulk', isCoach, wrapAsync(async (req, res, next) => {
+    const { _id } = req.user;
+    const coach = await Coach.findById(_id).populate('students');
+
+    const bulk_students = coach.students.filter(student => student.paymentStatus === "unpaid" && student.registrationMode === "bulk");
+
+    bulk_students.forEach(async (student) => {
+        student.paymentMethod = 'cash';
+        student.paymentStatus = 'cash';
+        await student.save();
+    });
+
+    req.flash('success', 'Please submit the cash payment to any of the administrator.');
+    res.redirect('/team/admin/invoice');
+
+}));
+
 module.exports = router;

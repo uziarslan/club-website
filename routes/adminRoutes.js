@@ -446,5 +446,18 @@ router.get('/admin/team/delete/:teamId', wrapAsync(async (req, res, next) => {
 }));
 
 
+// Managing Approve Payment
+router.get('/payment/paid/:studentId', isAdmin, wrapAsync(async (req, res, next) => {
+    const { studentId } = req.params;
+    await Student.findByIdAndUpdate(studentId, {
+        paymentStatus: 'paid'
+    });
+    res.redirect('/admin/students');
+}));
+
+
+
+
+
 
 module.exports = router;

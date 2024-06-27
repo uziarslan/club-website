@@ -114,8 +114,25 @@
                       <% } %>
                     </td>
                     <td>
-                      <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
+                      <% if (student.paymentStatus === "unpaid"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% }else if(student.paymentStatus === "review"){ %>
+                      <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
+                      </button>
+                      <% }else if (student.paymentStatus === "paid"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% }else if(student.paymentStatus === "cash"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% } %>
                     </td>
+                    <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
+                    <td>
+                      <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
+                    </td>
+                    <% } %>
                   </tr>
                   <% } %>
                 </tbody>
@@ -183,8 +200,24 @@
                     <% } %>
                   </td>
                   <td>
-                    <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
+                    <% if (student.paymentStatus === "unpaid"){ %>
+                    <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
+                    </div>
+                    <% }else if(student.paymentStatus === "review"){ %>
+                    <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
+                      <% }else if (student.paymentStatus === "paid"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% }else if(student.paymentStatus === "cash"){%>
+                      <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% } %>
                   </td>
+                  <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
+                  <td>
+                    <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
+                  </td>
+                  <% } %>
                 </tr>
                 <% } %>
               </tbody>
@@ -249,8 +282,24 @@
                     <% } %>
                   </td>
                   <td>
-                    <div style="text-transform: capitalize;" class="<%= student.paymentStatus === "unpaid"? 'badge badge-warning badge-pill px-25' : 'badge badge-success badge-pill px-25' %>"><%= student.paymentStatus %></div>
+                    <% if (student.paymentStatus === "unpaid"){ %>
+                    <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
+                    </div>
+                    <% }else if(student.paymentStatus === "review"){ %>
+                    <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
+                      <% }else if (student.paymentStatus === "paid"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% }else if(student.paymentStatus === "cash"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% } %>
                   </td>
+                  <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
+                  <td>
+                    <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
+                  </td>
+                  <% } %>
                 </tr>
                 <% } %>
               </tbody>
@@ -262,6 +311,42 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>Invoice ID</h1>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center;" class="modal-body">
+        <!-- Modal Body Content -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+  const myModal = document.getElementById('exampleModal')
+  const myInput = document.getElementById('myInput')
+
+  myModal.addEventListener('shown.bs.modal', () => {
+    myInput.focus()
+  })
+
+</script>
+<script>
+  function createModalBody(invoiceID) {
+    const modalBody = document.querySelector('.modal-body');
+
+    modalBody.innerHTML = `
+      <h6 class="text-center">${invoiceID}</h6>
+      `
+  }
+
+</script>
 <script>
   const approveButton = document.querySelectorAll('.approve-button');
   approveButton.forEach(button => {

@@ -294,7 +294,9 @@
             <hr />
             <div>
               <form action="/bulk-payment" method="POST">
-                <button type="submit" class="btn btn-danger btn-bold px-4 float-right mt-3 mt-lg-0">Pay Now</button>
+                <button type="submit" class="btn btn-primary">Stripe</button>
+                <button onclick="createModalBody('zelle')" type="button" class="btn btn-success text-light" data-bs-toggle="modal" data-bs-target="#exampleModal">Zelle</button>
+                <button onclick="createModalBody('cash')" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Cash</button>
               </form>
             </div>
           </div>
@@ -302,6 +304,88 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Start -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- Modal Head -->
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center;" class="modal-body">
+          <!-- Modal Body Content -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form id="modalForm" action="" method="POST">
+            <input type="hidden" id="silentInput" name="paymentNumber" />
+            <button id="modalFormSubmit" type="submit" class="btn btn-primary">Paid</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    const myModal = document.getElementById('exampleModal')
+    const myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+    })
+
+  </script>
+
+  <script>
+    function createModalBody(paymentType) {
+      const modalBody = document.querySelector('.modal-body');
+      const modalForm = document.querySelector('#modalForm');
+      const modalFormSubmit = document.querySelector('#modalFormSubmit');
+      const modalHead = document.querySelector('.modal-header');
+      const silentInput = document.querySelector('#silentInput');
+
+
+      if (paymentType === "zelle") {
+        modalHead.innerHTML = ` <h1 class="modal-title fs-5" id="exampleModalLabel">Pay by Zelle</h1>`
+
+        modalBody.innerHTML = `<h3 class="text-muted text-center">Scan in your banking app to pay</h3>
+      <h4 class="text-center">BIG TRI-STATE FOOTBALL, INC.</h4>
+      <h5 class="text-center mb-5">b***e@gmail.com</h5>
+      <img class="mb-5" style="width: 250px; height: auto;" src="/images/Zelle.png">
+      <input id="invoiceId" class="form-control" type="text" placeholder="Enter invoice number"/>
+      `
+        modalForm.action = '/zelle/paid/bulk';
+        modalFormSubmit.innerText = 'Paid';
+
+        modalFormSubmit.disabled = true;
+
+
+        const invoiceId = document.querySelector('#invoiceId');
+        invoiceId.addEventListener('input', function() {
+          if (invoiceId.value.trim() !== '') {
+            modalFormSubmit.removeAttribute('disabled');
+            silentInput.value = invoiceId.value;
+          } else {
+            modalFormSubmit.setAttribute('disabled', 'true');
+          }
+        })
+
+      } else {
+        modalFormSubmit.disabled = false
+        modalHead.innerHTML = ` <h1 class="modal-title fs-5" id="exampleModalLabel">Pay by Cash</h1>`
+
+        modalBody.innerHTML = `<h3 class="text-muted text-center">Confirm Cash Payment</h3>
+      <h6 class="text-center mb-5">Please confirm that you wish to proceed with a cash payment for this invoice. Once confirmed, the payment cannot be reversed. Are you sure you want to continue with this payment method?</h6>
+      `
+        modalForm.action = '/cash/paid/bulk';
+        modalFormSubmit.innerText = 'Confirm'
+      }
+
+    }
+
+  </script>
+
 </body>
 
 </html>

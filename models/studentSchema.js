@@ -39,7 +39,7 @@ const studentSchema = new mongoose.Schema({
     ],
     paymentStatus: {
         type: String,
-        enum: ["paid", "unpaid"],
+        enum: ["paid", "unpaid", "review", "cash"],
         default: "unpaid"
     },
     registrationMode: {
@@ -48,7 +48,17 @@ const studentSchema = new mongoose.Schema({
         default: "single"
     },
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    paymentMethod: {
+        type: String,
+        enum: ['zelle', 'stripe', 'cash']
+    },
+    payableAmount: {
+        type: Number
+    },
+    paymentNumber: {
+        type: String
+    }
 });
 
 studentSchema.plugin(passportLocalMongoose)

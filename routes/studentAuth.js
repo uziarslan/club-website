@@ -50,7 +50,6 @@ router.post('/student/register/:teamId', upload.fields(
 
     if (foundStudent.length) {
         req.flash('error', "It looks like a student with this email is already registered.");
-        await uploader.destroy(req.file.filename)
         return res.redirect(`/student/register/${teamId}`);
     }
 
@@ -85,7 +84,7 @@ router.post('/student/register/:teamId', upload.fields(
         const docs = req.files["document"];
         docs.forEach((document, i) => {
             const { filename, path } = document;
-            student.documents.push({ filename, path, documentName: documents[i] });
+            student.documents.push({ filename, path, documentName: Array.isArray(documents) ? documents[i] : documents });
         });
     }
 
@@ -396,8 +395,33 @@ router.put('/:studentId/image', upload.single('file'), async (req, res) => {
     }
 });
 
+// Managing Zelle Payment
+router.post('/zelle/paid', wrapAsync(async (req, res, next) => {
+    const { _id } = req.user;
+    const { paymentNumber } = req.body;
 
+    if (!paymentNumber) {
+        req.flash('error', 'Please enter the invoice number as evidence if you paid through Zelle.');
+        return res.redirect(`/invoice/${_id}`);
+    }
+    await Student.findByIdAndUpdate(_id, {
+        paymentMethod: 'zelle',
+        paymentStatus: "review",
+        paymentNumber
+    });
+    req.flash('success', 'Your application is under review.');
+    return res.redirect(`/invoice/${_id}`);
+}));
 
+router.post('/cash/paid', wrapAsync(async (req, res, next) => {
+    const { _id } = req.user;
+    await Student.findByIdAndUpdate(_id, {
+        paymentMethod: 'cash',
+        paymentStatus: 'cash'
+    });
+    req.flash('success', 'Please submit the cash payment to any of the administrator.');
+    res.redirect(`/invoice/${_id}`);
+}));
 
 
 module.exports = router;
