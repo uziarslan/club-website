@@ -149,7 +149,7 @@ router.get('/admin/teams', isAdmin, wrapAsync(async (req, res) => {
 }));
 
 // Managing Admins
-router.get('/admin/all', isAdmin, wrapAsync(async (req, res, next) => {
+router.get('/admin/all', isAdmin, wrapAsync(async (req, res) => {
     const admins = await Admin.find({});
     res.render('./admin/adminAll', { admins, admin: req.user });
 }));
