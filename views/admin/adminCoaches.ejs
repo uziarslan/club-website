@@ -85,7 +85,11 @@
                   <tr>
                     <td><input type="checkbox" class="coach-checkbox" data-coach-id="<%= coach._id %>"></td>
                     <td><%= coach.fullname %></td>
+                    <% if(coach.team && coach.team.name){ %>
                     <td><%= coach.team.name %></td>
+                    <% }else{ %>
+                    <td></td>
+                    <% } %>
                     <td><%= coach.username %></td>
                     <td><%= coach.phone %></td>
                   </tr>
@@ -126,7 +130,11 @@
                 <tr class="">
                   <td><input type="checkbox" class="coach-checkbox" data-coach-id="<%= coach._id %>"></td>
                   <td><%= coach.fullname %></td>
+                  <% if(coach.team && coach.team.name){ %>
                   <td><%= coach.team.name %></td>
+                  <% }else{ %>
+                  <td></td>
+                  <% } %>
                   <td><%= coach.username %></td>
                   <td><%= coach.phone %></td>
                 </tr>
@@ -164,7 +172,11 @@
                 <tr class="">
                   <td><input type="checkbox" class="coach-checkbox" data-coach-id="<%= coach._id %>"></td>
                   <td><%= coach.fullname %></td>
+                  <% if(coach.team && coach.team.name){ %>
                   <td><%= coach.team.name %></td>
+                  <% }else{ %>
+                  <td></td>
+                  <% } %>
                   <td><%= coach.username %></td>
                   <td><%= coach.phone %></td>
                 </tr>
