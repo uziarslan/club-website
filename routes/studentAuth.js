@@ -216,7 +216,7 @@ router.get(
       "School ID",
       "SSN",
       "Birth Certificate",
-      "Medical Wavier",
+      "Parent ID",
     ];
     res.render("./student/profile", { student, docName });
   })

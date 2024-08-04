@@ -148,7 +148,7 @@ router.get(
       "School ID",
       "SSN",
       "Birth Certificate",
-      "Medical Wavier",
+      "Parent ID",
     ];
 
     const student = await Student.findById(studentId);
