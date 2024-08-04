@@ -96,7 +96,7 @@
                     <% }else{ %>
                     <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
                     <% } %>
-                    <td><%= student.fullname %></td>
+                    <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
                     <td><%= student.team.name %></td>
                     <% if(student.coach){ %>
                     <td><%= student.coach.fullname %></td>
@@ -182,7 +182,7 @@
                   <% }else{ %>
                   <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
                   <% } %>
-                  <td><%= student.fullname %></td>
+                  <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
                   <td><%= student.team.name %></td>
                   <% if(student.coach){ %>
                   <td><%= student.coach.fullname %></td>
@@ -235,6 +235,7 @@
             <h5 class="card-title text-danger">Unapproved Players</h5>
             <div>
               <button type="button" class="btn btn-outline-success approve-button">Approve</button>
+              <button type="button" class="btn btn-danger delete-button">Delete</button>
             </div>
           </div>
           <div class="table-responsive">
@@ -264,7 +265,7 @@
                   <% }else{ %>
                   <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
                   <% } %>
-                  <td><%= student.fullname %></td>
+                  <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
                   <td><%= student.team.name %></td>
                   <% if(student.coach){ %>
                   <td><%= student.coach.fullname %></td>
@@ -348,6 +349,13 @@
 
 </script>
 <script>
+  const deleteButton = document.querySelectorAll('.delete-button');
+  deleteButton.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      handleAction('delete');
+    });
+  });
   const approveButton = document.querySelectorAll('.approve-button');
   approveButton.forEach(button => {
     button.addEventListener('click', function(event) {

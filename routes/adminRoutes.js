@@ -137,6 +137,36 @@ router.get(
   })
 );
 
+// Admin rights to edit the student profile
+router.get(
+  "/admin/student/edit/:studentId",
+  wrapAsync(async (req, res) => {
+    const { studentId } = req.params;
+    const docName = [
+      "State ID",
+      "Passport",
+      "School ID",
+      "SSN",
+      "Birth Certificate",
+      "Medical Wavier",
+    ];
+
+    const student = await Student.findById(studentId);
+
+    res.render("./admin/studentEdit", { student, docName });
+  })
+);
+
+router.put(
+  "/admin/student/profile/:id",
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    await Student.findByIdAndUpdate(id, { ...req.body });
+    req.flash("success", "Information has been updated successfully.");
+    res.redirect(`/admin/student/edit/${id}`);
+  })
+);
+
 // Managing coaches
 router.get(
   "/admin/coaches",
@@ -468,56 +498,88 @@ router.post(
 
 // Router to handle the multiple approve or disapprove request
 router.post("/admin/student/action", async (req, res) => {
-  const selectdeStudentIds = req.body.selectedStudentIds.split(",");
+  const selectedStudentIds = req.body.selectedStudentIds.split(",");
   const actionType = req.body.actionType;
 
-  selectdeStudentIds.forEach(async (id) => {
-    const update = { status: actionType };
-    const student = await Student.findByIdAndUpdate(id, update)
-      .populate("team")
-      .populate("coach");
-    if (actionType === "approved") {
-      client.send({
-        from: sender,
-        to: [
-          {
-            email: student.username,
+  if (actionType !== "delete") {
+    selectedStudentIds.forEach(async (id) => {
+      const update = { status: actionType };
+      const student = await Student.findByIdAndUpdate(id, update)
+        .populate("team")
+        .populate("coach");
+      if (actionType === "approved") {
+        client.send({
+          from: sender,
+          to: [
+            {
+              email: student.username,
+            },
+          ],
+          template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
+          template_variables: {
+            student: student,
+            team: student.team,
+            coach: student.coach,
           },
-        ],
-        template_uuid: "b990abcd-d599-417c-9ff6-01f66c0e9bd2",
-        template_variables: {
-          student: student,
-          team: student.team,
-          coach: student.coach,
-        },
-      });
-    }
-  });
+        });
+      }
+    });
+    return res.sendStatus(200);
+  }
+
+  for (const studentId of selectedStudentIds) {
+    await Student.findByIdAndDelete(studentId);
+
+    await Team.updateMany(
+      { students: studentId },
+      { $pull: { students: studentId } }
+    );
+
+    await Coach.updateMany(
+      { students: studentId },
+      { $pull: { students: studentId } }
+    );
+  }
+
   res.sendStatus(200);
 });
 router.post("/admin/coach/action", async (req, res) => {
   const selectedCoachIds = req.body.selectedCoachIds.split(",");
   const actionType = req.body.actionType;
 
-  selectedCoachIds.forEach(async (id) => {
-    const update = { status: actionType };
-    const coach = await Coach.findByIdAndUpdate(id, update).populate("team");
-    if (actionType === "approved") {
-      client.send({
-        from: sender,
-        to: [
-          {
-            email: coach.username,
+  if (actionType !== "delete") {
+    selectedCoachIds.forEach(async (id) => {
+      const update = { status: actionType };
+      const coach = await Coach.findByIdAndUpdate(id, update).populate("team");
+      if (actionType === "approved") {
+        client.send({
+          from: sender,
+          to: [
+            {
+              email: coach.username,
+            },
+          ],
+          template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
+          template_variables: {
+            coach: coach,
+            team: coach.team,
           },
-        ],
-        template_uuid: "5f30205a-700d-49de-a51c-84adf71e3a68",
-        template_variables: {
-          coach: coach,
-          team: coach.team,
-        },
-      });
-    }
-  });
+        });
+      }
+    });
+    return res.sendStatus(200);
+  }
+
+  for (const coachId of selectedCoachIds) {
+    await Coach.findByIdAndDelete(coachId);
+
+    await Team.updateMany(
+      { coaches: coachId },
+      { $pull: { coaches: coachId } }
+    );
+
+    await Student.updateMany({ coach: coachId }, { $unset: { coach: "" } });
+  }
   res.sendStatus(200);
 });
 

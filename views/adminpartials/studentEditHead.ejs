@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <title><%= student.fullname %></title>
+  <link rel="stylesheet" href="/js/Javascript/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/js/Javascript/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+  <link rel="stylesheet" href="/js/Javascript/flag-icon-css/css/flag-icon.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="shortcut icon" href="/images/favicon.png" />
+
+</head>
+
+<body>
+  <!-- Add this at the end of your body tag -->
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <style>
+    .dataTables_filter label {
+      float: right;
+    }
+
+    .dataTables_filter label input {
+      padding: 0px 10px;
+      min-height: 25px;
+      margin-left: 5px;
+    }
+
+  </style>
+
+  <div class=" container-scroller">
+    <!-- partial:../partials/_navbar.php -->
+    <nav class="navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="navbar-menu-wrapper d-flex align-items-center">
+        <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <button class="navbar-toggler navbar-dark navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
+          <div class="user-info">
+            <% if (student.image){ %>
+            <img src="<%= student.image.path %>" alt="Profile Image">
+            <% }else{ %>
+            <img src="/images/face.jpg" alt="Profile Image">
+            <% } %>
+            <label style="text-align: center; text-decoration: underline; cursor: pointer; color: blue;" for="profileImage">Change</label>
+            <input type="file" class="d-none" id="profileImage" />
+            <p class="name"><%= student.fullname %></p>
+            <p class="designation"><%= student.role.toUpperCase() %></p>
+          </div>
+        </nav>
