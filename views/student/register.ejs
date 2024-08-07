@@ -478,12 +478,23 @@
     // Calculate the age based on the selected date of birth
     const dob = new Date(`${year}-${month}-${date}`);
     const today = new Date();
-    const age = today.getFullYear() - dob.getFullYear();
+    let age = today.getFullYear() - dob.getFullYear();
+
+    const monthDifference = today.getMonth() - dob.getMonth();
+    const dayDifference = today.getDate() - dob.getDate();
+
+    // Adjust age if today is before the birthdate in the current year
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+      age--;
+    }
+
 
     // Clear existing options
     dopSelect.innerHTML = '';
 
     const maxAge = Math.min(age + 2, 13);
+    console.log(age)
+    console.log(maxAge)
     // Add new options based on age
     for (let i = Math.max(7, age); i <= maxAge; i++) {
       const option = document.createElement('option');
