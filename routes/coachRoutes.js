@@ -127,7 +127,7 @@ router.get(
   isCoach,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const dop = ["7U", "8U", "9U", "10U", "11U", "12U", "13U"];
+    const dop = ["6U", "7U", "8U", "9U", "10U", "11U", "12U", "13U", "14U"];
     const coach = await Coach.findById(id)
       .populate("students")
       .populate("team");
@@ -144,7 +144,7 @@ router.get(
   isCoach,
   wrapAsync(async (req, res) => {
     const { id, dopNum } = req.params;
-    const dop = ["7U", "8U", "9U", "10U", "11U", "12U", "13U"];
+    const dop = ["6U", "7U", "8U", "9U", "10U", "11U", "12U", "13U", "14U"];
     const coach = await Coach.findById(id)
       .populate("team")
       .populate({
@@ -214,7 +214,7 @@ router.get(
   "/team/admin/profile",
   wrapAsync(async (req, res, next) => {
     const { _id } = req.user;
-    const dop = ["7U", "8U", "9U", "10U", "11U", "12U", "13U"];
+    const dop = ["6U", "7U", "8U", "9U", "10U", "11U", "12U", "13U", "14U"];
     const coach = await Coach.findById(_id).populate("team");
     res.render("./coach/profile", { coach, dop });
   })

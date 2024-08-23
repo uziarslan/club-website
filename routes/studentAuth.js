@@ -16,7 +16,7 @@ const router = express();
 router.get(
   "/student/register/:teamId",
   wrapAsync(async (req, res) => {
-    const dop = ["7U", "8U", "9U", "10U", "11U", "12U", "13U"];
+    const dop = ["6U", "7U", "8U", "9U", "10U", "11U", "12U", "13U", "14U"];
 
     const { teamId } = req.params;
     const team = await Team.findById(teamId).populate({
@@ -191,7 +191,7 @@ router.get(
   "/s/:id/edit",
   wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const dop = ["7U", "8U", "9U", "10U", "11U", "12U", "13U"];
+    const dop = ["6U", "7U", "8U", "9U", "10U", "11U", "12U", "13U", "14U"];
     const student = await Student.findById(id).populate("coach");
     const team = await Team.findById(student.team).populate({
       path: "coaches",

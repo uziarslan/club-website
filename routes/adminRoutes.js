@@ -88,7 +88,7 @@ router.get(
   "/admin/dashboard",
   isAdmin,
   wrapAsync(async (req, res) => {
-    const dop = ["7U", "8U", "9U", "10U", "11U", "12U", "13U"];
+    const dop = ["6U", "7U", "8U", "9U", "10U", "11U", "12U", "13U", "14U"];
     const { user } = req;
     const teams = await Team.find({});
     const coaches = await Coach.find({ status: "approved" });

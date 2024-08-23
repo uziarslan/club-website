@@ -157,7 +157,11 @@
                     <label class="form-text text-muted">
                       Division of play
                     </label>
-                    <select name="dop" class="form-control" id="dop" required></select>
+                    <select name="dop" class="form-control" id="dop" required>
+                      <% for(let d of dop){ %>
+                      <option value="<%= d %>"><%= d %></option>
+                      <% } %>
+                    </select>
                   </div>
                 </div>
                 <div class="col-6">
@@ -332,44 +336,7 @@
     yearSelect.value = '<%= year %>';
     monthSelect.value = '<%= month %>';
     dateSelect.value = '<%= date %>';
-    updateDopOptions();
   });
-  // Selecting Dop 2 years ahed only
-  const dobYearSelect = document.getElementById('dobYear');
-  const dobMonthSelect = document.getElementById('dobMonth');
-  const dobDateSelect = document.getElementById('dobDate');
-
-  // Get the DOP select element
-  const dopSelect = document.getElementById('dop');
-
-  // Update DOP options based on selected date of birth
-  function updateDopOptions() {
-    // Get the selected date of birth
-    const year = dobYearSelect.value;
-    const month = dobMonthSelect.value;
-    const date = dobDateSelect.value;
-
-    // Calculate the age based on the selected date of birth
-    const dob = new Date(`${year}-${month}-${date}`);
-    const today = new Date();
-    const age = today.getFullYear() - dob.getFullYear();
-
-    // Clear existing options
-    dopSelect.innerHTML = '';
-
-    const maxAge = Math.min(age + 2, 13);
-    console.log(maxAge)
-    // Add new options based on age
-    for (let i = Math.max(7, age); i <= maxAge; i++) {
-      const option = document.createElement('option');
-      option.value = `${i}U`;
-      option.textContent = `${i}U`;
-      dopSelect.appendChild(option);
-    }
-  }
-  dobYearSelect.addEventListener('change', updateDopOptions);
-  dobMonthSelect.addEventListener('change', updateDopOptions);
-  dobDateSelect.addEventListener('change', updateDopOptions);
 
 </script>
 <script>
