@@ -57,11 +57,11 @@
       </div>
     </div>
   </div>
-  <div class="row mb-2">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <form id="approve-students-form">
+  <form id="approve-students-form">
+    <div class="row mb-2">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h5 class="card-title text-warning">Pending Players</h5>
               <div>
@@ -69,8 +69,27 @@
                 <button type="button" class="btn btn-outline-danger decline-button">Unapprove</button>
               </div>
             </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <label for="entriesSelect">Show</label>
+                <select id="entriesSelect" class="form-select" style="width: auto; display: inline-block;">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+                <label for="entriesSelect">entries</label>
+              </div>
+              <div>
+                <div class="dataTables_filter">
+                  <label>
+                    Search:
+                    <input type="search" id="searchInput" placeholder="">
+                  </label>
+                </div>
+              </div>
+            </div>
             <div class="table-responsive">
-              <table class="table center-aligned-table" id="transactionTable">
+              <table class="table center-aligned-table" id="table1">
                 <thead>
                   <tr class="text-primary">
                     <th>Select</th>
@@ -119,14 +138,13 @@
                       </div>
                       <% }else if(student.paymentStatus === "review"){ %>
                       <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
-                      </button>
-                      <% }else if (student.paymentStatus === "paid"){ %>
-                      <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
-                      </div>
-                      <% }else if(student.paymentStatus === "cash"){ %>
-                      <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
-                      </div>
-                      <% } %>
+                        <% }else if (student.paymentStatus === "paid"){ %>
+                        <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
+                        </div>
+                        <% }else if(student.paymentStatus === "cash"){ %>
+                        <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
+                        </div>
+                        <% } %>
                     </td>
                     <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
                     <td>
@@ -138,179 +156,202 @@
                 </tbody>
               </table>
             </div>
-            <input type="hidden" id="selected-student-ids" name="selectedStudentIds" />
-            <input type="hidden" id="action-type" name="actionType" />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="card-title text-success">Approved Players</h5>
-            <div>
-              <button type="button" class="btn btn-outline-warning pending-button">Pending</button>
-              <button type="button" class="btn btn-outline-danger decline-button">Unapprove</button>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <div id="pagination" class="pagination"></div>
             </div>
           </div>
-          <div class="table-responsive">
-            <table class="table center-aligned-table" id="transactionTable1">
-              <thead>
-                <tr class="text-primary">
-                  <th>Select</th>
-                  <th>Profile</th>
-                  <th>Name</th>
-                  <th>Team</th>
-                  <th>Coach</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Age</th>
-                  <th>Date of Birth</th>
-                  <th>Jersey #</th>
-                  <th>Documents</th>
-                  <th>Payment Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for (let student of approved_students){ %>
-                <tr class="">
-                  <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
-                  <% if (student.image.path){ %>
-                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
-                  <% }else{ %>
-                  <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
-                  <% } %>
-                  <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
-                  <td><%= student.team.name %></td>
-                  <% if(student.coach){ %>
-                  <td><%= student.coach.fullname %></td>
-                  <% }else{ %>
-                  <td></td>
-                  <% } %>
-                  <td><%= student.username %></td>
-                  <td><%= student.phone %></td>
-                  <td><%= student.age %></td>
-                  <td><%= student.dob %></td>
-                  <td><%= student.jersey %></td>
-                  <td>
-                    <% for(let doc of student.documents){ %>
-                    <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
-                    <% } %>
-                  </td>
-                  <td>
-                    <% if (student.paymentStatus === "unpaid"){ %>
-                    <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
-                    </div>
-                    <% }else if(student.paymentStatus === "review"){ %>
-                    <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
-                      <% }else if (student.paymentStatus === "paid"){ %>
-                      <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
-                      </div>
-                      <% }else if(student.paymentStatus === "cash"){%>
-                      <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
-                      </div>
-                      <% } %>
-                  </td>
-                  <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
-                  <td>
-                    <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
-                  </td>
-                  <% } %>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="card-title text-danger">Unapproved Players</h5>
-            <div>
-              <button type="button" class="btn btn-outline-success approve-button">Approve</button>
-              <button type="button" class="btn btn-danger delete-button">Delete</button>
+    <div class="row mb-2">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="card-title text-success">Approved Players</h5>
+              <div>
+                <button type="button" class="btn btn-outline-warning pending-button">Pending</button>
+                <button type="button" class="btn btn-outline-danger decline-button">Unapprove</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table center-aligned-table" id="transactionTable1">
+                <thead>
+                  <tr class="text-primary">
+                    <th>Select</th>
+                    <th>Profile</th>
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Coach</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Date of Birth</th>
+                    <th>Jersey #</th>
+                    <th>Documents</th>
+                    <th>Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (let student of approved_students){ %>
+                  <tr class="">
+                    <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
+                    <% if (student.image.path){ %>
+                    <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
+                    <% }else{ %>
+                    <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
+                    <% } %>
+                    <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
+                    <td><%= student.team.name %></td>
+                    <% if(student.coach){ %>
+                    <td><%= student.coach.fullname %></td>
+                    <% }else{ %>
+                    <td></td>
+                    <% } %>
+                    <td><%= student.username %></td>
+                    <td><%= student.phone %></td>
+                    <td><%= student.age %></td>
+                    <td><%= student.dob %></td>
+                    <td><%= student.jersey %></td>
+                    <td>
+                      <% for(let doc of student.documents){ %>
+                      <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+                      <% } %>
+                    </td>
+                    <td>
+                      <% if (student.paymentStatus === "unpaid"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% }else if(student.paymentStatus === "review"){ %>
+                      <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
+                        <% }else if (student.paymentStatus === "paid"){ %>
+                        <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
+                        </div>
+                        <% }else if(student.paymentStatus === "cash"){%>
+                        <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
+                        </div>
+                        <% } %>
+                    </td>
+                    <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
+                    <td>
+                      <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
+                    </td>
+                    <% } %>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="table-responsive">
-            <table class="table center-aligned-table" id="transactionTable2">
-              <thead>
-                <tr class="text-primary">
-                  <th>Select</th>
-                  <th>Profile</th>
-                  <th>Name</th>
-                  <th>Team</th>
-                  <th>Coach</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Age</th>
-                  <th>Date of Birth</th>
-                  <th>Jersey #</th>
-                  <th>Documents</th>
-                  <th>Payment Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for (let student of disqualified_students){ %>
-                <tr class="">
-                  <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
-                  <% if (student.image.path){ %>
-                  <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
-                  <% }else{ %>
-                  <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
-                  <% } %>
-                  <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
-                  <td><%= student.team.name %></td>
-                  <% if(student.coach){ %>
-                  <td><%= student.coach.fullname %></td>
-                  <% }else{ %>
-                  <td></td>
-                  <% } %>
-                  <td><%= student.username %></td>
-                  <td><%= student.phone %></td>
-                  <td><%= student.age %></td>
-                  <td><%= student.dob %></td>
-                  <td><%= student.jersey %></td>
-                  <td>
-                    <% for(let doc of student.documents){ %>
-                    <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="card-title text-danger">Unapproved Players</h5>
+              <div>
+                <button type="button" class="btn btn-outline-success approve-button">Approve</button>
+                <button type="button" class="btn btn-danger delete-button">Delete</button>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <label for="entriesSelect3">Show</label>
+                <select id="entriesSelect3" class="form-select" style="width: auto; display: inline-block;">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+                <label for="entriesSelect3">entries</label>
+              </div>
+              <div>
+                <div class="dataTables_filter">
+                  <label>
+                    Search:
+                    <input type="search" id="searchInput3" placeholder="">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table center-aligned-table" id="table3">
+                <thead>
+                  <tr class="text-primary">
+                    <th>Select</th>
+                    <th>Profile</th>
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Coach</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Date of Birth</th>
+                    <th>Jersey #</th>
+                    <th>Documents</th>
+                    <th>Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (let student of disqualified_students){ %>
+                  <tr class="">
+                    <td><input type="checkbox" class="student-checkbox" data-student-id="<%= student._id %>"></td>
+                    <% if (student.image.path){ %>
+                    <td><a href="<%= student.image.path %>" target="_blank"><img style="width: 50px; height: 50px; object-fit: contain;" src="<%= student.image.path %>" alt="Student Image"></a></td>
+                    <% }else{ %>
+                    <td><img style="width: 50px; height: 50px; object-fit: contain;" src="https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png" alt="Student Dummy Image"></td>
                     <% } %>
-                  </td>
-                  <td>
-                    <% if (student.paymentStatus === "unpaid"){ %>
-                    <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
-                    </div>
-                    <% }else if(student.paymentStatus === "review"){ %>
-                    <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
-                      <% }else if (student.paymentStatus === "paid"){ %>
-                      <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
-                      </div>
-                      <% }else if(student.paymentStatus === "cash"){ %>
-                      <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
-                      </div>
+                    <td><a href="/admin/student/edit/<%= student._id %>"><%= student.fullname %></a></td>
+                    <td><%= student.team.name %></td>
+                    <% if(student.coach){ %>
+                    <td><%= student.coach.fullname %></td>
+                    <% }else{ %>
+                    <td></td>
+                    <% } %>
+                    <td><%= student.username %></td>
+                    <td><%= student.phone %></td>
+                    <td><%= student.age %></td>
+                    <td><%= student.dob %></td>
+                    <td><%= student.jersey %></td>
+                    <td>
+                      <% for(let doc of student.documents){ %>
+                      <a href="<%= doc.path %>" target="_blank"><%= doc.documentName %></a><br>
                       <% } %>
-                  </td>
-                  <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
-                  <td>
-                    <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
-                  </td>
+                    </td>
+                    <td>
+                      <% if (student.paymentStatus === "unpaid"){ %>
+                      <div style="text-transform: capitalize;" class="badge badge-warning badge-pill px-25"><%= student.paymentStatus %>
+                      </div>
+                      <% }else if(student.paymentStatus === "review"){ %>
+                      <button onclick="createModalBody('<%= student.paymentNumber %>')" style="border: none; outline: none; text-transform: capitalize; cursor: pointer;" type="button" class="badge badge-primary badge-pill px-25" data-bs-toggle="modal" data-bs-target="#exampleModal"><%= student.paymentStatus %>
+                        <% }else if (student.paymentStatus === "paid"){ %>
+                        <div style="text-transform: capitalize;" class="badge badge-success badge-pill px-25"><%= student.paymentStatus %>
+                        </div>
+                        <% }else if(student.paymentStatus === "cash"){ %>
+                        <div style="text-transform: capitalize;" class="badge badge-danger badge-pill px-25"><%= student.paymentStatus %>
+                        </div>
+                        <% } %>
+                    </td>
+                    <% if(student.paymentStatus === 'review' || student.paymentStatus === 'cash'){ %>
+                    <td>
+                      <a href="/payment/paid/<%= student._id %>" class="btn btn-outline-success" type="submit">Paid</a>
+                    </td>
+                    <% } %>
+                  </tr>
                   <% } %>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-            </form>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <div id="pagination3" class="pagination"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

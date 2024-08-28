@@ -243,16 +243,165 @@
 <script>
   $(document)
     .ready(function() {
-      $('#transactionTable')
-        .DataTable({
-          "order": [
-            [0, "desc"]
-          ]
-          , "lengthMenu": [10, 25, 50]
-          , "stripeClasses": ['even', 'odd']
-          , "pagingType": "simple_numbers"
-        , });
+      const $table = $('#table1');
+      const $tbody = $table.find('tbody');
+      const $searchInput = $('#searchInput');
+      const $entriesSelect = $('#entriesSelect');
+      const $pagination = $('#pagination');
+      const $noResultsMessage = $('<tr id="noResultsMessage" style="display: none;"><td>No matching records found</td></tr>');
+
+      let currentPage = 1;
+      let rowsPerPage = parseInt($entriesSelect.val());
+      let $allRows = $tbody.find('tr');
+      let $filteredRows = $allRows;
+
+      function displayRows() {
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        $allRows.hide(); // Hide all rows initially
+        $filteredRows.slice(start, end)
+          .show(); // Show only the filtered rows within the current page
+        updatePagination();
+      }
+
+      function updatePagination() {
+        const totalPages = Math.ceil($filteredRows.length / rowsPerPage);
+        $pagination.empty();
+        for (let i = 1; i <= totalPages; i++) {
+          const $pageButton = $('<button>')
+            .addClass('btn btn-outline-primary mx-1')
+            .text(i)
+            .on('click', function() {
+              currentPage = i;
+              displayRows();
+            });
+          if (i === currentPage) {
+            $pageButton.addClass('active');
+          }
+          $pagination.append($pageButton);
+        }
+      }
+
+      function filterRows() {
+        const searchTerm = $searchInput.val()
+          .toLowerCase();
+        $filteredRows = $allRows.filter(function() {
+          return $(this)
+            .find('td')
+            .toArray()
+            .some(td => {
+              return $(td)
+                .text()
+                .toLowerCase()
+                .includes(searchTerm);
+            });
+        });
+
+        if ($filteredRows.length === 0) {
+          $tbody.append($noResultsMessage);
+          $noResultsMessage.show();
+        } else {
+          $noResultsMessage.remove();
+        }
+
+        currentPage = 1;
+        displayRows();
+      }
+
+      $searchInput.on('input', filterRows);
+      $entriesSelect.on('change', function() {
+        rowsPerPage = parseInt($(this)
+          .val());
+        currentPage = 1;
+        displayRows();
+      });
+
+      displayRows();
     });
+
+</script>
+<script>
+  $(document)
+    .ready(function() {
+      const $table = $('#table3');
+      const $tbody = $table.find('tbody');
+      const $searchInput = $('#searchInput3');
+      const $entriesSelect = $('#entriesSelect3');
+      const $pagination = $('#pagination3');
+      const $noResultsMessage = $('<tr id="noResultsMessage" style="display: none;"><td>No matching records found</td></tr>');
+
+      let currentPage = 1;
+      let rowsPerPage = parseInt($entriesSelect.val());
+      let $allRows = $tbody.find('tr');
+      let $filteredRows = $allRows;
+
+      function displayRows() {
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        $allRows.hide(); // Hide all rows initially
+        $filteredRows.slice(start, end)
+          .show(); // Show only the filtered rows within the current page
+        updatePagination();
+      }
+
+      function updatePagination() {
+        const totalPages = Math.ceil($filteredRows.length / rowsPerPage);
+        $pagination.empty();
+        for (let i = 1; i <= totalPages; i++) {
+          const $pageButton = $('<button>')
+            .addClass('btn btn-outline-primary mx-1')
+            .text(i)
+            .on('click', function() {
+              currentPage = i;
+              displayRows();
+            });
+          if (i === currentPage) {
+            $pageButton.addClass('active');
+          }
+          $pagination.append($pageButton);
+        }
+      }
+
+      function filterRows() {
+        const searchTerm = $searchInput.val()
+          .toLowerCase();
+        $filteredRows = $allRows.filter(function() {
+          return $(this)
+            .find('td')
+            .toArray()
+            .some(td => {
+              return $(td)
+                .text()
+                .toLowerCase()
+                .includes(searchTerm);
+            });
+        });
+
+        if ($filteredRows.length === 0) {
+          $tbody.append($noResultsMessage);
+          $noResultsMessage.show();
+        } else {
+          $noResultsMessage.remove();
+        }
+
+        currentPage = 1;
+        displayRows();
+      }
+
+      $searchInput.on('input', filterRows);
+      $entriesSelect.on('change', function() {
+        rowsPerPage = parseInt($(this)
+          .val());
+        currentPage = 1;
+        displayRows();
+      });
+
+      displayRows();
+    });
+
+</script>
+
+<script>
   $(document)
     .ready(function() {
       $('#transactionTable1')
@@ -265,9 +414,27 @@
           , "pagingType": "simple_numbers"
         , });
     });
+
+</script>
+<script>
   $(document)
     .ready(function() {
       $('#transactionTable2')
+        .DataTable({
+          "order": [
+            [0, "desc"]
+          ]
+          , "lengthMenu": [10, 25, 50]
+          , "stripeClasses": ['even', 'odd']
+          , "pagingType": "simple_numbers"
+        , });
+    });
+
+</script>
+<script>
+  $(document)
+    .ready(function() {
+      $('#transactionTable')
         .DataTable({
           "order": [
             [0, "desc"]
